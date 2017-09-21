@@ -4,7 +4,7 @@ import java.util.Map;
 
 import com.ibm.sk.dto.enums.Direction;
 
-public class Vision {
+public class Vision extends WorldObject {
 
 	private Map<Direction, Object> grid;
 
@@ -14,6 +14,11 @@ public class Vision {
 
 	public Object look(final Direction direction) {
 		return this.grid.get(direction);
+	}
+	
+	@Override
+	public String toString() {
+		return "Vision";
 	}
 
 }
