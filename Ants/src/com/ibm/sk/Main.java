@@ -1,22 +1,25 @@
 package com.ibm.sk;
 
+import static com.ibm.sk.WorldConstans.TURNS;
+import static com.ibm.sk.engine.World.createHill;
+
 import com.ibm.sk.engine.FoodHandler;
 import com.ibm.sk.engine.ProcessExecutor;
-import com.ibm.sk.engine.World;
 
 public class Main {
 
+    private static int turn;
+
 	public static void main(String args[]) {
-		World.createHill("King of ants");
+		createHill("King of ants");
 		
-		boolean endGame = false;
-		do {
+		for (turn = 0; turn < TURNS; turn++) {
 			ProcessExecutor.execute();
-			if (Math.random() > 0.5) {
-				FoodHandler.dropFood();
-			}
-			
-			endGame = true;
-		} while (!endGame);
+			FoodHandler.dropFood();
+		}
 	}
+
+    public static int getTurn() {
+        return turn;
+    }
 }
