@@ -4,10 +4,9 @@ import java.awt.Point;
 
 import com.ibm.sk.dto.enums.Direction;
 
-public abstract class AbstractAnt implements IAnt {
+public abstract class AbstractAnt extends WorldObject implements IAnt {
 
 	private int id;
-	private Point position;
 	private int food = 0;
 	private Hill myHill;
 
@@ -35,7 +34,7 @@ public abstract class AbstractAnt implements IAnt {
 
 	@Override
 	public abstract Direction move(final Vision vision);
-
+	
 	@Override
 	public int getId() {
 		return id;
@@ -44,16 +43,6 @@ public abstract class AbstractAnt implements IAnt {
 	@Override
 	public void setId(int id) {
 		this.id = id;
-	}
-
-	@Override
-	public Point getPosition() {
-		return position;
-	}
-
-	@Override
-	public void setPosition(Point position) {
-		this.position = position;
 	}
 
 	@Override

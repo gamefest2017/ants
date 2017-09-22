@@ -1,18 +1,12 @@
 package com.ibm.sk.dto;
 
-import java.awt.Point;
-
 import com.ibm.sk.dto.enums.Direction;
 
-public interface IAnt {
+public interface IAnt extends IWorldObject {
 
 	int getId();
 
 	void setId(int id);
-
-	Point getPosition();
-
-	void setPosition(Point position);
 
 	Direction move(Vision vision);
 

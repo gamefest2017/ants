@@ -1,17 +1,27 @@
 package com.ibm.sk.dto;
 
 import java.awt.Point;
+import java.util.ArrayList;
+import java.util.List;
 
-public class Hill {
+import com.ibm.sk.engine.PopulationHandler;
+
+public class Hill extends WorldObject {
 
 	private int population;
 	private String name;
-	private Point position;
+	private List<Ant> ants;
 
 	public Hill(final int population, final String name, final Point position) {
-		this.population = population;
 		this.name = name;
 		this.position = position;
+		this.ants = new ArrayList<>();
+		
+		PopulationHandler populationHandler = new PopulationHandler();
+		
+		for (int i = 0; i < population; i++) {
+			this.ants.add(populationHandler.breedAnt(this));
+		}
 	}
 
 	public boolean isMyHill(final Ant ant) {
@@ -42,12 +52,8 @@ public class Hill {
 		this.name = name;
 	}
 
-	public Point getPosition() {
-		return position;
-	}
-
-	public void setPosition(Point position) {
-		this.position = position;
+	public List<Ant> getAnts() {
+		return ants;
 	}
 
 }
