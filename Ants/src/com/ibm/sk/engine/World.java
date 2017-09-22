@@ -8,12 +8,9 @@ import com.ibm.sk.dto.Hill;
 import com.ibm.sk.dto.WorldObject;
 
 public final class World {
-	protected static int X_BOUNDRY = 100;
-	protected static int Y_BOUNDRY = 100;
-	protected static int FOOD_BOUNDRY = 10;
 	
-	private static final Map<Point, Object> GRID = new ConcurrentHashMap<Point, Object>();
-	
+	private static final Map<Point, Object> GRID = new ConcurrentHashMap<>();
+
 	private World() {
 	}
 	
@@ -37,4 +34,5 @@ public final class World {
 		Hill hill = new Hill(5, name, new Point(50,50));
 		placeObject(hill);
 	}
+
 }
