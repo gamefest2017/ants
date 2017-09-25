@@ -10,6 +10,7 @@ import static com.ibm.sk.engine.World.placeObject;
 import java.awt.*;
 import java.util.Random;
 
+import com.ibm.sk.dto.Ant;
 import com.ibm.sk.dto.Food;
 
 public final class FoodHandler {
@@ -32,11 +33,12 @@ public final class FoodHandler {
         }
     }
 
-    public static void pickUpFood(final Point position) {
+    public static void pickUpFood(final Ant ant, final Point position) {
         Object object = World.getWorldObject(position);
         if (object instanceof Food) {
             System.out.println("Picked: " + object);
-            World.removeObject(position);
+            ant.pickUpFood(((Food) object).getAmount());
+//            World.removeObject(position);
         } else {
             System.out.println("I'm not picking that unknown thing!");
         }
