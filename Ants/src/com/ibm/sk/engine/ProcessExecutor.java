@@ -9,6 +9,7 @@ import com.ibm.sk.dto.Ant;
 import com.ibm.sk.dto.Hill;
 import com.ibm.sk.dto.Vision;
 import com.ibm.sk.dto.enums.Direction;
+import com.ibm.sk.engine.exceptions.MoveException;
 
 public final class ProcessExecutor {
 
@@ -31,10 +32,21 @@ public final class ProcessExecutor {
     }
 
     private static void singleStep(final Ant ant) {
-        System.out.println("Ant " + ant.getId() + " said:");
-        Vision vision = new Vision(createVisionGrid(ant.getPosition()));
-        ant.move(vision);
-    }
+		System.out.println("Ant " + ant.getId() + " said:");
+		Vision vision = new Vision(createVisionGrid(ant.getPosition()));
+		Direction direction = ant.move(vision);
+		MovementHandler movementHandler = new MovementHandler();
+
+		if (Direction.NO_MOVE.equals(direction)) {
+			System.out.println("I'm not moving. I like this place!");
+		} else {
+			try {
+				movementHandler.makeMove(ant, direction);
+			} catch (MoveException e) {
+				System.out.println("I cannot move to " + direction.name() + "! That would hurt me!");
+			}
+		}
+	}
 
     private static Map<Direction, Object> createVisionGrid(final Point visionPosition) {
         Map<Direction, Object> visionGrid = new EnumMap<>(Direction.class);

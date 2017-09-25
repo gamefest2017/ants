@@ -6,6 +6,7 @@ import static com.ibm.sk.WorldConstans.X_BOUNDRY;
 import java.awt.Point;
 
 import com.ibm.sk.dto.Ant;
+import com.ibm.sk.dto.Food;
 import com.ibm.sk.dto.Hill;
 import com.ibm.sk.dto.enums.Direction;
 import com.ibm.sk.engine.exceptions.MoveException;
@@ -23,8 +24,22 @@ public final class MovementHandler {
 			if (ant.getMyHill().getPosition().equals(position)) {
 				moveHome(ant.getMyHill(), ant);
 			}
+			Object worldObject = World.getWorldObject(position);
 			
-			ant.setPosition(position);
+			if(worldObject == null) {
+				System.out.println("I'm moving to " + direction.name() + ", out of my way!");
+				World.removeObject(ant.getPosition());
+				ant.setPosition(position);
+				World.placeObject(ant);
+			} else if (worldObject instanceof Food) {
+				World.removeObject(ant.getPosition());
+				FoodHandler.pickUpFood(ant, position);
+				ant.setPosition(position);
+				World.placeObject(ant);
+			} else {
+				System.out.println("I will not move to " + direction.name() + "! The place is occupied.");
+			}
+			
 		}
 	}
 	
