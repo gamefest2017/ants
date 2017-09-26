@@ -12,9 +12,9 @@ gen/
 local.properties
 
 # Eclipse stuff
-#.classpath
-#.project
-#.settings
+.classpath
+.project
+.settings
 
 # Gradle stuff
 .gradle/
@@ -33,5 +33,3 @@ target/
 
 *.swp
 *.log
-=======
-/bin/
