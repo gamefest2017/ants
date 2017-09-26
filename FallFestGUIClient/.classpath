@@ -7,7 +7,16 @@
 	<classpathentry kind="lib" path="/FallFestGUILib/jackson-annotations-2.5.1.jar"/>
 	<classpathentry kind="lib" path="/FallFestGUILib/jackson-core-2.5.1.jar"/>
 	<classpathentry kind="lib" path="/FallFestGUILib/jackson-databind-2.5.1.jar"/>
-	<classpathentry kind="con" path="org.eclipse.jdt.USER_LIBRARY/httpClient"/>
 	<classpathentry kind="con" path="org.eclipse.jdt.junit.JUNIT_CONTAINER/4"/>
+	<classpathentry kind="lib" path="/FallFestGUILib/httpClient/commons-codec-1.9.jar"/>
+	<classpathentry kind="lib" path="/FallFestGUILib/httpClient/commons-logging-1.2.jar"/>
+	<classpathentry kind="lib" path="/FallFestGUILib/httpClient/fluent-hc-4.5.3.jar"/>
+	<classpathentry kind="lib" path="/FallFestGUILib/httpClient/httpclient-4.5.3.jar"/>
+	<classpathentry kind="lib" path="/FallFestGUILib/httpClient/httpclient-cache-4.5.3.jar"/>
+	<classpathentry kind="lib" path="/FallFestGUILib/httpClient/httpclient-win-4.5.3.jar"/>
+	<classpathentry kind="lib" path="/FallFestGUILib/httpClient/httpcore-4.4.6.jar"/>
+	<classpathentry kind="lib" path="/FallFestGUILib/httpClient/httpmime-4.5.3.jar"/>
+	<classpathentry kind="lib" path="/FallFestGUILib/httpClient/jna-4.1.0.jar"/>
+	<classpathentry kind="lib" path="/FallFestGUILib/httpClient/jna-platform-4.1.0.jar"/>
 	<classpathentry kind="output" path="bin"/>
 </classpath>
