@@ -7,7 +7,7 @@ import com.ibm.sk.dto.enums.Direction;
 public abstract class AbstractAnt extends WorldObject implements IAnt {
 
 	private int id;
-	private int food = 0;
+	private Food food;
 	private Hill myHill;
 
 	public AbstractAnt(final int id, final Point position, final Hill myHill) {
@@ -34,7 +34,7 @@ public abstract class AbstractAnt extends WorldObject implements IAnt {
 
 	@Override
 	public abstract Direction move(final Vision vision);
-	
+
 	@Override
 	public int getId() {
 		return id;
@@ -46,19 +46,24 @@ public abstract class AbstractAnt extends WorldObject implements IAnt {
 	}
 
 	@Override
-	public void pickUpFood(final int count) {
-		food += count;
+	public void pickUpFood(final Food food) {
+		this.food = food;
 	}
 
 	@Override
-	public int dropFood() {
-		int retValue = this.food;
-		this.food = 0;
+	public Food dropFood() {
+		Food retValue = this.food;
+		this.food = null;
 		return retValue;
 	}
 	
 	public boolean hasFood() {
 		return (this.food != 0);
+	}
+
+	@Override
+	public String toString() {
+		return "Ant " + this.id + " on position: " + (int) this.position.getX() + ", " + (int) this.position.getY();
 	}
 
 }

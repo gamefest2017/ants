@@ -16,9 +16,9 @@ public class Hill extends WorldObject {
 		this.name = name;
 		this.position = position;
 		this.ants = new ArrayList<>();
-		
+
 		PopulationHandler populationHandler = new PopulationHandler();
-		
+
 		for (int i = 0; i < population; i++) {
 			this.ants.add(populationHandler.breedAnt(this));
 		}
@@ -30,10 +30,12 @@ public class Hill extends WorldObject {
 
 	public void incrementPopulation(final int count) {
 		this.population += count;
+		System.out.println("Population of hill " + name + " increased by " + count + ".");
 	}
 
 	public void decrementPopulation(final int count) {
 		this.population = Math.abs(this.population - count);
+		System.out.println("Population of hill " + name + " decreased by " + count + ".");
 	}
 
 	public int getPopulation() {
