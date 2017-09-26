@@ -22,7 +22,9 @@ import com.ibm.sk.ff.gui.config.Config;
 public class SimpleCanvas extends JComponent {
 	private static final long serialVersionUID = 1L;
 	
-	private final Color[] COLORS = {Color.GRAY, Color.RED}; 
+	private final Color[] COLORS = {Color.BLACK, Color.RED};
+	
+	private final boolean DEV_MODE = Boolean.parseBoolean(Config.DEV_MODE.toString());
 	
 	private static long SLEEP_INTERVAL = Long.parseLong(Config.GUI_MOVE_INTERVAL.toString()) / Long.parseLong(Config.GUI_MAGNIFICATION.toString());
 	
@@ -68,6 +70,9 @@ public class SimpleCanvas extends JComponent {
 	public void paint(Graphics g) {
 		try {
 			g.drawImage(IMAGES_GRASS, 0, 0, w * MAGNIFICATION, h * MAGNIFICATION, Color.GREEN, null);
+			if (DEV_MODE) {
+				paintGrid(g);
+			}
 		} catch (Exception e) {
 			g.setColor(BACKGROUND_COLOR);
 			g.fillRect(0, 0, getWidth(), getHeight());
@@ -78,6 +83,16 @@ public class SimpleCanvas extends JComponent {
 			if (!it.paint(g)) {
 				finishedRedraw = false;
 			}
+		}
+	}
+	
+	private void paintGrid(Graphics g) {
+		g.setColor(Color.GRAY);
+		for (int i = 0; i < w; i++) {
+			g.drawLine(i * MAGNIFICATION, 0, i * MAGNIFICATION, h * MAGNIFICATION);
+		}
+		for (int i = 0; i < h; i++) {
+			g.drawLine(0, i * MAGNIFICATION, w * MAGNIFICATION, i * MAGNIFICATION);
 		}
 	}
 	

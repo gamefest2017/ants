@@ -10,6 +10,7 @@ public enum Config {
 	PORT("gui.server.port", "60065"),
 	GUI_MAGNIFICATION("gui.magnification", "5"),
 	GUI_MOVE_INTERVAL("gui.move.interval", "500"),
+	DEV_MODE("devmode", "false"),
 	;
 	
 	private static final Properties PROPS = new Properties();
