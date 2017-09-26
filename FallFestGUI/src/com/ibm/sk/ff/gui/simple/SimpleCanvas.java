@@ -15,9 +15,12 @@ import com.ibm.sk.ff.gui.common.objects.gui.GAntFoodObject;
 import com.ibm.sk.ff.gui.common.objects.gui.GUIObject;
 import com.ibm.sk.ff.gui.common.objects.gui.GUIObjectTypes;
 import com.ibm.sk.ff.gui.common.objects.operations.InitMenuData;
+import com.ibm.sk.ff.gui.config.Config;
 
 public class SimpleCanvas extends JComponent {
 	private static final long serialVersionUID = 1L;
+	
+	private static long SLEEP_INTERVAL = Long.parseLong(Config.GUI_MOVE_INTERVAL.toString()) / Long.parseLong(Config.GUI_MAGNIFICATION.toString());
 	
 	private static Image IMAGES_GRASS = null;
 	private static Image IMAGES_ANT = null;
@@ -26,6 +29,8 @@ public class SimpleCanvas extends JComponent {
 	private static Image IMAGES_ANT_FOOD = null;
 	
 	private static final Color BACKGROUND_COLOR = Color.GREEN;
+	
+	private boolean finishedRedraw = true;
 	
 	static {
 		try {
@@ -44,7 +49,7 @@ public class SimpleCanvas extends JComponent {
 	private Map<Long, SimpleGUIComponent> objects = new HashMap<>();
 	
 	private int w, h;
-
+	
 	public SimpleCanvas(int width, int height, int magnification) {
 		this.MAGNIFICATION = magnification;
 		this.w = width;
@@ -53,15 +58,31 @@ public class SimpleCanvas extends JComponent {
 		setPreferredSize(new Dimension(width * magnification, height * magnification));
 	}
 	
-	public void paintComponent(Graphics g) {
+	public void paint(Graphics g) {
 		try {
 			g.drawImage(IMAGES_GRASS, 0, 0, w * MAGNIFICATION, h * MAGNIFICATION, Color.GREEN, null);
 		} catch (Exception e) {
 			g.setColor(BACKGROUND_COLOR);
 			g.fillRect(0, 0, getWidth(), getHeight());
 		}
-
-		objects.values().stream().forEach(o -> o.paint(g));
+		finishedRedraw = true;
+			
+		for (SimpleGUIComponent it : objects.values().stream().toArray(SimpleGUIComponent[]::new)) {
+			if (!it.paint(g)) {
+				finishedRedraw = false;
+			}
+		}
+	}
+	
+	private void performRepaint() {
+		do {
+			paintImmediately(0, 0, getWidth(), getHeight());
+			try {
+				Thread.sleep(SLEEP_INTERVAL);
+			} catch (Exception e) {
+				e.printStackTrace();
+			}
+		} while (!finishedRedraw);
 	}
 	
 	public void set(GUIObject go) {
@@ -69,10 +90,10 @@ public class SimpleCanvas extends JComponent {
 		if (objects.containsKey(go.getId())) {
 			toAdd = objects.get(go.getId());
 			objects.remove(go.getId());
-			toAdd.setLocation(go.getLocation().getX(), go.getLocation().getY());
+			toAdd.moveToLocation(go.getLocation().getX(), go.getLocation().getY());
 		} else {
 			toAdd = new SimpleGUIComponent(MAGNIFICATION, Color.BLACK, getImage(go.getType()));
-			toAdd.moveToLocation(go.getLocation().getX(), go.getLocation().getY());
+			toAdd.setLocation(go.getLocation().getX(), go.getLocation().getY());
 		}
 		
 		if (go.getType().equals(GUIObjectTypes.ANT_FOOD)) {
@@ -83,13 +104,13 @@ public class SimpleCanvas extends JComponent {
 
 		this.objects.put(go.getId(), toAdd);
 		
-		repaint();
+		performRepaint();
 	}
 
 	public void remove(GUIObject object) {
 		if (this.objects.containsKey(object.getId())) {
 			this.objects.remove(object.getId());
-			repaint();
+			performRepaint();
 		}
 	}
 	
@@ -107,7 +128,7 @@ public class SimpleCanvas extends JComponent {
 	public void reset(InitMenuData data) {
 		objects.clear();
 
-		repaint();
+		performRepaint();
 	}
 
 }
