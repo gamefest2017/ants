@@ -7,6 +7,7 @@ import java.util.Map.Entry;
 
 import com.ibm.sk.dto.Ant;
 import com.ibm.sk.dto.Hill;
+import com.ibm.sk.dto.IWorldObject;
 import com.ibm.sk.dto.Vision;
 import com.ibm.sk.dto.enums.Direction;
 import com.ibm.sk.engine.exceptions.MoveException;
@@ -18,7 +19,7 @@ public final class ProcessExecutor {
 
 	public static void execute() {
 
-		for (final Entry<Point, Object> entry : World.getWorld().entrySet()) {
+		for (final Entry<Point, IWorldObject> entry : World.getWorld().entrySet()) {
 			if (entry.getValue() instanceof Hill) {
 				for (final Ant ant : ((Hill) entry.getValue()).getAnts()) {
 					singleStep(ant);

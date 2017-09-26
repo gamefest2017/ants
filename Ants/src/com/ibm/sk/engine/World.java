@@ -6,17 +6,18 @@ import java.util.concurrent.ConcurrentHashMap;
 
 import com.ibm.sk.WorldConstans;
 import com.ibm.sk.dto.Hill;
+import com.ibm.sk.dto.IWorldObject;
 import com.ibm.sk.dto.WorldObject;
 import com.ibm.sk.dto.enums.HillOrder;
 
 public final class World {
 
-	private static final Map<Point, Object> GRID = new ConcurrentHashMap<>();
+	private static final Map<Point, IWorldObject> GRID = new ConcurrentHashMap<>();
 
 	private World() {
 	}
 
-	protected static Map<Point, Object> getWorld() {
+	protected static Map<Point, IWorldObject> getWorld() {
 		return GRID;
 	}
 
