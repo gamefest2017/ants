@@ -8,7 +8,7 @@ public abstract class AbstractAnt extends WorldObject implements IAnt {
 
 	private int id;
 	private Food food;
-	private Hill myHill;
+	private final Hill myHill;
 
 	public AbstractAnt(final int id, final Point position, final Hill myHill) {
 		this.id = id;
@@ -18,7 +18,7 @@ public abstract class AbstractAnt extends WorldObject implements IAnt {
 
 	@Override
 	public String getMyHillName() {
-		return myHill.getName();
+		return this.myHill.getName();
 	}
 
 	@Override
@@ -27,7 +27,7 @@ public abstract class AbstractAnt extends WorldObject implements IAnt {
 	}
 
 	@Override
-	public boolean isEnemy(IAnt otherAnt) {
+	public boolean isEnemy(final IAnt otherAnt) {
 		return otherAnt != null && this.getMyHillName() != null
 				&& !this.getMyHillName().equals(otherAnt.getMyHillName());
 	}
@@ -37,11 +37,11 @@ public abstract class AbstractAnt extends WorldObject implements IAnt {
 
 	@Override
 	public int getId() {
-		return id;
+		return this.id;
 	}
 
 	@Override
-	public void setId(int id) {
+	public void setId(final int id) {
 		this.id = id;
 	}
 
@@ -52,18 +52,20 @@ public abstract class AbstractAnt extends WorldObject implements IAnt {
 
 	@Override
 	public Food dropFood() {
-		Food retValue = this.food;
+		final Food retValue = this.food;
 		this.food = null;
 		return retValue;
 	}
 
 	public boolean hasFood() {
-		return (this.food != null);
+		return this.food != null;
 	}
 
 	@Override
 	public String toString() {
-		return "Ant " + this.id + " on position: " + (int) this.position.getX() + ", " + (int) this.position.getY();
+		return "Ant " + this.id + " from " + this.getMyHillName() + " on: [" + this.position.x + ", " + this.position.y
+				+ "]" + " with "
+				+ (this.hasFood() ? String.valueOf(this.food.getAmount()) : "no") + " food";
 	}
 
 }

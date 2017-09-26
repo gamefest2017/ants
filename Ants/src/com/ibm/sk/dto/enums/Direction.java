@@ -5,9 +5,9 @@ import java.awt.Point;
 import javax.swing.SwingWorker;
 
 public enum Direction {
-	NORD(new Point(0,1)),
-	NORDEAST(new Point(-1,1)),
-	NORDWEST(new Point(1,1)),
+	NORTH(new Point(0,1)),
+	NORTHEAST(new Point(-1,1)),
+	NORTHWEST(new Point(1,1)),
 	SOUTH(new Point(0,-1)),
 	SOUTHEAST(new Point(-1,-1)),
 	SOUTHWEST(new Point(1,-1)),
@@ -30,7 +30,7 @@ public enum Direction {
 			returnValue = verticalD;
 		} else if (horizontalD == Direction.WEST) {
 			switch (verticalD) {
-			case NORD: 		returnValue = Direction.NORDWEST;
+			case NORTH: 		returnValue = Direction.NORTHWEST;
 							break;
 			case NO_MOVE: 	returnValue = Direction.WEST;
 							break;
@@ -41,7 +41,7 @@ public enum Direction {
 			}			
 		} else {
 			switch (verticalD) {
-			case NORD: 		returnValue = Direction.NORDEAST;
+			case NORTH: 		returnValue = Direction.NORTHEAST;
 							break;
 			case NO_MOVE: 	returnValue = Direction.EAST;
 							break;
@@ -65,7 +65,7 @@ public enum Direction {
 				break;
 			case 0: returnValue = Direction.NO_MOVE;
 				break;
-			case 1: case 2: returnValue = Direction.NORD;	
+			case 1: case 2: returnValue = Direction.NORTH;	
 			}
 		} else if (x<0) {
 			switch (y) {
@@ -73,7 +73,7 @@ public enum Direction {
 				break;
 			case 0: returnValue = Direction.WEST;
 				break;
-			case 1: case 2: returnValue = Direction.NORDWEST;	
+			case 1: case 2: returnValue = Direction.NORTHWEST;	
 			}
 		} else {
 			switch (y) {
@@ -81,7 +81,7 @@ public enum Direction {
 				break;
 			case 0: returnValue = Direction.EAST;
 				break;
-			case 1: case 2: returnValue = Direction.NORDEAST;	
+			case 1: case 2: returnValue = Direction.NORTHEAST;	
 			}
 		}
 		

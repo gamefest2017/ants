@@ -63,7 +63,7 @@ public class Ant extends AbstractAnt {
 			verticalDirection = Direction.SOUTH;
 		} else if  (this.getMyHill().position.y == this.position.y) {
 			verticalDirection = Direction.NO_MOVE;
-		} else verticalDirection = Direction.NORD;
+		} else verticalDirection = Direction.NORTH;
 		
 		return Direction.add(horizontalDirection, verticalDirection);		
 	}

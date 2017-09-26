@@ -32,10 +32,11 @@ public final class World {
 		GRID.remove(position);
 	}
 
-	public static void createHill(final HillOrder order, final String name) {
-		Hill hill = new Hill(WorldConstans.ANTS_START_POPULATION, name,
+	public static Hill createHill(final HillOrder order, final String name) {
+		final Hill hill = new Hill(WorldConstans.ANTS_START_POPULATION, name,
 				new Point(order.getOrder() * WorldConstans.X_BOUNDRY, WorldConstans.Y_BOUNDRY / 2));
 		placeObject(hill);
+		return hill;
 	}
 
 }
