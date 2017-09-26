@@ -12,13 +12,13 @@ import javax.swing.JScrollPane;
 import javax.swing.JTextArea;
 import javax.swing.JTextField;
 
-import com.ibm.sk.ff.gui.common.events.InitMenuEvent;
-import com.ibm.sk.ff.gui.common.events.InitMenuEventListener;
+import com.ibm.sk.ff.gui.common.events.GuiEvent;
+import com.ibm.sk.ff.gui.common.events.GuiEventListener;
 import com.ibm.sk.ff.gui.common.objects.operations.CloseData;
 import com.ibm.sk.ff.gui.common.objects.operations.CreateGameData;
 import com.ibm.sk.ff.gui.common.objects.operations.InitMenuData;
 
-public class CreationPanel extends JPanel implements InitMenuEventListener {
+public class CreationPanel extends JPanel implements GuiEventListener {
 	
 	private static final long serialVersionUID = 2196289264725789277L;
 
@@ -56,7 +56,7 @@ public class CreationPanel extends JPanel implements InitMenuEventListener {
 		add(north, BorderLayout.NORTH);
 		add(scrollEvents, BorderLayout.CENTER);
 		
-		facade.addInitMenuEventListener(this);
+		facade.addGuiEventListener(this);
 	}
 	
 	private void setEvents() {
@@ -93,7 +93,7 @@ public class CreationPanel extends JPanel implements InitMenuEventListener {
 	}
 
 	@Override
-	public void actionPerformed(InitMenuEvent event) {
+	public void actionPerformed(GuiEvent event) {
 		textEvents.setText(textEvents.getText() + "\n" + event.getType().toString() + " - " + event.getData());
 	}
 

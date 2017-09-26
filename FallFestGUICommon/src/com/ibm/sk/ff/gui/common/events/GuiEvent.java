@@ -6,7 +6,7 @@ import java.util.Map;
 import com.fasterxml.jackson.annotation.JsonCreator;
 import com.fasterxml.jackson.annotation.JsonValue;
 
-public class InitMenuEvent {
+public class GuiEvent {
 	
 	public static enum EventTypes {
 		SINGLE_PLAY_START("singlePlayStart"),
@@ -45,11 +45,11 @@ public class InitMenuEvent {
 	private EventTypes type = null;
 	private String data = null;;
 	
-	public InitMenuEvent() {
+	public GuiEvent() {
 		
 	}
 	
-	public InitMenuEvent(EventTypes type, String data) {
+	public GuiEvent(EventTypes type, String data) {
 		this.type = type;
 		this.data = data;
 	}

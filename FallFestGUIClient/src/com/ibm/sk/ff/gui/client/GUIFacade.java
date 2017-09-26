@@ -4,8 +4,8 @@ import java.util.ArrayList;
 import java.util.List;
 
 import com.ibm.sk.ff.gui.common.GUIOperations;
-import com.ibm.sk.ff.gui.common.events.InitMenuEvent;
-import com.ibm.sk.ff.gui.common.events.InitMenuEventListener;
+import com.ibm.sk.ff.gui.common.events.GuiEvent;
+import com.ibm.sk.ff.gui.common.events.GuiEventListener;
 import com.ibm.sk.ff.gui.common.mapper.Mapper;
 import com.ibm.sk.ff.gui.common.objects.gui.GUIObject;
 import com.ibm.sk.ff.gui.common.objects.operations.CloseData;
@@ -18,7 +18,7 @@ public class GUIFacade {
 
 	private final Client CLIENT;
 
-	private List<InitMenuEventListener> initMenuListeners = new ArrayList<>();
+	private List<GuiEventListener> guiEventListeners = new ArrayList<>();
 
 	public GUIFacade() {
 		this.CLIENT = new Client();
@@ -75,7 +75,7 @@ public class GUIFacade {
 	private void checkEvents() {
 		String events = CLIENT.getMessage(GUIOperations.EVENT_POLL.toString());
 		if (events != null && events.length() > 0) {
-			InitMenuEvent[] swp = Mapper.INSTANCE.jsonToPojo(events, InitMenuEvent[].class);
+			GuiEvent[] swp = Mapper.INSTANCE.jsonToPojo(events, GuiEvent[].class);
 			castEvent(swp);
 		}
 	}
@@ -83,17 +83,17 @@ public class GUIFacade {
 	//
 	// EVENTS
 	//
-	public void addInitMenuEventListener(InitMenuEventListener listener) {
-		initMenuListeners.add(listener);
+	public void addGuiEventListener(GuiEventListener listener) {
+		guiEventListeners.add(listener);
 	}
 
-	public void removeInitMenuEventListener(InitMenuEventListener listener) {
-		initMenuListeners.remove(listener);
+	public void removeGuiEventListener(GuiEventListener listener) {
+		guiEventListeners.remove(listener);
 	}
 
-	private void castEvent(InitMenuEvent[] event) {
-		for (InitMenuEvent it : event)
-			initMenuListeners.stream().forEach(l -> l.actionPerformed(it));
+	private void castEvent(GuiEvent[] event) {
+		for (GuiEvent it : event)
+			guiEventListeners.stream().forEach(l -> l.actionPerformed(it));
 	}
 
 }

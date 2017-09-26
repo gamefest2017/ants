@@ -7,7 +7,7 @@ import javax.swing.JFrame;
 import javax.swing.JPanel;
 
 import com.ibm.sk.ff.gui.GUI;
-import com.ibm.sk.ff.gui.common.events.InitMenuEventListener;
+import com.ibm.sk.ff.gui.common.events.GuiEventListener;
 import com.ibm.sk.ff.gui.common.objects.gui.GAntFoodObject;
 import com.ibm.sk.ff.gui.common.objects.gui.GAntObject;
 import com.ibm.sk.ff.gui.common.objects.gui.GFoodObject;
@@ -28,7 +28,7 @@ public class SimpleGUI implements GUI {
 	private SimpleCanvas canvas = null;
 	private ScoreboardSmall scoreboard = null;
 	
-	private InitMenuEventListener listener = null;
+	private GuiEventListener listener = null;
 	
 	public SimpleGUI() { 
 	}
@@ -130,7 +130,7 @@ public class SimpleGUI implements GUI {
 	}
 
 	@Override
-	public void addInitMenuEventListener(InitMenuEventListener listener) {
+	public void addGuiEventListener(GuiEventListener listener) {
 		this.listener = listener;
 	}
 

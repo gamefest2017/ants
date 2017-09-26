@@ -11,7 +11,7 @@ public class Main {
 		try {
 			SimpleGUI gui = new SimpleGUI();
 			Facade f = new Facade(gui);
-			gui.addInitMenuEventListener(f);
+			gui.addGuiEventListener(f);
 			new Server(f);
 		} catch (NumberFormatException | IOException e) {
 			e.printStackTrace();

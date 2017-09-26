@@ -1,6 +1,6 @@
 package com.ibm.sk.ff.gui;
 
-import com.ibm.sk.ff.gui.common.events.InitMenuEventListener;
+import com.ibm.sk.ff.gui.common.events.GuiEventListener;
 import com.ibm.sk.ff.gui.common.objects.gui.GAntFoodObject;
 import com.ibm.sk.ff.gui.common.objects.gui.GAntObject;
 import com.ibm.sk.ff.gui.common.objects.gui.GFoodObject;
@@ -33,6 +33,6 @@ public interface GUI {
 	
 	public void close(CloseData data);
 	
-	public void addInitMenuEventListener(InitMenuEventListener listener);
+	public void addGuiEventListener(GuiEventListener listener);
 	
 }

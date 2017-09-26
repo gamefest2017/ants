@@ -3,8 +3,8 @@ package com.ibm.sk.ff.gui;
 import java.util.ArrayList;
 import java.util.List;
 
-import com.ibm.sk.ff.gui.common.events.InitMenuEvent;
-import com.ibm.sk.ff.gui.common.events.InitMenuEventListener;
+import com.ibm.sk.ff.gui.common.events.GuiEvent;
+import com.ibm.sk.ff.gui.common.events.GuiEventListener;
 import com.ibm.sk.ff.gui.common.mapper.Mapper;
 import com.ibm.sk.ff.gui.common.objects.gui.GAntFoodObject;
 import com.ibm.sk.ff.gui.common.objects.gui.GAntObject;
@@ -17,7 +17,7 @@ import com.ibm.sk.ff.gui.common.objects.operations.ResultData;
 import com.ibm.sk.ff.gui.common.objects.operations.ScoreData;
 import com.sun.istack.internal.logging.Logger;
 
-public class Facade implements InitMenuEventListener {
+public class Facade implements GuiEventListener {
 	
 	private GUI gui;
 	
@@ -80,17 +80,17 @@ public class Facade implements InitMenuEventListener {
 	}
 	
 	public String getEvents() {
-		InitMenuEvent[] eventsArray = events.stream().toArray(InitMenuEvent[]::new);
+		GuiEvent[] eventsArray = events.stream().toArray(GuiEvent[]::new);
 		String ret = Mapper.INSTANCE.pojoToJson(eventsArray);
 		events.clear();
 		return ret;
 	}
 	
-	private List<InitMenuEvent> events = new ArrayList<>();
+	private List<GuiEvent> events = new ArrayList<>();
 
 	@Override
-	public void actionPerformed(InitMenuEvent event) {
-		LOG.info("Init Menu Event occured: " + event.getType().toString() + ", " + event.getData());
+	public void actionPerformed(GuiEvent event) {
+		LOG.info("Gui Event occured: " + event.getType().toString() + ", " + event.getData());
 		events.add(event);
 	}
 	

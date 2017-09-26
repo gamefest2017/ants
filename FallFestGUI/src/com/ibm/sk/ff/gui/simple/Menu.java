@@ -14,8 +14,8 @@ import javax.swing.JButton;
 import javax.swing.JComboBox;
 import javax.swing.JPanel;
 
-import com.ibm.sk.ff.gui.common.events.InitMenuEvent;
-import com.ibm.sk.ff.gui.common.events.InitMenuEventListener;
+import com.ibm.sk.ff.gui.common.events.GuiEvent;
+import com.ibm.sk.ff.gui.common.events.GuiEventListener;
 import com.ibm.sk.ff.gui.common.objects.operations.InitMenuData;
 
 public class Menu extends JPanel {
@@ -36,9 +36,9 @@ public class Menu extends JPanel {
 	private JButton button_twoPlayer = null;
 	private JButton button_replay = null;
 	
-	private InitMenuEventListener listener;
+	private GuiEventListener listener;
 	
-	public Menu(InitMenuData data, InitMenuEventListener listener) {
+	public Menu(InitMenuData data, GuiEventListener listener) {
 		this.listener = listener;
 		try {
 			backgroundImage = ImageIO.read(new File("res/grass2.jpg"));
@@ -108,38 +108,38 @@ public class Menu extends JPanel {
 		button_singlePlayer.addActionListener(new ActionListener() {
 			@Override
 			public void actionPerformed(ActionEvent e) {
-				listener.actionPerformed(new InitMenuEvent(InitMenuEvent.EventTypes.SINGLE_PLAY_START, ""));
+				listener.actionPerformed(new GuiEvent(GuiEvent.EventTypes.SINGLE_PLAY_START, ""));
 			}
 		});
 		button_twoPlayer.addActionListener(new ActionListener() {
 			@Override
 			public void actionPerformed(ActionEvent e) {
-				listener.actionPerformed(new InitMenuEvent(InitMenuEvent.EventTypes.DOUBLE_PLAY_START, ""));
+				listener.actionPerformed(new GuiEvent(GuiEvent.EventTypes.DOUBLE_PLAY_START, ""));
 			}
 			
 		});
 		button_replay.addActionListener(new ActionListener() {
 			@Override
 			public void actionPerformed(ActionEvent e) {
-				listener.actionPerformed(new InitMenuEvent(InitMenuEvent.EventTypes.REPLAY_SELECTED, ""));
+				listener.actionPerformed(new GuiEvent(GuiEvent.EventTypes.REPLAY_SELECTED, ""));
 			}
 		});
 		combo_replays.addActionListener(new ActionListener() {
 			@Override
 			public void actionPerformed(ActionEvent e) {
-				listener.actionPerformed(new InitMenuEvent(InitMenuEvent.EventTypes.REPLAY_SELECTED, combo_replays.getSelectedItem().toString()));
+				listener.actionPerformed(new GuiEvent(GuiEvent.EventTypes.REPLAY_SELECTED, combo_replays.getSelectedItem().toString()));
 			}
 		});
 		combo_implementations1.addActionListener(new ActionListener() {
 			@Override
 			public void actionPerformed(ActionEvent e) {
-				listener.actionPerformed(new InitMenuEvent(InitMenuEvent.EventTypes.PLAYER_1_SELECTED, combo_implementations1.getSelectedItem().toString()));
+				listener.actionPerformed(new GuiEvent(GuiEvent.EventTypes.PLAYER_1_SELECTED, combo_implementations1.getSelectedItem().toString()));
 			}
 		});
 		combo_implementations2.addActionListener(new ActionListener() {
 			@Override
 			public void actionPerformed(ActionEvent e) {
-				listener.actionPerformed(new InitMenuEvent(InitMenuEvent.EventTypes.PLAYER_2_SELECTED, combo_implementations2.getSelectedItem().toString()));
+				listener.actionPerformed(new GuiEvent(GuiEvent.EventTypes.PLAYER_2_SELECTED, combo_implementations2.getSelectedItem().toString()));
 			}
 		});
 	}
