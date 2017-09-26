@@ -8,6 +8,8 @@ public class GHillObject extends GUIObject {
 	
 	private Location location;
 	
+	public String team = null;
+	
 	public void setId(long id) {
 		this.id = id;
 	}
@@ -62,6 +64,14 @@ public class GHillObject extends GUIObject {
 	
 	public void setType(GUIObjectTypes type) {
 		this.type = type;
+	}
+	
+	public void setTeam(String team) {
+		this.team = team;
+	}
+	
+	public String getTeam() {
+		return team;
 	}
 	
 }

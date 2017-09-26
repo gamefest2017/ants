@@ -2,6 +2,9 @@ package com.ibm.sk.ff.gui.client;
 
 import java.awt.GridLayout;
 
+import javax.swing.ComboBoxModel;
+import javax.swing.DefaultComboBoxModel;
+import javax.swing.JComboBox;
 import javax.swing.JPanel;
 import javax.swing.JTextField;
 
@@ -14,11 +17,14 @@ public class AntView extends JPanel {
 	private JTextField textID = new JTextField();
 	private JTextField textPositionX = new JTextField();
 	private JTextField textPositionY = new JTextField();
+	private ComboBoxModel<String> comboModel = new DefaultComboBoxModel<>(new String[]{"Team1", "Team2"});
+	private JComboBox<String> comboBox = new JComboBox<>(comboModel);
 
 	public AntView() {
-		setLayout(new GridLayout(3, 1, 5, 5));
+		setLayout(new GridLayout(4, 1, 5, 5));
 		
 		add(textID);
+		add(comboBox);
 		add(textPositionX);
 		add(textPositionY);
 	}
@@ -46,6 +52,7 @@ public class AntView extends JPanel {
 		try {
 			ret.setId(Long.parseLong(textID.getText()));
 			ret.setLocation(Integer.parseInt(textPositionX.getText()), Integer.parseInt(textPositionY.getText()));
+			ret.setTeam(comboBox.getSelectedItem().toString());
 		} catch (Exception e) {
 			e.printStackTrace();
 			ret = null;

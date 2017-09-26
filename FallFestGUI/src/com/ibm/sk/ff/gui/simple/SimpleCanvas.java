@@ -12,6 +12,8 @@ import javax.imageio.ImageIO;
 import javax.swing.JComponent;
 
 import com.ibm.sk.ff.gui.common.objects.gui.GAntFoodObject;
+import com.ibm.sk.ff.gui.common.objects.gui.GAntObject;
+import com.ibm.sk.ff.gui.common.objects.gui.GHillObject;
 import com.ibm.sk.ff.gui.common.objects.gui.GUIObject;
 import com.ibm.sk.ff.gui.common.objects.gui.GUIObjectTypes;
 import com.ibm.sk.ff.gui.common.objects.operations.InitMenuData;
@@ -19,6 +21,8 @@ import com.ibm.sk.ff.gui.config.Config;
 
 public class SimpleCanvas extends JComponent {
 	private static final long serialVersionUID = 1L;
+	
+	private final Color[] COLORS = {Color.GRAY, Color.RED}; 
 	
 	private static long SLEEP_INTERVAL = Long.parseLong(Config.GUI_MOVE_INTERVAL.toString()) / Long.parseLong(Config.GUI_MAGNIFICATION.toString());
 	
@@ -50,12 +54,15 @@ public class SimpleCanvas extends JComponent {
 	
 	private int w, h;
 	
-	public SimpleCanvas(int width, int height, int magnification) {
+	private String [] teams;
+	
+	public SimpleCanvas(int width, int height, int magnification, String[] teams) {
 		this.MAGNIFICATION = magnification;
 		this.w = width;
 		this.h = height;
 		setSize(width * magnification, height * magnification);
 		setPreferredSize(new Dimension(width * magnification, height * magnification));
+		this.teams = teams;
 	}
 	
 	public void paint(Graphics g) {
@@ -92,7 +99,7 @@ public class SimpleCanvas extends JComponent {
 			objects.remove(go.getId());
 			toAdd.moveToLocation(go.getLocation().getX(), go.getLocation().getY());
 		} else {
-			toAdd = new SimpleGUIComponent(MAGNIFICATION, Color.BLACK, getImage(go.getType()));
+			toAdd = new SimpleGUIComponent(MAGNIFICATION, Color.BLACK, getImage(go.getType()), getTeamColor(go));
 			toAdd.setLocation(go.getLocation().getX(), go.getLocation().getY());
 		}
 		
@@ -105,6 +112,35 @@ public class SimpleCanvas extends JComponent {
 		this.objects.put(go.getId(), toAdd);
 		
 		performRepaint();
+	}
+	
+	private Color getTeamColor(GUIObject go) {
+		Color ret = null;
+		if (go instanceof GAntObject) {
+			GAntObject swp = (GAntObject)go;
+			for (int i = 0; i < teams.length; i++) {
+				if (teams[i].equals(swp.getTeam())) {
+					ret = COLORS[i];
+				}
+			}
+		}
+		if (go instanceof GHillObject) {
+			GHillObject swp = (GHillObject)go;
+			for (int i = 0; i < teams.length; i++) {
+				if (teams[i].equals(swp.getTeam())) {
+					ret = COLORS[i];
+				}
+			}
+		}
+		if (go instanceof GAntFoodObject) {
+			GAntFoodObject swp = (GAntFoodObject)go;
+			for (int i = 0; i < teams.length; i++) {
+				if (swp.getAnt() != null && teams[i].equals(swp.getAnt().getTeam())) {
+					ret = COLORS[i];
+				}
+			}
+		}
+		return ret;
 	}
 
 	public void remove(GUIObject object) {

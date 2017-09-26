@@ -64,7 +64,7 @@ public class SimpleGUI implements GUI {
 		
 		frame.setLayout(new BorderLayout());
 		
-		canvas = new SimpleCanvas(data.getWidth(), data.getHeight(), MAGNIFICATION);
+		canvas = new SimpleCanvas(data.getWidth(), data.getHeight(), MAGNIFICATION, data.getTeams());
 		scoreboard = new ScoreboardSmall(data);
 		
 		JPanel swpPanel = new JPanel();

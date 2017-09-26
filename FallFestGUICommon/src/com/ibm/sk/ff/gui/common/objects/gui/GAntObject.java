@@ -8,6 +8,8 @@ public class GAntObject extends GUIObject {
 	
 	private GUIObjectTypes type = GUIObjectTypes.ANT;
 	
+	private String team = null;
+	
 	public void setId(long id) {
 		this.id = id;
 	}
@@ -62,6 +64,14 @@ public class GAntObject extends GUIObject {
 		if (id != other.id)
 			return false;
 		return true;
+	}
+	
+	public void setTeam(String team) {
+		this.team = team;
+	}
+	
+	public String getTeam() {
+		return team;
 	}
 
 }
