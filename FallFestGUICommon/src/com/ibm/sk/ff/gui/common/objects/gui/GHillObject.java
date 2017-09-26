@@ -2,7 +2,7 @@ package com.ibm.sk.ff.gui.common.objects.gui;
 
 public class GHillObject extends GUIObject {
 	
-	private long id;
+	private long id = System.currentTimeMillis();
 	
 	private GUIObjectTypes type = GUIObjectTypes.HILL;
 	

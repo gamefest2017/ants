@@ -34,22 +34,22 @@ public class SimpleGUI implements GUI {
 	}
 	
 	@Override
-	public void set(GAntObject it) {
+	public void set(GAntObject[] it) {
 		canvas.set(it);
 	}
 
 	@Override
-	public void set(GFoodObject food) {
+	public void set(GFoodObject[] food) {
 		canvas.set(food);
 	}
 
 	@Override
-	public void set(GHillObject hill) {
+	public void set(GHillObject[] hill) {
 		canvas.set(hill);
 	}
 	
 	@Override
-	public void set(GAntFoodObject afo) {
+	public void set(GAntFoodObject[] afo) {
 		canvas.set(afo);
 	}
 
@@ -78,22 +78,22 @@ public class SimpleGUI implements GUI {
 	}
 
 	@Override
-	public void remove(GAntObject ant) {
+	public void remove(GAntObject[] ant) {
 		canvas.remove(ant);
 	}
 
 	@Override
-	public void remove(GFoodObject food) {
+	public void remove(GFoodObject[] food) {
 		canvas.remove(food);
 	}
 
 	@Override
-	public void remove(GHillObject hill) {
+	public void remove(GHillObject[] hill) {
 		canvas.remove(hill);
 	}
 	
 	@Override
-	public void remove(GAntFoodObject antfood) {
+	public void remove(GAntFoodObject[] antfood) {
 		canvas.remove(antfood);
 	}
 
