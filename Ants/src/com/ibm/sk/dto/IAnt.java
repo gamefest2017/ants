@@ -10,9 +10,9 @@ public interface IAnt extends IWorldObject {
 
 	Direction move(Vision vision);
 
-	void pickUpFood(int count);
+	void pickUpFood(Food food);
 
-	int dropFood();
+	Food dropFood();
 
 	Hill getMyHill();
 
