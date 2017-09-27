@@ -10,17 +10,20 @@ public class Hill extends WorldObject {
 
 	private int population;
 	private String name;
-	private List<Ant> ants;
+	private final List<IAnt> ants;
 
-	public Hill(final int population, final String name, final Point position) {
+	public Hill(final int population, final double populationWarFactor, final String name, final Point position) {
 		this.name = name;
 		this.position = position;
-		this.ants = new ArrayList<>();
+		this.ants = new ArrayList<>(population);
 
-		PopulationHandler populationHandler = new PopulationHandler();
+		final PopulationHandler populationHandler = new PopulationHandler();
 
-		for (int i = 0; i < population; i++) {
+		for (int i = 0; i < Math.ceil(population * (1.0 - populationWarFactor)); i++) {
 			this.ants.add(populationHandler.breedAnt(this));
+		}
+		for (int i = 0; i < Math.floor(population * populationWarFactor); i++) {
+			this.ants.add(populationHandler.breedWarrior(this));
 		}
 	}
 
@@ -30,32 +33,37 @@ public class Hill extends WorldObject {
 
 	public void incrementPopulation(final int count) {
 		this.population += count;
-		System.out.println("Population of hill " + name + " increased by " + count + ".");
+		System.out.println("Population of hill " + this.name + " increased by " + count + ".");
 	}
 
 	public void decrementPopulation(final int count) {
 		this.population = Math.abs(this.population - count);
-		System.out.println("Population of hill " + name + " decreased by " + count + ".");
+		System.out.println("Population of hill " + this.name + " decreased by " + count + ".");
 	}
 
 	public int getPopulation() {
-		return population;
+		return this.population;
 	}
 
-	public void setPopulation(int population) {
+	public void setPopulation(final int population) {
 		this.population = population;
 	}
 
 	public String getName() {
-		return name;
+		return this.name;
 	}
 
-	public void setName(String name) {
+	public void setName(final String name) {
 		this.name = name;
 	}
 
-	public List<Ant> getAnts() {
-		return ants;
+	public List<IAnt> getAnts() {
+		return this.ants;
+	}
+
+	@Override
+	public String toString() {
+		return "Hill [population=" + this.population + ", name=" + this.name + "]";
 	}
 
 }

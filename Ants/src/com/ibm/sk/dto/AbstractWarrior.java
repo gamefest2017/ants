@@ -1,16 +1,18 @@
 package com.ibm.sk.dto;
 
 import java.awt.Point;
+import java.util.HashSet;
+import java.util.Set;
 
 import com.ibm.sk.dto.enums.Direction;
 
-public abstract class AbstractAnt extends WorldObject implements IAnt {
+public abstract class AbstractWarrior extends WorldObject implements IAnt {
 
 	private int id;
-	private Food food;
 	private final Hill myHill;
+	private final Set<Integer> kills = new HashSet<>();
 
-	public AbstractAnt(final int id, final Point position, final Hill myHill) {
+	public AbstractWarrior(final int id, final Point position, final Hill myHill) {
 		this.id = id;
 		this.position = position;
 		this.myHill = myHill;
@@ -47,26 +49,28 @@ public abstract class AbstractAnt extends WorldObject implements IAnt {
 
 	@Override
 	public void pickUpFood(final Food food) {
-		System.out.println("Picked: " + food);
-		this.food = food;
+		System.out.println("Warriors hunger only for war!");
 	}
 
 	@Override
 	public Food dropFood() {
-		final Food retValue = this.food;
-		this.food = null;
-		return retValue;
+		System.out.println("I bring no food - I bring victory!");
+		return null;
 	}
 
 	public boolean hasFood() {
-		return this.food != null;
+		return false;
 	}
 
 	@Override
 	public String toString() {
-		return "Ant " + this.id + " from " + this.getMyHillName() + " on: [" + this.position.x + ", " + this.position.y
-				+ "]" + " with "
-				+ (this.hasFood() ? String.valueOf(this.food.getAmount()) : "no") + " food";
+		return "Warrior " + this.id + " from " + this.getMyHillName() + " on: [" + this.position.x + ", "
+				+ this.position.y + "] with " + this.kills.size() + " victories.";
+	}
+
+	public void killed(final IAnt enemy) {
+		System.out.println("Warrior " + this.id + " defeated " + enemy.toString());
+		this.kills.add(Integer.valueOf(enemy.getId()));
 	}
 
 }

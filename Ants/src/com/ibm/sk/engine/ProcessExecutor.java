@@ -3,11 +3,9 @@ package com.ibm.sk.engine;
 import java.awt.Point;
 import java.util.EnumMap;
 import java.util.Map;
-import java.util.Map.Entry;
 
-import com.ibm.sk.dto.Ant;
 import com.ibm.sk.dto.Hill;
-import com.ibm.sk.dto.IWorldObject;
+import com.ibm.sk.dto.IAnt;
 import com.ibm.sk.dto.Vision;
 import com.ibm.sk.dto.enums.Direction;
 import com.ibm.sk.engine.exceptions.MoveException;
@@ -17,22 +15,14 @@ public final class ProcessExecutor {
 	private ProcessExecutor() {}
 
 
-	public static void execute() {
+	public static void execute(final Hill hill) {
 
-		for (final Entry<Point, IWorldObject> entry : World.getWorld().entrySet()) {
-			if (entry.getValue() instanceof Hill) {
-				for (final Ant ant : ((Hill) entry.getValue()).getAnts()) {
-					singleStep(ant);
-				}
-
-			} else if (entry.getValue() instanceof Ant) {
-				singleStep((Ant) entry.getValue());
-
-			}
+		for (final IAnt ant : hill.getAnts()) {
+			singleStep(ant);
 		}
 	}
 
-	private static void singleStep(final Ant ant) {
+	private static void singleStep(final IAnt ant) {
 		System.out.println("Ant " + ant.getId() + " said:");
 		final Vision vision = new Vision(createVisionGrid(ant.getPosition()));
 		final Direction direction = ant.move(vision);
