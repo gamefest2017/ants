@@ -39,7 +39,8 @@ public final class MovementHandler {
 			FoodHandler.pickUpFood(ant, position);
 			ant.setPosition(position);
 			World.placeObject(ant);
-		} else if (worldObject instanceof IAnt && ant instanceof AbstractWarrior && ant.isEnemy((IAnt) worldObject)) {
+		} else if (worldObject instanceof IAnt
+				&& ant instanceof AbstractWarrior && ant.isEnemy((IAnt) worldObject)) {
 			final AbstractWarrior warrior = (AbstractWarrior) ant;
 			World.removeObject(warrior.getPosition());
 			moveToEnemyAndKill(warrior, (IAnt) worldObject);
