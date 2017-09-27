@@ -10,8 +10,8 @@ import static com.ibm.sk.engine.World.placeObject;
 import java.awt.Point;
 import java.util.Random;
 
-import com.ibm.sk.dto.Ant;
 import com.ibm.sk.dto.Food;
+import com.ibm.sk.dto.IAnt;
 
 public final class FoodHandler {
 
@@ -28,16 +28,15 @@ public final class FoodHandler {
 				row = RANDOMIZER.nextInt(X_BOUNDRY);
 				coll = RANDOMIZER.nextInt(Y_BOUNDRY);
 			} while (getWorldObject(new Point(row, coll)) != null);
-			Food newFood = new Food(1, new Point(row, coll));
+			final Food newFood = new Food(1, new Point(row, coll));
 			placeObject(newFood);
 			System.out.println("Dropped: " + newFood);
 		}
 	}
 
-	public static void pickUpFood(final Ant ant, final Point position) {
-		Object object = World.getWorldObject(position);
+	public static void pickUpFood(final IAnt ant, final Point position) {
+		final Object object = World.getWorldObject(position);
 		if (object instanceof Food) {
-			System.out.println("Picked: " + object);
 			ant.pickUpFood((Food) object);
 			// World.removeObject(position);
 		} else {

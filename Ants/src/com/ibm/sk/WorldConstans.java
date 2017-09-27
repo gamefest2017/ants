@@ -7,7 +7,7 @@ public class WorldConstans {
 	/**
 	 * number of TURNS to evaluate game.
 	 */
-	public static final int TURNS = 50;
+	public static final int TURNS = 5000;
 	/**
 	 * the amount of ants in one anthill at the beginning of the world.
 	 */
@@ -20,4 +20,5 @@ public class WorldConstans {
 	 * number of ants in the hill at the beginning of the game.
 	 */
 	public static final int ANTS_START_POPULATION = 5;
+	public static final double POPULATION_WAR_FACTOR = 2.0 / 5.0;
 }
