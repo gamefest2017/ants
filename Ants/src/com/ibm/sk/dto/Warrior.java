@@ -25,7 +25,8 @@ public class Warrior extends AbstractWarrior {
 		Direction result = Direction.NO_MOVE;
 		for (final Direction direction : Direction.values()) {
 			final Object object = vision.look(direction);
-			if (object instanceof IAnt && this.isEnemy((IAnt) object)) {
+			if (!Direction.NO_MOVE.equals(direction)
+					&& object instanceof IAnt && this.isEnemy((IAnt) object)) {
 				System.out.println("I see an enemy!");
 				result = direction;
 			}

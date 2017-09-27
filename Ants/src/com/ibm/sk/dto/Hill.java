@@ -1,8 +1,9 @@
 package com.ibm.sk.dto;
 
 import java.awt.Point;
-import java.util.ArrayList;
+import java.util.Collection;
 import java.util.List;
+import java.util.concurrent.CopyOnWriteArrayList;
 
 import com.ibm.sk.engine.PopulationHandler;
 
@@ -15,7 +16,7 @@ public class Hill extends WorldObject {
 	public Hill(final int population, final double populationWarFactor, final String name, final Point position) {
 		this.name = name;
 		this.position = position;
-		this.ants = new ArrayList<>(population);
+		this.ants = new CopyOnWriteArrayList<>();
 
 		final PopulationHandler populationHandler = new PopulationHandler();
 
@@ -57,7 +58,7 @@ public class Hill extends WorldObject {
 		this.name = name;
 	}
 
-	public List<IAnt> getAnts() {
+	public Collection<IAnt> getAnts() {
 		return this.ants;
 	}
 

@@ -29,7 +29,7 @@ public class PopulationHandler {
 		System.out.println("You shall be no more in this world! Good bye forewer dear ant " + ant.getId());
 		ant.getMyHill().decrementPopulation(1);
 		final Food remains = ant.dropFood();
-		if (World.getWorldObject(remains.getPosition()) == null) {
+		if (remains != null && World.getWorldObject(remains.getPosition()) == null) {
 			placeObject(remains);
 			System.out.println("Dropped: " + remains);
 		}
