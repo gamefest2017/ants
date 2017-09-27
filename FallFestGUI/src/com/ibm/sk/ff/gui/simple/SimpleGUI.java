@@ -24,6 +24,7 @@ public class SimpleGUI implements GUI {
 	private static final int MAGNIFICATION = Integer.parseInt(Config.GUI_MAGNIFICATION.toString());
 
 	private JFrame frame = null;
+	private Menu menu = null;
 	
 	private SimpleCanvas canvas = null;
 	private ScoreboardSmall scoreboard = null;
@@ -115,11 +116,17 @@ public class SimpleGUI implements GUI {
 			scoreboard = null;
 			frame = null;
 		}
-		frame = new JFrame();
+
+		//Create and set up the window.
+		frame = new JFrame("IBM Slovakia / Fall Fest 2017 / Anthill");
+        frame.setExtendedState(frame.getExtendedState()|JFrame.MAXIMIZED_BOTH);
 		frame.setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
 		frame.setLayout(new BorderLayout());
 		
-		frame.add(new Menu(data, listener), BorderLayout.CENTER);
+        //Set up the content pane.
+		frame.add(new Menu(data, listener, frame.getContentPane()));
+		
+        //Display the window.
 		frame.pack();
 		frame.setVisible(true);
 	}
