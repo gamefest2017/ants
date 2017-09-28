@@ -8,11 +8,10 @@ import com.ibm.sk.dto.enums.Direction;
 
 public abstract class AbstractWarrior extends WorldObject implements IAnt {
 
-	private int id;
 	private final Hill myHill;
-	private final Set<Integer> kills = new HashSet<>();
+	private final Set<Long> kills = new HashSet<>();
 
-	public AbstractWarrior(final int id, final Point position, final Hill myHill) {
+	public AbstractWarrior(final long id, final Point position, final Hill myHill) {
 		this.id = id;
 		this.position = position;
 		this.myHill = myHill;
@@ -38,16 +37,6 @@ public abstract class AbstractWarrior extends WorldObject implements IAnt {
 	public abstract Direction move(final Vision vision);
 
 	@Override
-	public int getId() {
-		return this.id;
-	}
-
-	@Override
-	public void setId(final int id) {
-		this.id = id;
-	}
-
-	@Override
 	public void pickUpFood(final Food food) {
 		System.out.println("Warriors hunger only for war!");
 	}
@@ -70,7 +59,7 @@ public abstract class AbstractWarrior extends WorldObject implements IAnt {
 
 	public void killed(final IAnt enemy) {
 		System.out.println("Warrior " + this.id + " defeated " + enemy.toString());
-		this.kills.add(Integer.valueOf(enemy.getId()));
+		this.kills.add(Long.valueOf(enemy.getId()));
 	}
 
 }

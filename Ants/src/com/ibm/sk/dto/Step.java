@@ -1,17 +1,16 @@
 package com.ibm.sk.dto;
 
-import java.awt.*;
 import java.io.Serializable;
-import java.util.Map;
+import java.util.List;
 
 public class Step implements Serializable {
 
     private int turn;
-    private Map<Point, IWorldObject> grid;
-
-    public Step(int turn, Map<Point, IWorldObject> grid) {
+    private List<IWorldObject> worldObjectsInTurn;
+    
+    public Step(int turn, List<IWorldObject> worldObjectsInTurn) {
         this.turn = turn;
-        this.grid = grid;
+        this.worldObjectsInTurn = worldObjectsInTurn;
     }
 
     public int getTurn() {
@@ -22,11 +21,12 @@ public class Step implements Serializable {
         this.turn = turn;
     }
 
-    public Map<Point, IWorldObject> getGrid() {
-        return grid;
-    }
+	public List<IWorldObject> getWorldObjectsInTurn() {
+		return worldObjectsInTurn;
+	}
 
-    public void setGrid(Map<Point, IWorldObject> grid) {
-        this.grid = grid;
-    }
+	public void setWorldObjectsInTurn(List<IWorldObject> worldObjectsInTurn) {
+		this.worldObjectsInTurn = worldObjectsInTurn;
+	}
+
 }
