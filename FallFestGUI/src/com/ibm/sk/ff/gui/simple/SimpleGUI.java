@@ -24,6 +24,7 @@ public class SimpleGUI implements GUI {
 	private static final int MAGNIFICATION = Integer.parseInt(Config.GUI_MAGNIFICATION.toString());
 
 	private JFrame frame = null;
+	private Menu menu = null;
 	
 	private SimpleCanvas canvas = null;
 	private ScoreboardSmall scoreboard = null;
@@ -34,22 +35,22 @@ public class SimpleGUI implements GUI {
 	}
 	
 	@Override
-	public void set(GAntObject it) {
+	public void set(GAntObject[] it) {
 		canvas.set(it);
 	}
 
 	@Override
-	public void set(GFoodObject food) {
+	public void set(GFoodObject[] food) {
 		canvas.set(food);
 	}
 
 	@Override
-	public void set(GHillObject hill) {
+	public void set(GHillObject[] hill) {
 		canvas.set(hill);
 	}
 	
 	@Override
-	public void set(GAntFoodObject afo) {
+	public void set(GAntFoodObject[] afo) {
 		canvas.set(afo);
 	}
 
@@ -78,22 +79,22 @@ public class SimpleGUI implements GUI {
 	}
 
 	@Override
-	public void remove(GAntObject ant) {
+	public void remove(GAntObject[] ant) {
 		canvas.remove(ant);
 	}
 
 	@Override
-	public void remove(GFoodObject food) {
+	public void remove(GFoodObject[] food) {
 		canvas.remove(food);
 	}
 
 	@Override
-	public void remove(GHillObject hill) {
+	public void remove(GHillObject[] hill) {
 		canvas.remove(hill);
 	}
 	
 	@Override
-	public void remove(GAntFoodObject antfood) {
+	public void remove(GAntFoodObject[] antfood) {
 		canvas.remove(antfood);
 	}
 
@@ -115,11 +116,17 @@ public class SimpleGUI implements GUI {
 			scoreboard = null;
 			frame = null;
 		}
-		frame = new JFrame();
+
+		//Create and set up the window.
+		frame = new JFrame("IBM Slovakia / Fall Fest 2017 / Anthill");
+        frame.setExtendedState(frame.getExtendedState()|JFrame.MAXIMIZED_BOTH);
 		frame.setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
 		frame.setLayout(new BorderLayout());
 		
-		frame.add(new Menu(data, listener), BorderLayout.CENTER);
+        //Set up the content pane.
+		frame.add(new Menu(data, listener, frame.getContentPane()));
+		
+        //Display the window.
 		frame.pack();
 		frame.setVisible(true);
 	}

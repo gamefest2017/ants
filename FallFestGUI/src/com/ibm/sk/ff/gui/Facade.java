@@ -27,35 +27,35 @@ public class Facade implements GuiEventListener {
 		this.gui = gui;
 	}
 	
-	public void set(GAntObject ants) {
+	public void set(GAntObject[] ants) {
 		gui.set(ants);
 	}
 	
-	public void set(GFoodObject foods) {
+	public void set(GFoodObject[] foods) {
 		gui.set(foods);
 	}
 	
-	public void set(GHillObject hills) {
+	public void set(GHillObject[] hills) {
 		gui.set(hills);
 	}
 	
-	public void set(GAntFoodObject antfood) {
+	public void set(GAntFoodObject[] antfood) {
 		gui.set(antfood);
 	}
 	
-	public void remove(GAntObject ants) {
+	public void remove(GAntObject[] ants) {
 		gui.remove(ants);
 	}
 	
-	public void remove(GAntFoodObject antfood) {
+	public void remove(GAntFoodObject[] antfood) {
 		gui.remove(antfood);
 	}
 	
-	public void remove(GFoodObject foods) {
+	public void remove(GFoodObject[] foods) {
 		gui.remove(foods);
 	}
 	
-	public void remove(GHillObject hills) {
+	public void remove(GHillObject[] hills) {
 		gui.remove(hills);
 	}
 	

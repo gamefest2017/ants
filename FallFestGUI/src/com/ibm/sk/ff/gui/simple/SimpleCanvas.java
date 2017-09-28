@@ -107,24 +107,26 @@ public class SimpleCanvas extends JComponent {
 		} while (!finishedRedraw);
 	}
 	
-	public void set(GUIObject go) {
-		SimpleGUIComponent toAdd = null;
-		if (objects.containsKey(go.getId())) {
-			toAdd = objects.get(go.getId());
-			objects.remove(go.getId());
-			toAdd.moveToLocation(go.getLocation().getX(), go.getLocation().getY());
-		} else {
-			toAdd = new SimpleGUIComponent(MAGNIFICATION, Color.BLACK, getImage(go.getType()), getTeamColor(go));
-			toAdd.setLocation(go.getLocation().getX(), go.getLocation().getY());
+	public void set(GUIObject[] gos) {
+		for (GUIObject go : gos) {
+			SimpleGUIComponent toAdd = null;
+			if (objects.containsKey(go.getId())) {
+				toAdd = objects.get(go.getId());
+				objects.remove(go.getId());
+				toAdd.moveToLocation(go.getLocation().getX(), go.getLocation().getY());
+			} else {
+				toAdd = new SimpleGUIComponent(MAGNIFICATION, Color.BLACK, getImage(go.getType()), getTeamColor(go));
+				toAdd.setLocation(go.getLocation().getX(), go.getLocation().getY());
+			}
+			
+			if (go.getType().equals(GUIObjectTypes.ANT_FOOD)) {
+				GAntFoodObject gafo = (GAntFoodObject)go;
+				objects.remove(gafo.getAnt().getId());
+				objects.remove(gafo.getFood().getId());
+			}
+	
+			this.objects.put(go.getId(), toAdd);
 		}
-		
-		if (go.getType().equals(GUIObjectTypes.ANT_FOOD)) {
-			GAntFoodObject gafo = (GAntFoodObject)go;
-			objects.remove(gafo.getAnt().getId());
-			objects.remove(gafo.getFood().getId());
-		}
-
-		this.objects.put(go.getId(), toAdd);
 		
 		performRepaint();
 	}
@@ -158,9 +160,15 @@ public class SimpleCanvas extends JComponent {
 		return ret;
 	}
 
-	public void remove(GUIObject object) {
-		if (this.objects.containsKey(object.getId())) {
-			this.objects.remove(object.getId());
+	public void remove(GUIObject[] object) {
+		boolean changed = false;
+		for (GUIObject it : object) {
+			if (this.objects.containsKey(it.getId())) {
+				this.objects.remove(it.getId());
+				changed = true;
+			}
+		}
+		if (changed) {
 			performRepaint();
 		}
 	}

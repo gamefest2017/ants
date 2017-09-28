@@ -17,15 +17,15 @@ public interface GUI {
 	
 	public void createGame(CreateGameData data);
 	
-	public void set(GAntObject ants);
-	public void set(GAntFoodObject antfood);
-	public void set(GFoodObject foods);
-	public void set(GHillObject hills);
+	public void set(GAntObject[] ants);
+	public void set(GAntFoodObject[] antfood);
+	public void set(GFoodObject[] foods);
+	public void set(GHillObject[] hills);
 	
-	public void remove(GAntObject ants);
-	public void remove(GAntFoodObject antfood);
-	public void remove(GFoodObject foods);
-	public void remove(GHillObject hills);
+	public void remove(GAntObject[] ants);
+	public void remove(GAntFoodObject[] antfood);
+	public void remove(GFoodObject[] foods);
+	public void remove(GHillObject[] hills);
 	
 	public void score(ScoreData score);
 	

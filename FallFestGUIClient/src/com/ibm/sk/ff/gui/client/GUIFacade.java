@@ -39,13 +39,23 @@ public class GUIFacade {
 	}
 
 	public void set(GUIObject object) {
-		CLIENT.postMessage(GUIOperations.SET.toString() + "/" + object.getType().toString(),
-				Mapper.INSTANCE.pojoToJson(object));
+		set(new GUIObject[] {object});
+	}
+	
+	public void set(GUIObject[] objects) {
+		if (objects.length > 0) {
+			CLIENT.postMessage(GUIOperations.SET.toString() + "/" + objects[0].getType().toString(), Mapper.INSTANCE.pojoToJson(objects));
+		}
+	}
+	
+	public void remove(GUIObject data) {
+		remove(new GUIObject [] {data});
 	}
 
-	public void remove(GUIObject data) {
-		CLIENT.postMessage(GUIOperations.REMOVE.toString() + "/" + data.getType().toString(),
-				Mapper.INSTANCE.pojoToJson(data));
+	public void remove(GUIObject[] data) {
+		if (data.length > 0) {
+			CLIENT.postMessage(GUIOperations.REMOVE.toString() + "/" + data[0].getType().toString(), Mapper.INSTANCE.pojoToJson(data));
+		}
 	}
 
 	public void showScore(ScoreData data) {

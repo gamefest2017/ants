@@ -83,19 +83,19 @@ public class RequestHandler implements HttpHandler {
 	
 	private void callSet(String url, String json) {
 		switch (GUIObjectTypes.forValue(url)) {
-		case ANT: log("Adding new ant."); FACADE.set(Mapper.INSTANCE.jsonToPojo(json, GAntObject.class)); break;
-		case ANT_FOOD: log("Adding new antfood."); FACADE.set(Mapper.INSTANCE.jsonToPojo(json, GAntFoodObject.class)); break;
-		case FOOD: log("Adding new food."); FACADE.set(Mapper.INSTANCE.jsonToPojo(json, GFoodObject.class)); break;
-		case HILL: log("Adding new hill."); FACADE.set(Mapper.INSTANCE.jsonToPojo(json, GHillObject.class)); break;
+		case ANT: log("Adding new ant."); FACADE.set(Mapper.INSTANCE.jsonToPojo(json, GAntObject[].class)); break;
+		case ANT_FOOD: log("Adding new antfood."); FACADE.set(Mapper.INSTANCE.jsonToPojo(json, GAntFoodObject[].class)); break;
+		case FOOD: log("Adding new food."); FACADE.set(Mapper.INSTANCE.jsonToPojo(json, GFoodObject[].class)); break;
+		case HILL: log("Adding new hill."); FACADE.set(Mapper.INSTANCE.jsonToPojo(json, GHillObject[].class)); break;
 		}
 	}
 	
 	private void callRemove(String url, String json) {
 		switch (GUIObjectTypes.forValue(url)) {
-		case ANT: log("Removing ant."); FACADE.remove(Mapper.INSTANCE.jsonToPojo(json, GAntObject.class)); break;
-		case ANT_FOOD: log("Removing antfood."); FACADE.remove(Mapper.INSTANCE.jsonToPojo(json, GAntFoodObject.class)); break;
-		case FOOD: log("Removing food."); FACADE.remove(Mapper.INSTANCE.jsonToPojo(json, GFoodObject.class)); break;
-		case HILL: log("Removing hil			StringBuilder sb = new StringBuilder();l."); FACADE.remove(Mapper.INSTANCE.jsonToPojo(json, GHillObject.class)); break;
+		case ANT: log("Removing ant."); FACADE.remove(Mapper.INSTANCE.jsonToPojo(json, GAntObject[].class)); break;
+		case ANT_FOOD: log("Removing antfood."); FACADE.remove(Mapper.INSTANCE.jsonToPojo(json, GAntFoodObject[].class)); break;
+		case FOOD: log("Removing food."); FACADE.remove(Mapper.INSTANCE.jsonToPojo(json, GFoodObject[].class)); break;
+		case HILL: log("Removing hil			StringBuilder sb = new StringBuilder();l."); FACADE.remove(Mapper.INSTANCE.jsonToPojo(json, GHillObject[].class)); break;
 		}
 	}
 	

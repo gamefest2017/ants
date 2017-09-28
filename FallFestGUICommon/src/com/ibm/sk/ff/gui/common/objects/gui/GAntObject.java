@@ -2,7 +2,7 @@ package com.ibm.sk.ff.gui.common.objects.gui;
 
 public class GAntObject extends GUIObject {
 	
-	private long id;
+	private long id = System.currentTimeMillis();
 	
 	private Location location;
 	
