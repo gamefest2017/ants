@@ -27,11 +27,12 @@ public final class MovementHandler {
 		if (ant.getMyHill().getPosition().equals(position)) {
 			moveHome(ant.getMyHill(), ant);
 		}
-		
+
 		final Object worldObject = World.getWorldObject(position);
 
 		if (worldObject == null) {
-			System.out.println("I'm moving from [" + ant.getPosition().getX() + "," + ant.getPosition().getY() + "] to " + direction.name() + "[" + position.x + "," + position.y + "]" + ", out of my way!");
+			System.out.println("I'm moving from [" + ant.getPosition().x + ", " + ant.getPosition().y + "] to "
+					+ direction.name() + "[" + position.x + ", " + position.y + "]" + ", out of my way!");
 			ant.setPosition(position);
 		} else if (worldObject instanceof Food && ant instanceof AbstractAnt) {
 			FoodHandler.pickUpFood(ant, (Food) worldObject);
@@ -44,7 +45,7 @@ public final class MovementHandler {
 		} else {
 			System.out.println("I will not move to " + direction.name() + "! The place is occupied.");
 		}
-		
+
 		return ant;
 	}
 
