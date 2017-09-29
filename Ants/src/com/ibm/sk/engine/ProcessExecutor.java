@@ -1,11 +1,18 @@
 package com.ibm.sk.engine;
 
+import static com.ibm.sk.Main.getTurn;
+import static com.ibm.sk.engine.World.getWorld;
+
 import java.awt.Point;
+import java.util.ArrayList;
 import java.util.EnumMap;
+import java.util.List;
 import java.util.Map;
+
 
 import com.ibm.sk.dto.Hill;
 import com.ibm.sk.dto.IAnt;
+import com.ibm.sk.dto.Step;
 import com.ibm.sk.dto.Vision;
 import com.ibm.sk.dto.enums.Direction;
 import com.ibm.sk.engine.exceptions.MoveException;
@@ -13,6 +20,7 @@ import com.ibm.sk.engine.exceptions.MoveException;
 public final class ProcessExecutor {
 
 	private ProcessExecutor() {}
+	private static List steps = new ArrayList();
 
 
 	public static void execute(final Hill hill) {
@@ -20,6 +28,10 @@ public final class ProcessExecutor {
 		for (final IAnt ant : hill.getAnts()) {
 			singleStep(ant);
 		}
+	}
+
+	public static List getSteps() {
+		return steps;
 	}
 
 	private static void singleStep(final IAnt ant) {
@@ -37,6 +49,7 @@ public final class ProcessExecutor {
 				System.out.println("I cannot move to " + direction.name() + "! That would hurt me!");
 			}
 		}
+		steps.add(new Step(getTurn(), getWorld()));
 	}
 
 	private static Map<Direction, Object> createVisionGrid(final Point visionPosition) {
