@@ -54,7 +54,7 @@ public final class MovementHandler {
 	private void moveHome(final Hill hill, final IAnt ant) {
 		final Food droppedFood = ant.dropFood();
 		if (droppedFood != null && droppedFood.getAmount() > 0) {
-			hill.incrementPopulation(droppedFood.getAmount());
+			hill.incrementFood(droppedFood.getAmount());
 		}
 	}
 
