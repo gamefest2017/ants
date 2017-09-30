@@ -11,16 +11,21 @@ import com.ibm.sk.dto.Food;
 import com.ibm.sk.dto.Hill;
 import com.ibm.sk.dto.IAnt;
 import com.ibm.sk.dto.Warrior;
+import com.ibm.sk.engine.exceptions.InvalidWorldPositionException;
 
 public class PopulationHandler {
-	private static int antcounter = 1;
 
 	public AbstractAnt breedAnt(final Hill hill) {
 		System.out.println("Welcome new creature of this world! From now on you belong to " + hill.getName()
-				+ "! But don't be affraid, you are not alone, he has other " + hill.getPopulation() + " ants.");
+		+ "! But don't be affraid, you are not alone, he has other " + hill.getPopulation() + " ants.");
 		final Point homePosition = new Point(hill.getPosition());
-		final Ant ant = new Ant(antcounter++, homePosition, hill);
-		World.placeObject(ant);
+		final AbstractAnt ant = new Ant(World.idSequence++, homePosition, hill);
+		try {
+			placeObject(ant);
+		} catch (final InvalidWorldPositionException e) {
+			System.out.println("Invalid position.");
+		}
+
 		return ant;
 	}
 
@@ -28,19 +33,27 @@ public class PopulationHandler {
 		System.out.println("You shall be no more in this world! Good bye forewer dear ant " + ant.getId());
 		final Food remains = ant.dropFood();
 		if (remains != null && World.getWorldObject(remains.getPosition()) == null) {
-			placeObject(remains);
+			try {
+				placeObject(remains);
+			} catch (final InvalidWorldPositionException e) {
+				System.out.println("Invalid position.");
+			}
 			System.out.println("Dropped: " + remains);
 		}
-		World.removeObject(ant.getPosition());
 		ant.getMyHill().getAnts().remove(ant);
 	}
 
 	public AbstractWarrior breedWarrior(final Hill hill) {
 		System.out.println("Welcome new creature of this world! From now on you belong to " + hill.getName()
-				+ "! But don't be affraid, you are not alone, he has other " + hill.getPopulation() + " ants.");
+		+ "! But don't be affraid, you are not alone, he has other " + hill.getPopulation() + " ants.");
 		final Point homePosition = new Point(hill.getPosition());
-		final AbstractWarrior warrior = new Warrior(antcounter++, homePosition, hill);
-		World.placeObject(warrior);
+		final AbstractWarrior warrior = new Warrior(World.idSequence++, homePosition, hill);
+		try {
+			placeObject(warrior);
+		} catch (final InvalidWorldPositionException e) {
+			System.out.println("Invalid position.");
+		}
+
 		return warrior;
 	}
 }
