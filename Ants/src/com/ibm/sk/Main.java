@@ -22,6 +22,7 @@ public class Main {
         System.out.println("World size: " + WorldConstans.X_BOUNDRY + " x " + WorldConstans.Y_BOUNDRY);
         System.out.println("Turns: " + TURNS);
         final Hill hill = createHill(HillOrder.FIRST, "King of ants");
+        ProcessExecutor.initGame(hill, null);
         final long startTime = System.currentTimeMillis();
         for (turn = 0; turn < TURNS; turn++) {
             ProcessExecutor.execute(hill);
@@ -35,7 +36,7 @@ public class Main {
         System.out.println("Game duration: " + turn + " turns, in " + (endTime - startTime) + " ms");
         try {
             SerializationUtil.serialize(getSteps());
-        } catch (IOException e) {
+        } catch (final IOException e) {
             System.err.println("The world was not saved in this step!");
         }
     }

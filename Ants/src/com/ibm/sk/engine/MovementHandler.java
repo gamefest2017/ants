@@ -15,10 +15,10 @@ import com.ibm.sk.engine.exceptions.MoveException;
 
 public final class MovementHandler {
 
-	public void makeMove(final IAnt ant, final Direction direction) throws MoveException {
+	public IAnt makeMove(final IAnt ant, final Direction direction) throws MoveException {
 		final double newXPos = ant.getPosition().getX() + direction.getPositionChange().getX();
 		final double newYPos = ant.getPosition().getY() + direction.getPositionChange().getY();
-		if (newXPos < 0 || newXPos > X_BOUNDRY || newYPos < 0 || newYPos > Y_BOUNDRY) {
+		if (newXPos < 0 || newXPos > X_BOUNDRY - 1 || newYPos < 0 || newYPos > Y_BOUNDRY - 1) {
 			throw new MoveException("Can't go to empty space! I am not an astronaut, I am just a little ant!");
 		}
 		final Point position = new Point();
@@ -27,34 +27,31 @@ public final class MovementHandler {
 		if (ant.getMyHill().getPosition().equals(position)) {
 			moveHome(ant.getMyHill(), ant);
 		}
+		
 		final Object worldObject = World.getWorldObject(position);
 
 		if (worldObject == null) {
-			System.out.println("I'm moving to " + direction.name() + ", out of my way!");
-			World.removeObject(ant.getPosition());
+			System.out.println("I'm moving from [" + ant.getPosition().getX() + "," + ant.getPosition().getY() + "] to " + direction.name() + "[" + position.x + "," + position.y + "]" + ", out of my way!");
 			ant.setPosition(position);
-			World.placeObject(ant);
 		} else if (worldObject instanceof Food && ant instanceof AbstractAnt) {
-			World.removeObject(ant.getPosition());
-			FoodHandler.pickUpFood(ant, position);
+			FoodHandler.pickUpFood(ant, (Food) worldObject);
 			ant.setPosition(position);
-			World.placeObject(ant);
 		} else if (worldObject instanceof IAnt
 				&& ant instanceof AbstractWarrior && ant.isEnemy((IAnt) worldObject)) {
 			final AbstractWarrior warrior = (AbstractWarrior) ant;
-			World.removeObject(warrior.getPosition());
 			moveToEnemyAndKill(warrior, (IAnt) worldObject);
 			warrior.setPosition(position);
-			World.placeObject(warrior);
 		} else {
 			System.out.println("I will not move to " + direction.name() + "! The place is occupied.");
 		}
+		
+		return ant;
 	}
 
 	private void moveHome(final Hill hill, final IAnt ant) {
 		final Food droppedFood = ant.dropFood();
 		if (droppedFood != null && droppedFood.getAmount() > 0) {
-			hill.incrementPopulation(droppedFood.getAmount());
+			hill.incrementFood(droppedFood.getAmount());
 		}
 	}
 

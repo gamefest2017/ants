@@ -2,12 +2,12 @@ package com.ibm.sk;
 
 public class WorldConstans {
 
-	public static final int X_BOUNDRY = 100;
-	public static final int Y_BOUNDRY = 100;
+	public static final int X_BOUNDRY = 15;
+	public static final int Y_BOUNDRY = 10;
 	/**
 	 * number of TURNS to evaluate game.
 	 */
-	public static final int TURNS = 5000;
+	public static final int TURNS = 500;
 	/**
 	 * the amount of ants in one anthill at the beginning of the world.
 	 */
@@ -25,4 +25,9 @@ public class WorldConstans {
 	 * File where to serialize the world per step.
 	 */
 	public static final String FILE_NAME = "traciking.ser";
+
+	/**
+	 * Number of collected foods to breed new ant
+	 */
+	public static final int NEW_ANT_FOOD_COST = 3;
 }
