@@ -15,7 +15,7 @@ public class Ant extends AbstractAnt {
 	 * @param vision
 	 *            - Vision is the grid of 8 positions surrounding the ant. It's
 	 *            get(Direction) method returns one of the game items (Ant,
-	 *            Food, Hill) or null, if the position is empty.
+	 *            Food, Hill, Border) or null, if the position is empty.
 	 *
 	 * @return - the direction (cardinal), where the ant will move in the
 	 *         current round
@@ -37,6 +37,7 @@ public class Ant extends AbstractAnt {
 				returnValue = randomDirection();
 			}
 		} else {
+			System.out.println("Going home!");
 			returnValue = findWayHome();
 			System.out.println("Going home!" + " [" + this.position.x + ", " + this.position.y + "] >> ["
 					+ returnValue.getPositionChange().x + ", " + returnValue.getPositionChange().y + "] ~> ["
@@ -47,9 +48,10 @@ public class Ant extends AbstractAnt {
 		return returnValue;
 	}
 
-
 	/**
-	 * Finds the Direction towards home based on current coordinates and coordinates of the Anthill.
+	 * Finds the Direction towards home based on current coordinates and
+	 * coordinates of the Anthill.
+	 * 
 	 * @return Direction home
 	 */
 	private Direction findWayHome() {
@@ -64,8 +66,6 @@ public class Ant extends AbstractAnt {
 		}
 		return result;
 	}
-
-
 
 	private static final Random RANDOM = new Random();
 

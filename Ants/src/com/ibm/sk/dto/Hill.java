@@ -5,11 +5,13 @@ import java.util.Collection;
 import java.util.List;
 import java.util.concurrent.CopyOnWriteArrayList;
 
+import com.ibm.sk.WorldConstans;
 import com.ibm.sk.engine.PopulationHandler;
 
 public class Hill extends WorldObject {
 
-	private int population;
+	final PopulationHandler populationHandler;
+	private int food = 0;
 	private String name;
 	private final List<IAnt> ants;
 
@@ -18,7 +20,7 @@ public class Hill extends WorldObject {
 		this.position = position;
 		this.ants = new CopyOnWriteArrayList<>();
 
-		final PopulationHandler populationHandler = new PopulationHandler();
+		this.populationHandler = new PopulationHandler();
 
 		for (int i = 0; i < Math.ceil(population * (1.0 - populationWarFactor)); i++) {
 			this.ants.add(populationHandler.breedAnt(this));
@@ -32,22 +34,27 @@ public class Hill extends WorldObject {
 		return ant != null && this.name.equals(ant.getMyHillName());
 	}
 
-	public void incrementPopulation(final int count) {
-		this.population += count;
-		System.out.println("Population of hill " + this.name + " increased by " + count + ".");
+	public void incrementFood(final int count) {
+		this.food += count;
+		System.out.println(
+				"The food in hill '" + this.name + "' increased by " + count + ". Food amount is now " + this.food);
+		if (this.food % WorldConstans.NEW_ANT_FOOD_COST == 0) {
+			populationHandler.breedAnt(this);
+		}
 	}
 
-	public void decrementPopulation(final int count) {
-		this.population = Math.abs(this.population - count);
-		System.out.println("Population of hill " + this.name + " decreased by " + count + ".");
+	public void decrementFood(final int count) {
+		this.food = Math.max(food - count, 0);
+		System.out.println(
+				"The food in hill '" + this.name + "' descreased by " + count + ". Food amount is now " + this.food);
 	}
 
 	public int getPopulation() {
-		return this.population;
+		return this.ants.size();
 	}
 
-	public void setPopulation(final int population) {
-		this.population = population;
+	public void setFood(final int foodAmount) {
+		this.food = foodAmount;
 	}
 
 	public String getName() {
@@ -64,7 +71,7 @@ public class Hill extends WorldObject {
 
 	@Override
 	public String toString() {
-		return "Hill [population=" + this.population + ", name=" + this.name + "]";
+		return "Hill [population=" + this.ants.size() + ", name=" + this.name + ", food=" + this.food + "]";
 	}
 
 }
