@@ -6,11 +6,10 @@ import com.ibm.sk.dto.enums.Direction;
 
 public abstract class AbstractAnt extends WorldObject implements IAnt {
 
-	private int id;
-	private int food = 0;
-	private Hill myHill;
+	private Food food;
+	private final Hill myHill;
 
-	public AbstractAnt(final int id, final Point position, final Hill myHill) {
+	public AbstractAnt(final long id, final Point position, final Hill myHill) {
 		this.id = id;
 		this.position = position;
 		this.myHill = myHill;
@@ -18,7 +17,7 @@ public abstract class AbstractAnt extends WorldObject implements IAnt {
 
 	@Override
 	public String getMyHillName() {
-		return myHill.getName();
+		return this.myHill.getName();
 	}
 
 	@Override
@@ -27,34 +26,40 @@ public abstract class AbstractAnt extends WorldObject implements IAnt {
 	}
 
 	@Override
-	public boolean isEnemy(IAnt otherAnt) {
+	public boolean isEnemy(final IAnt otherAnt) {
 		return otherAnt != null && this.getMyHillName() != null
 				&& !this.getMyHillName().equals(otherAnt.getMyHillName());
 	}
 
 	@Override
 	public abstract Direction move(final Vision vision);
-	
+
 	@Override
-	public int getId() {
-		return id;
+	public void pickUpFood(final Food food) {
+		System.out.println("Picked: " + food);
+		this.food = food;
 	}
 
 	@Override
-	public void setId(int id) {
-		this.id = id;
-	}
-
-	@Override
-	public void pickUpFood(final int count) {
-		food += count;
-	}
-
-	@Override
-	public int dropFood() {
-		int retValue = this.food;
-		this.food = 0;
+	public Food dropFood() {
+		final Food retValue = this.food;
+		this.food = null;
 		return retValue;
+	}
+
+	public boolean hasFood() {
+		return this.food != null;
+	}
+	
+	public Food getFood() {
+		return this.food;
+	}
+
+	@Override
+	public String toString() {
+		return "Ant " + this.id + " from " + this.getMyHillName() + " on: [" + this.position.x + ", " + this.position.y
+				+ "]" + " with "
+				+ (this.hasFood() ? String.valueOf(this.food.getAmount()) : "no") + " food";
 	}
 
 }
