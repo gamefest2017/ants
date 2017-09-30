@@ -1,7 +1,6 @@
 package com.ibm.sk.dto;
 
 import java.awt.Point;
-import java.util.Random;
 
 import com.ibm.sk.dto.enums.Direction;
 
@@ -34,7 +33,7 @@ public class Ant extends AbstractAnt {
 
 			if (Direction.NO_MOVE.equals(returnValue)) {
 				System.out.println("Where to go?");
-				returnValue = randomDirection();
+				returnValue = Direction.random();
 			}
 		} else {
 			System.out.println("Going home!");
@@ -51,25 +50,11 @@ public class Ant extends AbstractAnt {
 	/**
 	 * Finds the Direction towards home based on current coordinates and
 	 * coordinates of the Anthill.
-	 * 
+	 *
 	 * @return Direction home
 	 */
 	private Direction findWayHome() {
-		Direction result = Direction.NO_MOVE;
-		final int horizontal = Integer.compare(this.getMyHill().position.x, this.position.x);
-		final int vertical = Integer.compare(this.getMyHill().position.y, this.position.y);
-		final Point pointer = new Point(horizontal, vertical);
-		for (final Direction direction : Direction.values()) {
-			if (direction.getPositionChange().equals(pointer)) {
-				result = direction;
-			}
-		}
-		return result;
+		return Direction.get(this.position, this.getMyHill().position);
 	}
 
-	private static final Random RANDOM = new Random();
-
-	public Direction randomDirection() {
-		return Direction.values()[RANDOM.nextInt(Direction.values().length - 1)];
-	}
 }
