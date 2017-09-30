@@ -21,18 +21,16 @@ public class PopulationHandler {
 	private static int antcounter = 1;
 
 	public AbstractAnt breedAnt(final Hill hill) {
-		System.out.println("Welcome new creature of this world! From now on you belong to "
-				+ hill.getName() + "! But don't be affraid, you are not alone, he has other " + hill.getPopulation() + " ants.");
+		System.out.println("Welcome new creature of this world! From now on you belong to " + hill.getName()
+				+ "! But don't be affraid, you are not alone, he has other " + hill.getPopulation() + " ants.");
 		final Point homePosition = new Point(hill.getPosition());
 		final Ant ant = new Ant(antcounter++, homePosition, hill);
 		World.placeObject(ant);
-		hill.incrementPopulation(1);
 		return ant;
 	}
 
 	public static void killAnt(final IAnt ant) {
 		System.out.println("You shall be no more in this world! Good bye forewer dear ant " + ant.getId());
-		ant.getMyHill().decrementPopulation(1);
 		leaveFood(ant);
 		World.removeObject(ant.getPosition());
 		ant.getMyHill().getAnts().remove(ant);
@@ -57,15 +55,16 @@ public class PopulationHandler {
 				System.out.println("Dropped: " + remains);
 			}
 		}
+		World.removeObject(ant.getPosition());
+		ant.getMyHill().getAnts().remove(ant);
 	}
 
 	public AbstractWarrior breedWarrior(final Hill hill) {
 		System.out.println("Welcome new creature of this world! From now on you belong to " + hill.getName()
-		+ "! But don't be affraid, you are not alone, he has other " + hill.getPopulation() + " ants.");
+				+ "! But don't be affraid, you are not alone, he has other " + hill.getPopulation() + " ants.");
 		final Point homePosition = new Point(hill.getPosition());
 		final AbstractWarrior warrior = new Warrior(antcounter++, homePosition, hill);
 		World.placeObject(warrior);
-		hill.incrementPopulation(1);
 		return warrior;
 	}
 }
