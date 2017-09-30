@@ -16,30 +16,29 @@ import com.ibm.sk.engine.exceptions.InvalidWorldPositionException;
 public class PopulationHandler {
 
 	public AbstractAnt breedAnt(final Hill hill) {
-		System.out.println("Welcome new creature of this world! From now on you belong to "
-				+ hill.getName() + "! But don't be affraid, you are not alone, he has other " + hill.getPopulation() + " ants.");
+		System.out.println("Welcome new creature of this world! From now on you belong to " + hill.getName()
+		+ "! But don't be affraid, you are not alone, he has other " + hill.getPopulation() + " ants.");
 		final Point homePosition = new Point(hill.getPosition());
 		final AbstractAnt ant = new Ant(World.idSequence++, homePosition, hill);
 		try {
 			placeObject(ant);
-		} catch (InvalidWorldPositionException e) {
+		} catch (final InvalidWorldPositionException e) {
 			System.out.println("Invalid position.");
 		}
-		hill.incrementPopulation(1);
-		
+
 		return ant;
 	}
 
 	public static void killAnt(final IAnt ant) {
 		System.out.println("You shall be no more in this world! Good bye forewer dear ant " + ant.getId());
-		ant.getMyHill().decrementPopulation(1);
 		final Food remains = ant.dropFood();
-		if (remains != null) {
+		if (remains != null && World.getWorldObject(remains.getPosition()) == null) {
 			try {
 				placeObject(remains);
-			} catch (InvalidWorldPositionException e) {
-				System.out.println("Position had not space, food was not dropped. Position was: " + remains.getPosition());
+			} catch (final InvalidWorldPositionException e) {
+				System.out.println("Invalid position.");
 			}
+			System.out.println("Dropped: " + remains);
 		}
 		ant.getMyHill().getAnts().remove(ant);
 	}
@@ -51,11 +50,10 @@ public class PopulationHandler {
 		final AbstractWarrior warrior = new Warrior(World.idSequence++, homePosition, hill);
 		try {
 			placeObject(warrior);
-		} catch (InvalidWorldPositionException e) {
+		} catch (final InvalidWorldPositionException e) {
 			System.out.println("Invalid position.");
 		}
-		hill.incrementPopulation(1);
-		
+
 		return warrior;
 	}
 }

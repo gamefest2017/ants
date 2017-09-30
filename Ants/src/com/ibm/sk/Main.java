@@ -12,7 +12,6 @@ import com.ibm.sk.dto.enums.HillOrder;
 import com.ibm.sk.engine.FoodHandler;
 import com.ibm.sk.engine.ProcessExecutor;
 import com.ibm.sk.engine.SerializationUtil;
-import com.ibm.sk.engine.World;
 
 public class Main {
 
@@ -37,7 +36,7 @@ public class Main {
         System.out.println("Game duration: " + turn + " turns, in " + (endTime - startTime) + " ms");
         try {
             SerializationUtil.serialize(getSteps());
-        } catch (IOException e) {
+        } catch (final IOException e) {
             System.err.println("The world was not saved in this step!");
         }
     }
