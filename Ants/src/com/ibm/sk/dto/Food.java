@@ -6,7 +6,8 @@ public class Food extends WorldObject {
 
 	private final int amount;
 
-	public Food(final int amount, final Point position) {
+	public Food(final long id, final int amount, final Point position) {
+		this.id = id;
 		this.amount = amount;
 		this.position = position;
 	}

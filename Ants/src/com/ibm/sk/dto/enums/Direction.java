@@ -5,12 +5,12 @@ import java.awt.Point;
 import javax.swing.SwingWorker;
 
 public enum Direction {
-	NORTH(new Point(0,1)),
-	NORTHEAST(new Point(-1,1)),
-	NORTHWEST(new Point(1,1)),
-	SOUTH(new Point(0,-1)),
-	SOUTHEAST(new Point(-1,-1)),
-	SOUTHWEST(new Point(1,-1)),
+	NORTH(new Point(0,-1)),
+	NORTHEAST(new Point(1,-1)),
+	NORTHWEST(new Point(-1,-1)),
+	SOUTH(new Point(0,1)),
+	SOUTHEAST(new Point(1,1)),
+	SOUTHWEST(new Point(-1,1)),
 	EAST(new Point(1,0)),
 	WEST(new Point(-1,0)),
 	NO_MOVE(new Point(0,0));

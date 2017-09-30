@@ -43,8 +43,10 @@ public class GUIFacade {
 	}
 	
 	public void set(GUIObject[] objects) {
-		if (objects.length > 0) {
-			CLIENT.postMessage(GUIOperations.SET.toString() + "/" + objects[0].getType().toString(), Mapper.INSTANCE.pojoToJson(objects));
+		if (objects != null && objects.length > 0) {
+			for (GUIObject guiObject : objects) {
+				CLIENT.postMessage(GUIOperations.SET.toString() + "/" + guiObject.getType().toString(), Mapper.INSTANCE.pojoToJson(objects));
+			}
 		}
 	}
 	

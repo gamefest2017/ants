@@ -7,7 +7,7 @@ import com.ibm.sk.dto.enums.Direction;
 
 public class Ant extends AbstractAnt {
 
-	public Ant(final int id, final Point position, final Hill myHill) {
+	public Ant(final long id, final Point position, final Hill myHill) {
 		super(id, position, myHill);
 	}
 

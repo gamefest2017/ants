@@ -10,5 +10,7 @@
 			<attribute name="optional" value="true"/>
 		</attributes>
 	</classpathentry>
+	<classpathentry kind="src" path="/FallFestGUICommon"/>
+	<classpathentry kind="src" path="/FallFestGUIClient"/>
 	<classpathentry kind="output" path="bin"/>
 </classpath>
