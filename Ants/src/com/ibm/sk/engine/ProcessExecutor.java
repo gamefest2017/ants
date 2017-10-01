@@ -31,23 +31,23 @@ public final class ProcessExecutor {
 		for (final IAnt ant : hill.getAnts()) {
 			singleStep(ant);
 		}
-		
+
 		steps.add(new Step(getTurn(), getWorldObjects()));
 		guiConnector.placeGuiObjects(getWorldObjects());
 	}
 
 	public static void initGame(final Hill team1, final Hill team2) {
-		CreateGameData gameData = new CreateGameData();
+		final CreateGameData gameData = new CreateGameData();
 		gameData.setWidth(WorldConstans.X_BOUNDRY);
 		gameData.setHeight(WorldConstans.Y_BOUNDRY);
-		gameData.setTeams(new String[]{"King of ants","Queen of pants"});
+		gameData.setTeams(new String[] { team1.getName(), team2.getName() });
 		guiConnector.initGame(gameData);
 		guiConnector.placeGuiObject(team1);
 		if (team2 != null) {
 			guiConnector.placeGuiObject(team2);
 		}
 	}
-	
+
 	public static List getSteps() {
 		return steps;
 	}
@@ -63,16 +63,16 @@ public final class ProcessExecutor {
 		} else {
 			try {
 				boolean hadFood = false;
-				
+
 				if (ant instanceof AbstractAnt) {
-					hadFood = ((IAnt) ant).hasFood();
+					hadFood = ant.hasFood();
 				}
-				
+
 				movementHandler.makeMove(ant, direction);
-				
+
 				if (ant instanceof AbstractAnt) {
-					if (!hadFood && ((IAnt) ant).hasFood()) {
-						guiConnector.removeGuiObject(((IAnt) ant).getFood());
+					if (!hadFood && ant.hasFood()) {
+						guiConnector.removeGuiObject(ant.getFood());
 					}
 				}
 			} catch (final MoveException e) {
