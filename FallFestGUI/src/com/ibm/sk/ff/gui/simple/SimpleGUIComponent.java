@@ -11,16 +11,19 @@ public class SimpleGUIComponent {
 	private final int MAGNIFICATION;
 	private final Color FALLBACK_COLOR;
 	private final Color TEAM_COLOR;
-	private final Image IMAGE;
+	private final Image[] IMAGE;
+	
+	private Image lastImage = null;
 
 	private int x, y = 0;
 	private int moveX = -1, moveY = -1;
 	private int dx = 0, dy = 0;
 
-	public SimpleGUIComponent(int MAGNIFICATION, Color fallback, Image image, Color teamColor) {
+	public SimpleGUIComponent(int MAGNIFICATION, Color fallback, Image[] image, Color teamColor) {
 		this.MAGNIFICATION = MAGNIFICATION;
 		this.FALLBACK_COLOR = fallback;
 		this.IMAGE = image;
+		this.lastImage = this.IMAGE[0];
 		this.TEAM_COLOR = teamColor;
 	}
 
@@ -67,7 +70,7 @@ public class SimpleGUIComponent {
 				g2.setStroke(new BasicStroke(3));
 				g2.drawOval((x * MAGNIFICATION) + dx, (y * MAGNIFICATION) + dy, MAGNIFICATION, MAGNIFICATION);
 			}
-			g2.drawImage(IMAGE, (x * MAGNIFICATION) + dx, (y * MAGNIFICATION) + dy, MAGNIFICATION, MAGNIFICATION, null);
+			g2.drawImage(getImageToDraw(), (x * MAGNIFICATION) + dx, (y * MAGNIFICATION) + dy, MAGNIFICATION, MAGNIFICATION, null);
 		} catch (Exception e) {
 			g2.setColor(FALLBACK_COLOR);
 			g2.fillRect(x * MAGNIFICATION, y * MAGNIFICATION, MAGNIFICATION, MAGNIFICATION);
@@ -84,6 +87,26 @@ public class SimpleGUIComponent {
 			setLocation(moveX, moveY);
 		}
 		return !isMovePresent();
+	}
+	
+	private Image getImageToDraw() {
+		Image ret = null;
+		if (IMAGE.length == 1) {
+			ret = IMAGE[0]; 
+		} else
+		if (IMAGE.length == 2) {
+			if (dx < 0) {
+				ret =IMAGE[0];
+				lastImage = ret;
+			} else 
+			if (dx > 0) {
+				ret = IMAGE[1];
+				lastImage = ret;
+			} else {
+				ret = lastImage;
+			}
+		}
+		return ret;
 	}
 
 	private void prepareDeltas() {
