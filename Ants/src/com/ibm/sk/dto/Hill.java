@@ -23,10 +23,10 @@ public class Hill extends WorldObject {
 		this.populationHandler = new PopulationHandler();
 
 		for (int i = 0; i < Math.ceil(population * (1.0 - populationWarFactor)); i++) {
-			this.ants.add(populationHandler.breedAnt(this));
+			this.ants.add(this.populationHandler.breedAnt(this));
 		}
 		for (int i = 0; i < Math.floor(population * populationWarFactor); i++) {
-			this.ants.add(populationHandler.breedWarrior(this));
+			this.ants.add(this.populationHandler.breedWarrior(this));
 		}
 	}
 
@@ -39,12 +39,12 @@ public class Hill extends WorldObject {
 		System.out.println(
 				"The food in hill '" + this.name + "' increased by " + count + ". Food amount is now " + this.food);
 		if (this.food % WorldConstans.NEW_ANT_FOOD_COST == 0) {
-			populationHandler.breedAnt(this);
+			this.populationHandler.breedAnt(this);
 		}
 	}
 
 	public void decrementFood(final int count) {
-		this.food = Math.max(food - count, 0);
+		this.food = Math.max(this.food - count, 0);
 		System.out.println(
 				"The food in hill '" + this.name + "' descreased by " + count + ". Food amount is now " + this.food);
 	}
@@ -72,6 +72,10 @@ public class Hill extends WorldObject {
 	@Override
 	public String toString() {
 		return "Hill [population=" + this.ants.size() + ", name=" + this.name + ", food=" + this.food + "]";
+	}
+
+	public int getFood() {
+		return this.food;
 	}
 
 }

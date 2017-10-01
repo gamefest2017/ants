@@ -16,33 +16,34 @@ import com.ibm.sk.ff.gui.common.objects.gui.GUIObject;
 import com.ibm.sk.ff.gui.common.objects.gui.GUIObjectTypes;
 import com.ibm.sk.ff.gui.common.objects.gui.Location;
 import com.ibm.sk.ff.gui.common.objects.operations.CreateGameData;
+import com.ibm.sk.ff.gui.common.objects.operations.ScoreData;
 
 public class GuiConnector {
 	private final GUIFacade FACADE = new GUIFacade();
-	
+
 	public void initGame(final CreateGameData data) {
-		FACADE.createGame(data);
+		this.FACADE.createGame(data);
 	}
-	
+
 	public void placeGuiObjects(final List<IWorldObject> worldObjects) {
-		List<GUIObject> guiObjects = new ArrayList<>();
-		for (IWorldObject worldObject : worldObjects) {
+		final List<GUIObject> guiObjects = new ArrayList<>();
+		for (final IWorldObject worldObject : worldObjects) {
 			if (worldObject instanceof Food) {
-				Food food = (Food) worldObject;
-				GFoodObject gFoodObject = new GFoodObject();
-				
+				final Food food = (Food) worldObject;
+				final GFoodObject gFoodObject = new GFoodObject();
+
 				gFoodObject.setId(food.getId());
 				gFoodObject.setLocation(food.getPosition().x, food.getPosition().y);
 				System.out.println("Placing to GUI: " + food);
 				guiObjects.add(gFoodObject);
 			} else if (worldObject instanceof AbstractAnt) {
-				AbstractAnt ant = (AbstractAnt) worldObject;
-				GAntObject gAntbject = new GAntObject();
-				
+				final AbstractAnt ant = (AbstractAnt) worldObject;
+				final GAntObject gAntbject = new GAntObject();
+
 				gAntbject.setId(ant.getId());
 				gAntbject.setTeam(ant.getMyHillName());
 				gAntbject.setLocation(ant.getPosition().x, ant.getPosition().y);
-				
+
 				if (ant.hasFood()) {
 					gAntbject.setType(GUIObjectTypes.ANT_FOOD);
 					System.out.println("Changing type in GUI old object: " + GUIObjectTypes.ANT + " with object: " + GUIObjectTypes.ANT_FOOD);
@@ -52,55 +53,62 @@ public class GuiConnector {
 				}
 			}
 		}
-		FACADE.set(guiObjects.toArray(new GUIObject[guiObjects.size()]));
-		
+		this.FACADE.set(guiObjects.toArray(new GUIObject[guiObjects.size()]));
+
 	}
-	
+
 	public void placeGuiObject(final WorldObject worldObject) {
 		if (worldObject instanceof Hill) {
-			Hill hill = (Hill) worldObject;
-			GHillObject gHillObject = new GHillObject();
-			
+			final Hill hill = (Hill) worldObject;
+			final GHillObject gHillObject = new GHillObject();
+
 			gHillObject.setId(hill.getId());
 			gHillObject.setTeam(hill.getName());
 			gHillObject.setLocation(new Location(hill.getPosition().x, hill.getPosition().y));
 			System.out.println("Placing to GUI: " + hill);
-			FACADE.set(gHillObject);
+			this.FACADE.set(gHillObject);
 		} else if (worldObject instanceof Food) {
-			Food food = (Food) worldObject;
-			GFoodObject gFoodObject = new GFoodObject();
-			
+			final Food food = (Food) worldObject;
+			final GFoodObject gFoodObject = new GFoodObject();
+
 			gFoodObject.setId(food.getId());
 			gFoodObject.setLocation(food.getPosition().x, food.getPosition().y);
 			System.out.println("Placing to GUI: " + food);
-			FACADE.set(gFoodObject);
+			this.FACADE.set(gFoodObject);
 		} else if (worldObject instanceof AbstractAnt) {
-			AbstractAnt ant = (AbstractAnt) worldObject;
-			GAntObject gAntbject = new GAntObject();
-			
+			final AbstractAnt ant = (AbstractAnt) worldObject;
+			final GAntObject gAntbject = new GAntObject();
+
 			gAntbject.setId(ant.getId());
 			gAntbject.setLocation(ant.getPosition().x, ant.getPosition().y);
 			System.out.println("Placing to GUI: " + ant);
-			FACADE.set(gAntbject);
+			this.FACADE.set(gAntbject);
 		}
 	}
-	
+
 	public void removeGuiObject(final WorldObject worldObject) {
 		if (worldObject instanceof Food) {
-			GFoodObject gFoodObject = new GFoodObject();
+			final GFoodObject gFoodObject = new GFoodObject();
 			gFoodObject.setId(worldObject.getId());
 			gFoodObject.setLocation(worldObject.getPosition().x, worldObject.getPosition().y);
-			FACADE.remove(gFoodObject);
-			
+			this.FACADE.remove(gFoodObject);
+
 			System.out.println("Removed from GUI object: " + worldObject);
 		} else if (worldObject instanceof AbstractAnt) {
-			AbstractAnt ant = (AbstractAnt) worldObject;
-			GAntObject gAntObject = new GAntObject();
-			
+			final AbstractAnt ant = (AbstractAnt) worldObject;
+			final GAntObject gAntObject = new GAntObject();
+
 			gAntObject.setId(ant.getId());
 			gAntObject.setLocation(ant.getPosition().x, ant.getPosition().y);
 			System.out.println("Removing from GUI: " + ant);
-			FACADE.remove(gAntObject);
+			this.FACADE.remove(gAntObject);
 		}
+	}
+
+	public void showScore(final String teamName, final int points) {
+		final ScoreData data = new ScoreData();
+		data.setMessage(teamName);
+		data.setScore(points);
+		this.FACADE.showScore(data);
 	}
 }
