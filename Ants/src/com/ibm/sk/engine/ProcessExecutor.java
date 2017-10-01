@@ -40,7 +40,7 @@ public final class ProcessExecutor {
 		final CreateGameData gameData = new CreateGameData();
 		gameData.setWidth(WorldConstans.X_BOUNDRY);
 		gameData.setHeight(WorldConstans.Y_BOUNDRY);
-		gameData.setTeams(new String[] { team1.getName(), team2.getName() });
+		gameData.setTeams(new String[] { team1.getName(), team2 != null ? team2.getName() : "" });
 		guiConnector.initGame(gameData);
 		guiConnector.placeGuiObject(team1);
 		if (team2 != null) {
