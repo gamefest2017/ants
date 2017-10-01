@@ -2,8 +2,8 @@ package com.ibm.sk;
 
 public class WorldConstans {
 
-	public static final int X_BOUNDRY = 15;
-	public static final int Y_BOUNDRY = 10;
+	public static final int X_BOUNDRY = 40;
+	public static final int Y_BOUNDRY = 20;
 	/**
 	 * number of TURNS to evaluate game.
 	 */
@@ -20,7 +20,7 @@ public class WorldConstans {
 	 * number of ants in the hill at the beginning of the game.
 	 */
 	public static final int ANTS_START_POPULATION = 5;
-	public static final double POPULATION_WAR_FACTOR = 2.0 / 5.0;
+	public static final double POPULATION_WAR_FACTOR = 0.0;
 	/**
 	 * File where to serialize the world per step.
 	 */

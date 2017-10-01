@@ -7,6 +7,7 @@ import java.util.List;
 import com.ibm.sk.dto.AbstractAnt;
 import com.ibm.sk.dto.Food;
 import com.ibm.sk.dto.Hill;
+import com.ibm.sk.dto.IAnt;
 import com.ibm.sk.dto.IWorldObject;
 import com.ibm.sk.dto.WorldObject;
 import com.ibm.sk.ff.gui.client.GUIFacade;
@@ -31,7 +32,6 @@ public class GuiConnector {
 			if (worldObject instanceof Food) {
 				final Food food = (Food) worldObject;
 				final GFoodObject gFoodObject = createGFoodObject(food);
-
 				System.out.println("Placing to GUI: " + food);
 				guiObjects.add(gFoodObject);
 			} else if (worldObject instanceof AbstractAnt) {
@@ -51,17 +51,18 @@ public class GuiConnector {
 
 	}
 
-	private GUIObject createGAntFoodObject(final AbstractAnt ant) {
+	private GUIObject createGAntFoodObject(final IAnt ant) {
 		final GAntFoodObject result = new GAntFoodObject();
 		result.setId(World.idSequence++);
 		final Point position = ant.getPosition();
 		result.setLocation(position.x, position.y);
 		result.setAnt(createGAntObject(ant));
 		result.setFood(createGFoodObject(ant.getFood()));
+		ant.setId(result.getId());
 		return result;
 	}
 
-	private GAntObject createGAntObject(final AbstractAnt ant) {
+	private GAntObject createGAntObject(final IAnt ant) {
 		final GAntObject result = new GAntObject();
 		result.setId(ant.getId());
 		result.setTeam(ant.getMyHillName());
@@ -82,19 +83,16 @@ public class GuiConnector {
 		if (worldObject instanceof Hill) {
 			final Hill hill = (Hill) worldObject;
 			final GHillObject gHillObject = createGHillObject(hill);
-
 			System.out.println("Placing to GUI: " + hill);
 			this.FACADE.set(gHillObject);
 		} else if (worldObject instanceof Food) {
 			final Food food = (Food) worldObject;
 			final GFoodObject gFoodObject = createGFoodObject(food);
-
 			System.out.println("Placing to GUI: " + food);
 			this.FACADE.set(gFoodObject);
 		} else if (worldObject instanceof AbstractAnt) {
-			final AbstractAnt ant = (AbstractAnt) worldObject;
+			final IAnt ant = (AbstractAnt) worldObject;
 			final GAntObject gAntbject = createGAntObject(ant);
-
 			System.out.println("Placing to GUI: " + ant);
 			this.FACADE.set(gAntbject);
 		}
@@ -113,12 +111,10 @@ public class GuiConnector {
 		if (worldObject instanceof Food) {
 			final GFoodObject gFoodObject = createGFoodObject((Food) worldObject);
 			this.FACADE.remove(gFoodObject);
-
 			System.out.println("Removed from GUI object: " + worldObject);
 		} else if (worldObject instanceof AbstractAnt) {
 			final AbstractAnt ant = (AbstractAnt) worldObject;
 			final GAntObject gAntObject = createGAntObject(ant);
-
 			System.out.println("Removing from GUI: " + ant);
 			this.FACADE.remove(gAntObject);
 		}
