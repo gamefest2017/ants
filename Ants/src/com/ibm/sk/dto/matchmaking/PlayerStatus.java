@@ -5,18 +5,17 @@ import lombok.Data;
 import lombok.NonNull;
 import lombok.Setter;
 
+/**
+ * Helper structure to store player score, for easier manipulation + sorting.
+ * @author Vladimir Martinka (vladimir.martinka@gmail.com)
+ *
+ */
 @Data
-public class PlayerStatus implements Comparable<PlayerStatus>{
+public class PlayerStatus {
 	private final Player player;
 	@Setter(AccessLevel.NONE) private Integer score = 0;
 	
 	public void addScore(@NonNull Integer score) {
 		this.score += score;
 	}
-	
-	@Override
-	public int compareTo(PlayerStatus o) {
-		return Integer.compare(o.score, this.score);
-	}
-	
 }

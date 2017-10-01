@@ -6,21 +6,28 @@ import java.util.List;
 import java.util.Optional;
 import java.util.stream.Collectors;
 
+import com.ibm.sk.dto.matchmaking.comparator.PlayerScoreComparator;
+import com.ibm.sk.engine.World;
+
 import lombok.AccessLevel;
 import lombok.Data;
 import lombok.Setter;
 import lombok.ToString;
 
 @Data
-@ToString(exclude= {"startTime","endTime"})
+@ToString(exclude= {"startTime", "endTime", "world", "players"})
 public class Match {
-	private final List<PlayerStatus> players;
-	//private final String map; //TODO not part of the match?
-	//TODO history? reference to game state?
+	private final List<Player> players;
+	private final List<PlayerStatus> playerStatus;
+	private World world;
 	
 	@Setter(AccessLevel.NONE) private Optional<Calendar> startTime = Optional.empty();
 	@Setter(AccessLevel.NONE) private Optional<Calendar> endTime = Optional.empty();
 	
+	public Match(List<Player> players) {
+		this.players = players;
+		this.playerStatus = players.stream().map(PlayerStatus::new).collect(Collectors.toList());
+	}
 	
 	public Boolean isFinished() {
 		return endTime.isPresent();
@@ -34,14 +41,14 @@ public class Match {
 		if (!isFinished()) {
 			return Collections.emptyList();//TODO consider exception
 		}
-		return players.stream()
+		return getPlayerStatus().stream()
 				.filter(ps -> ps.getScore().equals(highestScore()))
 				.map(ps -> ps.getPlayer())
 				.collect(Collectors.toList());
 	}
 	
 	public Integer highestScore() {
-		return players.stream().sorted().findFirst().get().getScore();
+		return getPlayerStatus().stream().sorted(new PlayerScoreComparator().reversed()).findFirst().get().getScore();
 	}
 	
 	public void startMatch() {
