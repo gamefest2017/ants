@@ -1,7 +1,6 @@
 package com.ibm.sk.dto;
 
 import java.awt.Point;
-import java.util.Random;
 
 import com.ibm.sk.dto.enums.Direction;
 
@@ -34,11 +33,14 @@ public class Ant extends AbstractAnt {
 
 			if (Direction.NO_MOVE.equals(returnValue)) {
 				System.out.println("Where to go?");
-				returnValue = randomDirection();
+				returnValue = Direction.random();
 			}
 		} else {
 			System.out.println("Going home!");
 			returnValue = findWayHome();
+			System.out.println("Going home!" + " [" + this.position.x + ", " + this.position.y + "] >> ["
+					+ returnValue.getPositionChange().x + ", " + returnValue.getPositionChange().y + "] ~> ["
+					+ this.getMyHill().position.x + ", " + this.getMyHill().position.y + "]");
 		}
 		// Add your implementation here
 
@@ -48,35 +50,11 @@ public class Ant extends AbstractAnt {
 	/**
 	 * Finds the Direction towards home based on current coordinates and
 	 * coordinates of the Anthill.
-	 * 
+	 *
 	 * @return Direction home
 	 */
 	private Direction findWayHome() {
-		Direction horizontalDirection = Direction.NO_MOVE;
-		Direction verticalDirection = Direction.NO_MOVE;
-
-		if (this.getMyHill().position.x < this.position.x) {
-			horizontalDirection = Direction.WEST;
-		} else if (this.getMyHill().position.x == this.position.x) {
-			horizontalDirection = Direction.NO_MOVE;
-		} else {
-			horizontalDirection = Direction.EAST;
-		}
-
-		if (this.getMyHill().position.y < this.position.y) {
-			verticalDirection = Direction.SOUTH;
-		} else if (this.getMyHill().position.y == this.position.y) {
-			verticalDirection = Direction.NO_MOVE;
-		} else {
-			verticalDirection = Direction.NORTH;
-		}
-
-		return Direction.add(horizontalDirection, verticalDirection);
+		return Direction.get(this.position, this.getMyHill().position);
 	}
 
-	private static final Random RANDOM = new Random();
-
-	public Direction randomDirection() {
-		return Direction.values()[RANDOM.nextInt(Direction.values().length - 1)];
-	}
 }
