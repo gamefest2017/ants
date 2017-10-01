@@ -3,10 +3,6 @@ package com.ibm.sk.engine;
 import static com.ibm.sk.engine.World.placeObject;
 
 import java.awt.Point;
-import java.util.Arrays;
-import java.util.Collections;
-import java.util.Iterator;
-import java.util.List;
 
 import com.ibm.sk.dto.AbstractWarrior;
 import com.ibm.sk.dto.Ant;
@@ -44,15 +40,12 @@ public class PopulationHandler {
 		final Food remains = ant.dropFood();
 		if (remains != null) {
 			final Point here = ant.getPosition();
-			final List<Direction> directions = Arrays.asList(Direction.values());
-			Collections.shuffle(directions);
-			final Iterator<Direction> randomDirections = directions.iterator();
 			Point dropPosition = null;
 			do {
 				final Point randomDirection = Direction.random().getPositionChange();
 				dropPosition = new Point(here);
 				dropPosition.translate(randomDirection.x, randomDirection.y);
-			} while (randomDirections.hasNext() && World.getWorldObject(dropPosition) != null);
+			} while (World.getWorldObject(dropPosition) != null);
 			if (World.getWorldObject(dropPosition) == null) {
 				remains.setPosition(dropPosition);
 				try {
