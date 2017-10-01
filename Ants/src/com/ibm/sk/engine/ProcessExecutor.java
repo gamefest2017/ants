@@ -65,14 +65,14 @@ public final class ProcessExecutor {
 				boolean hadFood = false;
 				
 				if (ant instanceof AbstractAnt) {
-					hadFood = ((AbstractAnt) ant).hasFood();
+					hadFood = ((IAnt) ant).hasFood();
 				}
 				
 				movementHandler.makeMove(ant, direction);
 				
 				if (ant instanceof AbstractAnt) {
-					if (!hadFood && ((AbstractAnt) ant).hasFood()) {
-						guiConnector.removeGuiObject(((AbstractAnt) ant).getFood());
+					if (!hadFood && ((IAnt) ant).hasFood()) {
+						guiConnector.removeGuiObject(((IAnt) ant).getFood());
 					}
 				}
 			} catch (final MoveException e) {
