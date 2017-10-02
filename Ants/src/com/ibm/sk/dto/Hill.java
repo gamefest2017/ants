@@ -39,7 +39,7 @@ public class Hill extends WorldObject {
 		System.out.println(
 				"The food in hill '" + this.name + "' increased by " + count + ". Food amount is now " + this.food);
 		if (this.food % WorldConstans.NEW_ANT_FOOD_COST == 0) {
-			populationHandler.breedAnt(this);
+			this.ants.add(populationHandler.breedAntOrWarrior(this));
 		}
 	}
 
