@@ -29,10 +29,10 @@ public class SimpleCanvas extends JComponent {
 	private static long SLEEP_INTERVAL = Long.parseLong(Config.GUI_MOVE_INTERVAL.toString()) / Long.parseLong(Config.GUI_MAGNIFICATION.toString());
 	
 	private static Image IMAGES_GRASS = null;
-	private static Image IMAGES_ANT = null;
+	private static Image[] IMAGES_ANT = null;
 	private static Image IMAGES_FOOD = null;
 	private static Image IMAGES_HILL = null;
-	private static Image IMAGES_ANT_FOOD = null;
+	private static Image[] IMAGES_ANT_FOOD = null;
 	
 	private static final Color BACKGROUND_COLOR = Color.GREEN;
 	
@@ -41,10 +41,10 @@ public class SimpleCanvas extends JComponent {
 	static {
 		try {
 			IMAGES_GRASS = ImageIO.read(new File("res/grass2.jpg"));
-			IMAGES_ANT = ImageIO.read(new File("res/ant2.png"));
+			IMAGES_ANT = new Image[] {ImageIO.read(new File("res/ant_left.png")), ImageIO.read(new File("res/ant_right.png"))};
 			IMAGES_FOOD = ImageIO.read(new File("res/food.png"));
 			IMAGES_HILL = ImageIO.read(new File("res/hill.png"));
-			IMAGES_ANT_FOOD = ImageIO.read(new File("res/antWithCookie.png"));
+			IMAGES_ANT_FOOD = new Image [] {ImageIO.read(new File("res/antWithCookie_left.png")), ImageIO.read(new File("res/antWithCookie_right.png"))};
 		} catch (Exception e) {
 			e.printStackTrace();
 		}
@@ -173,13 +173,13 @@ public class SimpleCanvas extends JComponent {
 		}
 	}
 	
-	private Image getImage(GUIObjectTypes type) {
-		Image ret = null;
+	private Image[] getImage(GUIObjectTypes type) {
+		Image[] ret = null;
 		switch (type) {
 		case ANT: ret = IMAGES_ANT;	break;
 		case ANT_FOOD: ret = IMAGES_ANT_FOOD; break;
-		case FOOD: ret = IMAGES_FOOD; break;
-		case HILL: ret = IMAGES_HILL; break;
+		case FOOD: ret = new Image [] {IMAGES_FOOD}; break;
+		case HILL: ret = new Image [] {IMAGES_HILL}; break;
 		}
 		return ret;
 	}
@@ -188,6 +188,10 @@ public class SimpleCanvas extends JComponent {
 		objects.clear();
 
 		performRepaint();
+	}
+	
+	public boolean contains(GUIObject go) {  
+		return objects.containsKey(go.getId());
 	}
 
 }

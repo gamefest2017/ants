@@ -4,7 +4,6 @@ import java.awt.BorderLayout;
 import java.awt.Color;
 import java.awt.Container;
 import java.awt.Dimension;
-import java.awt.FlowLayout;
 import java.awt.Font;
 import java.awt.Graphics;
 import java.awt.GridBagConstraints;
@@ -30,7 +29,6 @@ import javax.swing.JList;
 import javax.swing.JPanel;
 import javax.swing.JScrollPane;
 import javax.swing.JTabbedPane;
-import javax.swing.JTextArea;
 import javax.swing.JTextPane;
 import javax.swing.ListSelectionModel;
 import javax.swing.border.LineBorder;
@@ -184,8 +182,9 @@ public class Menu extends JPanel {
         		"Robert Sevcik\n" +
         		"Tibor Schvartz\n" +
         		"\n" +
-        	    "© Copyright IBM Slovakia 2017\n"
+        	    "ï¿½ Copyright IBM Slovakia 2017\n"
         	);
+        textPane.setEditable(false);
         textPane.setFont(new Font("Serif", Font.ITALIC, 16));
         textPane.setOpaque(false);
         JLabel labelCredits = new JLabel(menuCredits);

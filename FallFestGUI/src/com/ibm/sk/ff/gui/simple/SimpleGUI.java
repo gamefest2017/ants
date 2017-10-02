@@ -2,6 +2,8 @@ package com.ibm.sk.ff.gui.simple;
 
 import java.awt.BorderLayout;
 import java.awt.GridLayout;
+import java.util.ArrayList;
+import java.util.List;
 
 import javax.swing.JFrame;
 import javax.swing.JPanel;
@@ -51,6 +53,15 @@ public class SimpleGUI implements GUI {
 	
 	@Override
 	public void set(GAntFoodObject[] afo) {
+		List<GAntObject> antsList = new ArrayList<>();
+		for (int i = 0; i < afo.length; i++) {
+			GAntObject swp = afo[i].getAnt();
+			swp.setLocation(afo[i].getLocation());
+			antsList.add(swp);
+		}
+		if (antsList.size() > 0) {
+			canvas.set(antsList.stream().toArray(GAntObject[]::new));
+		}
 		canvas.set(afo);
 	}
 
