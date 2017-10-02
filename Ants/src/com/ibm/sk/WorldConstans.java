@@ -21,10 +21,6 @@ public class WorldConstans {
 	 */
 	public static final int ANTS_START_POPULATION = 5;
 	public static final double POPULATION_WAR_FACTOR = 0.0;
-	/**
-	 * File where to serialize the world per step.
-	 */
-	public static final String FILE_NAME = "traciking.ser";
 
 	/**
 	 * Number of collected foods to breed new ant

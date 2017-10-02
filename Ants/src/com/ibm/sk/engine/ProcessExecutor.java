@@ -1,19 +1,15 @@
 package com.ibm.sk.engine;
 
-import static com.ibm.sk.Main.getTurn;
 import static com.ibm.sk.engine.World.getWorldObjects;
 
-import java.awt.Point;
-import java.util.ArrayList;
+import java.awt.*;
 import java.util.EnumMap;
-import java.util.List;
 import java.util.Map;
 
 import com.ibm.sk.WorldConstans;
 import com.ibm.sk.dto.AbstractAnt;
 import com.ibm.sk.dto.Hill;
 import com.ibm.sk.dto.IAnt;
-import com.ibm.sk.dto.Step;
 import com.ibm.sk.dto.Vision;
 import com.ibm.sk.dto.enums.Direction;
 import com.ibm.sk.engine.exceptions.MoveException;
@@ -22,7 +18,6 @@ import com.ibm.sk.ff.gui.common.objects.operations.CreateGameData;
 public final class ProcessExecutor {
 
 	private ProcessExecutor() {}
-	private static List steps = new ArrayList();
 	private static final GuiConnector guiConnector = new GuiConnector();
 
 
@@ -32,7 +27,6 @@ public final class ProcessExecutor {
 			singleStep(ant);
 		}
 
-		steps.add(new Step(getTurn(), getWorldObjects()));
 		guiConnector.placeGuiObjects(getWorldObjects());
 	}
 
@@ -46,10 +40,6 @@ public final class ProcessExecutor {
 		if (team2 != null) {
 			guiConnector.placeGuiObject(team2);
 		}
-	}
-
-	public static List getSteps() {
-		return steps;
 	}
 
 	private static void singleStep(final IAnt ant) {
