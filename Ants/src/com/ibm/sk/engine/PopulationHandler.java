@@ -3,7 +3,9 @@ package com.ibm.sk.engine;
 import static com.ibm.sk.engine.World.placeObject;
 
 import java.awt.Point;
+import java.util.Random;
 
+import com.ibm.sk.WorldConstans;
 import com.ibm.sk.dto.AbstractWarrior;
 import com.ibm.sk.dto.Ant;
 import com.ibm.sk.dto.Food;
@@ -15,9 +17,11 @@ import com.ibm.sk.engine.exceptions.InvalidWorldPositionException;
 
 public class PopulationHandler {
 
+	private static final Random RANDOMIZER = new Random();
+
 	public IAnt breedAnt(final Hill hill) {
-		System.out.println("Welcome new creature of this world! From now on you belong to " + hill.getName()
-		+ "! But don't be affraid, you are not alone, he has other " + hill.getPopulation() + " ants.");
+		System.out.println("Welcome new worker of this world! From now on you belong to " + hill.getName()
+				+ "! But don't be affraid, you are not alone, he has other " + hill.getPopulation() + " ants.");
 		final Point homePosition = new Point(hill.getPosition());
 		final IAnt ant = new Ant(World.idSequence++, homePosition, hill);
 		try {
@@ -61,8 +65,8 @@ public class PopulationHandler {
 	}
 
 	public AbstractWarrior breedWarrior(final Hill hill) {
-		System.out.println("Welcome new creature of this world! From now on you belong to " + hill.getName()
-		+ "! But don't be affraid, you are not alone, he has other " + hill.getPopulation() + " ants.");
+		System.out.println("Welcome new warrior of this world! From now on you belong to " + hill.getName()
+				+ "! But don't be affraid, you are not alone, he has other " + hill.getPopulation() + " ants.");
 		final Point homePosition = new Point(hill.getPosition());
 		final AbstractWarrior warrior = new Warrior(World.idSequence++, homePosition, hill);
 		try {
@@ -72,5 +76,15 @@ public class PopulationHandler {
 		}
 
 		return warrior;
+	}
+
+	public IAnt breedAntOrWarrior(final Hill hill) {
+		IAnt result;
+		if (RANDOMIZER.nextDouble() < WorldConstans.POPULATION_WAR_FACTOR) {
+			result = breedWarrior(hill);
+		} else {
+			result = breedAnt(hill);
+		}
+		return result;
 	}
 }
