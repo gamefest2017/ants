@@ -1,7 +1,6 @@
 package com.ibm.sk.dto;
 
 import java.awt.Point;
-import java.util.Random;
 
 import com.ibm.sk.dto.enums.Direction;
 
@@ -26,24 +25,25 @@ public class Warrior extends AbstractWarrior {
 		for (final Direction direction : Direction.values()) {
 			final Object object = vision.look(direction);
 			if (!Direction.NO_MOVE.equals(direction)
-					&& object instanceof IAnt && this.isEnemy((IAnt) object)) {
-				System.out.println("I see an enemy!");
-				result = direction;
+					&& object instanceof IAnt) {
+				final IAnt ant = (IAnt) object;
+				if (this.isEnemy(ant)) {
+					System.out.println("I see an enemy!");
+					result = direction;
+				} else {
+					System.out.println("I see a friend!");
+					result = Direction.opposite(direction);
+				}
 			}
 		}
 
 		if (Direction.NO_MOVE.equals(result)) {
 			System.out.println("Where to go?");
-			result = randomDirection();
+			result = Direction.random();
 		}
 		// Add your implementation here
 
 		return result;
 	}
 
-	private final Random RANDOM = new Random();
-
-	public Direction randomDirection() {
-		return Direction.values()[this.RANDOM.nextInt(Direction.values().length)];
-	}
 }

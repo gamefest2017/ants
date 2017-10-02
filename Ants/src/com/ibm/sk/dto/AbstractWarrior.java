@@ -47,6 +47,7 @@ public abstract class AbstractWarrior extends WorldObject implements IAnt {
 		return null;
 	}
 
+	@Override
 	public boolean hasFood() {
 		return false;
 	}
@@ -60,6 +61,11 @@ public abstract class AbstractWarrior extends WorldObject implements IAnt {
 	public void killed(final IAnt enemy) {
 		System.out.println("Warrior " + this.id + " defeated " + enemy.toString());
 		this.kills.add(Long.valueOf(enemy.getId()));
+	}
+
+	@Override
+	public Food getFood() {
+		return null;
 	}
 
 }
