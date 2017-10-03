@@ -109,6 +109,7 @@ public class SimpleCanvas extends JComponent {
 	
 	public void set(GUIObject[] gos) {
 		for (GUIObject go : gos) {
+			GUIObject key = go;
 			SimpleGUIComponent toAdd = null;
 			if (objects.containsKey(go)) {
 				toAdd = objects.get(go);
@@ -123,13 +124,15 @@ public class SimpleCanvas extends JComponent {
 				GAntFoodObject gafo = (GAntFoodObject)go;
 				objects.remove(gafo.getAnt());
 				objects.remove(gafo.getFood());
-//			} else
-//			if (go.getType().equals(GUIObjectTypes.ANT)){
-//				GAntFoodObject swp = findInAntFood(go);
-//				if (swp != null) {
-//					this.objects.put(swp.getFood(), new SimpleGUIComponent(MAGNIFICATION, getImage(GUIObjectTypes.FOOD), getTeamColor(go)));
-//					this.objects.remove(swp);
-//				}
+			} else
+			if (go.getType().equals(GUIObjectTypes.ANT)){
+				GAntFoodObject swp = findInAntFood(go);
+				if (swp != null) {
+					this.objects.remove(swp);
+//					toAdd = this.objects.remove(swp);
+//					toAdd.moveToLocation(go.getLocation().getX(), go.getLocation().getY());	
+//					key = swp;
+				}
 //			} else
 //			if (go.getType().equals(GUIObjectTypes.FOOD)) {
 //				GAntFoodObject swp = findInAntFood(go);
@@ -139,7 +142,7 @@ public class SimpleCanvas extends JComponent {
 //				}
 			}
 	
-			this.objects.put(go, toAdd);
+			this.objects.put(key, toAdd);
 		}
 		
 		performRepaint();
