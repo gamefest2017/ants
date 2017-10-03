@@ -18,6 +18,7 @@ import com.ibm.sk.ff.gui.common.objects.gui.GHillObject;
 import com.ibm.sk.ff.gui.common.objects.gui.GUIObject;
 import com.ibm.sk.ff.gui.common.objects.gui.GUIObjectTypes;
 import com.ibm.sk.ff.gui.common.objects.operations.CreateGameData;
+import com.ibm.sk.ff.gui.common.objects.operations.ScoreData;
 
 public class GuiConnector {
 	private final GUIFacade FACADE = new GUIFacade();
@@ -48,7 +49,6 @@ public class GuiConnector {
 			}
 		}
 		this.FACADE.set(guiObjects.toArray(new GUIObject[guiObjects.size()]));
-
 	}
 
 	private GUIObject createGAntFoodObject(final IAnt ant) {
@@ -91,12 +91,13 @@ public class GuiConnector {
 			System.out.println("Placing to GUI: " + food);
 			this.FACADE.set(gFoodObject);
 		} else if (worldObject instanceof AbstractAnt) {
-			final IAnt ant = (AbstractAnt) worldObject;
-			final GAntObject gAntbject = createGAntObject(ant);
+			final AbstractAnt ant = (AbstractAnt) worldObject;
+			final GAntObject gAntbject = new GAntObject();
 			System.out.println("Placing to GUI: " + ant);
 			this.FACADE.set(gAntbject);
 		}
 	}
+
 
 	private GHillObject createGHillObject(final Hill hill) {
 		final GHillObject result = new GHillObject();
@@ -118,5 +119,12 @@ public class GuiConnector {
 			System.out.println("Removing from GUI: " + ant);
 			this.FACADE.remove(gAntObject);
 		}
+	}
+
+	public void showScore(final String teamName, final int points) {
+		final ScoreData data = new ScoreData();
+		data.setMessage(teamName);
+		data.setScore(points);
+		this.FACADE.showScore(data);
 	}
 }

@@ -72,7 +72,7 @@ public class GUIFacade {
 	}
 
 	public void showScore(final ScoreData data) {
-		this.CLIENT.postMessage(GUIOperations.SHOW_RESULT.toString(), Mapper.INSTANCE.pojoToJson(data));
+		this.CLIENT.postMessage(GUIOperations.SCORE.toString(), Mapper.INSTANCE.pojoToJson(data));
 	}
 
 	//
