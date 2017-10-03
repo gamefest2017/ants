@@ -135,7 +135,7 @@ public class SimpleGUI implements GUI {
 		frame.setLayout(new BorderLayout());
 		
         //Set up the content pane.
-		frame.add(new Menu(data, listener, frame.getContentPane()));
+		frame.add(new Menu(data, listener, frame));
 		
         //Display the window.
 		frame.pack();

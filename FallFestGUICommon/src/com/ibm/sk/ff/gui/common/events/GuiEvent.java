@@ -11,6 +11,7 @@ public class GuiEvent {
 	public static enum EventTypes {
 		SINGLE_PLAY_START("singlePlayStart"),
 		DOUBLE_PLAY_START("doublePlayStart"),
+		TOURNAMENT_PLAY_START("tournamentPlayStart"),
 		PLAYER_1_SELECTED("playerOneSelected"),
 		PLAYER_2_SELECTED("playerTwoSelected"),
 		START_REPLAY("startReplay"),

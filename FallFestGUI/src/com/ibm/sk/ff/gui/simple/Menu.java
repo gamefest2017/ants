@@ -3,26 +3,15 @@ package com.ibm.sk.ff.gui.simple;
 import java.awt.BorderLayout;
 import java.awt.Color;
 import java.awt.Container;
-import java.awt.Dimension;
 import java.awt.Font;
-import java.awt.Graphics;
 import java.awt.GridBagConstraints;
 import java.awt.GridBagLayout;
 import java.awt.GridLayout;
-import java.awt.Image;
 import java.awt.Insets;
-import java.awt.event.ActionEvent;
-import java.awt.event.ActionListener;
 
-import javax.swing.AbstractButton;
-import javax.swing.BorderFactory;
-import javax.swing.BoxLayout;
-import javax.swing.ComboBoxModel;
 import javax.swing.DefaultListModel;
 import javax.swing.ImageIcon;
 import javax.swing.JButton;
-import javax.swing.JComboBox;
-import javax.swing.JComponent;
 import javax.swing.JFrame;
 import javax.swing.JLabel;
 import javax.swing.JList;
@@ -32,14 +21,10 @@ import javax.swing.JTabbedPane;
 import javax.swing.JTextPane;
 import javax.swing.ListSelectionModel;
 import javax.swing.border.LineBorder;
-import javax.swing.border.TitledBorder;
-import javax.swing.event.ChangeEvent;
-import javax.swing.event.ChangeListener;
 import javax.swing.text.SimpleAttributeSet;
 import javax.swing.text.StyleConstants;
 import javax.swing.text.StyledDocument;
 
-import com.ibm.sk.ff.gui.common.events.GuiEvent;
 import com.ibm.sk.ff.gui.common.events.GuiEventListener;
 import com.ibm.sk.ff.gui.common.objects.operations.InitMenuData;
 
@@ -47,39 +32,38 @@ public class Menu extends JPanel {
 
 	private static final long serialVersionUID = 6974035742626961138L;
 	
-	private Container pane = null;
-	private Image backgroundImage = null;
+	// Constructor parameters
+	private InitMenuData initMenuData = null; // TODO: use its data
+	private GuiEventListener sharedGuiListener = null;
+	private JFrame mainFrame = null;
 	
-	private ComboBoxModel<String> replays_model = null;
-	private JComboBox<String> combo_replays = null;
-	
-	private ComboBoxModel<String> implementations = null;
-	private JComboBox<String> combo_implementations1 = null;
-	private ComboBoxModel<String> implementations2 = null;
-	private JComboBox<String> combo_implementations2 = null;
-	
-	private JButton button_singlePlayer = null;
-	private JButton button_twoPlayer = null;
-	private JButton button_replay = null;
-	
-	private GuiEventListener listener;
-	
-	private InitMenuData data = null;
-	
-	private JButton buttonStart = null;
-	
-	public Menu(InitMenuData data, GuiEventListener listener, Container pane) {
+	/**
+	 * Constructor of the main GUI page.
+	 * 
+	 * @param initMenuData - input information about players, recorded games, etc.
+	 * @param sharedGuiListener - API for communication between GUI components
+	 * @param mainContainer - the container of the main window
+	 */
+	public Menu(InitMenuData initMenuData, GuiEventListener sharedGuiListener, JFrame mainFrame) {
 		super(new BorderLayout());
 		
-		this.data = data;
-		this.listener = listener;
-		this.pane = pane;
+		this.initMenuData = initMenuData;
+		this.sharedGuiListener = sharedGuiListener;
+		this.mainFrame = mainFrame;
 		
 		init();
 	}
 	
 	protected void init() {
 		setLayout(new BorderLayout());
+		
+		// Components MenuListener will need
+		final JButton buttonStart;
+		final JTabbedPane tabbedPane;
+		final JList<String> firstListOfAnthills;
+		final JList<String> secondListOfAnthills;
+		final JList<String> thirdListOfAnthills;
+		
 
 		// Title
         JLabel labelTitle = new JLabel("ANTHILL", JLabel.CENTER);
@@ -111,37 +95,23 @@ public class Menu extends JPanel {
         listOfAnthillNames.addElement("IBM SK");
         listOfAnthillNames.addElement("Slovakia");
         listOfAnthillNames.addElement("Winners");
-        JList<String> firstListOfAnthills = new JList<>(listOfAnthillNames);
+        firstListOfAnthills = new JList<>(listOfAnthillNames);
         firstListOfAnthills.setSelectionMode(ListSelectionModel.SINGLE_SELECTION);
         JScrollPane firstListOfAnthillsScrollable = new JScrollPane(firstListOfAnthills);
 
         // 2nd list of anthills
-        JList<String> secondListOfAnthills = new JList<>(listOfAnthillNames);
+        secondListOfAnthills = new JList<>(listOfAnthillNames);
         secondListOfAnthills.setSelectionMode(ListSelectionModel.SINGLE_SELECTION);
         JScrollPane secondListOfAnthillsScrollable = new JScrollPane(secondListOfAnthills);
 
 		// 3rd list of anthills
-        JList<String> thirdListOfAnthills = new JList<>(listOfAnthillNames);
+        thirdListOfAnthills = new JList<>(listOfAnthillNames);
         thirdListOfAnthills.setSelectionMode(ListSelectionModel.SINGLE_SELECTION);
         JScrollPane thirdListOfAnthillsScrollable = new JScrollPane(thirdListOfAnthills);
 		 
 		// Sheets
-		JTabbedPane tabbedPane = new JTabbedPane(JTabbedPane.TOP);
-		tabbedPane.addChangeListener(new ChangeListener() {
-			@Override
-			public void stateChanged(ChangeEvent e) {
-				if (tabbedPane.getSelectedIndex() == 3) {
-					if (buttonStart != null) {
-						buttonStart.setEnabled(false);
-					}
-				} else {
-					if (buttonStart != null) {
-						buttonStart.setEnabled(true);
-					}
-				}
-	        }
-		});
-
+		tabbedPane = new JTabbedPane(JTabbedPane.TOP);
+		
 		// 1st Sheet: Single Player
         JPanel panelSinglePlayer = new JPanel(false);
         panelSinglePlayer.setLayout(new GridLayout(1, 1));
@@ -182,7 +152,7 @@ public class Menu extends JPanel {
         		"Robert Sevcik\n" +
         		"Tibor Schvartz\n" +
         		"\n" +
-        	    "ï¿½ Copyright IBM Slovakia 2017\n"
+        	    "© Copyright IBM Slovakia 2017\n"
         	);
         textPane.setEditable(false);
         textPane.setFont(new Font("Serif", Font.ITALIC, 16));
@@ -253,224 +223,11 @@ public class Menu extends JPanel {
         add(panelCenter, BorderLayout.CENTER);
         add(menuAntLabel2, BorderLayout.LINE_END);
         add(labelFooter, BorderLayout.PAGE_END);
-        
-//
-//        c.gridx = 2;
-//        c.gridy = 1;
-//        c.weightx = 1;
-//        c.weighty = 1;
-//        gridbag.setConstraints(menuAntLabel2, c);
-//        add(menuAntLabel2);
-//
-//        gridBagConstraints.gridx = 1;
-//        gridBagConstraints.gridy = 1;
-//        add(tabbedPane, BorderLayout.CENTER);
-			
-//
-//		listPane.add(label);
-//		listPane.add(Box.createRigidArea(new Dimension(0,5)));
-//		listPane.add(listScroller);
-//		listPane.setBorder(BorderFactory.createEmptyBorder(10,10,10,10));
-//
-//	
-//		//Lay out the buttons from left to right.
-//		buttonPane.setBorder(BorderFactory.createEmptyBorder(0, 10, 10, 10));
-//		buttonPane.add(Box.createHorizontalGlue());
-//		JButton cancelButton = new JButton("Cancel");
-//		cancelButton.setAlignmentX(Component.CENTER_ALIGNMENT);
-//		JButton setButton = new JButton("Set");
-//		setButton.setAlignmentX(Component.CENTER_ALIGNMENT);
-//		buttonPane.add(Box.createRigidArea(new Dimension(10, 0)));
-//		buttonPane.add(cancelButton);
-//		buttonPane.add(setButton);
-//
-//		// image of the left/right ant
-//		ImageIcon menuAntImage1 = new ImageIcon("res/menu_ant1.png");
-//        JLabel menuAntLabel1 = new JLabel("", menuAntImage1, JLabel.LEFT);
-//        ImageIcon menuAntImage2 = new ImageIcon("res/menu_ant2.png");
-//        JLabel menuAntLabel2 = new JLabel("", menuAntImage2, JLabel.RIGHT);
-
-        
-        
-//        pane.add(label);
-//		pane.add(label);
-//		pane.add(listPane);
-
-		//		
-//		//Put everything together, using the content pane's BorderLayout.
-//		listPane.add(listPane, BorderLayout.CENTER);
-//		listPane.add(buttonPane, BorderLayout.PAGE_END);
-//		
-//		try {
-//			backgroundImage = ImageIO.read(new File("res/grass2.jpg"));
-//		} catch (Exception e) {
-//			e.printStackTrace();
-//		}
-//        
-//        
-//        add(listPane);
-        
-        
-//		replays_model = new DefaultComboBoxModel<>(data.getReplays());
-//		combo_replays = new JComboBox<>(replays_model);
-//		
-//		implementations = new DefaultComboBoxModel<>(data.getCompetitors());
-//		combo_implementations1 = new JComboBox<>(implementations);
-//		implementations2 = new DefaultComboBoxModel<>(data.getCompetitors());
-//		combo_implementations2 = new JComboBox<>(implementations2);
-//		
-//		button_singlePlayer = new JButton("Single player");
-//		button_twoPlayer = new JButton("Two players");
-//		button_replay = new JButton("Replay");
-//		
-//		setLayout(null);
-//		
-//		setLocation(0, 0);
-//		setSize(800, 600);
-//		setPreferredSize(new Dimension(800, 600));
-//		
-//		int w = 280;
-//		int h = 30;
-//		int x = (getWidth() / 2) - (w / 2);
-//		int y = 300;
-//		
-//		combo_replays.setSize(w, h);
-//		combo_implementations1.setSize(w/2, h);
-//		combo_implementations2.setSize(w/2, h);
-//		
-//		button_singlePlayer.setSize(w, h);
-//		button_twoPlayer.setSize(w, h);
-//		button_replay.setSize(w, h);
-//		
-//		/////////////////////////////////////////////
-//		
-//		/////////////////////////////////////////////
-//		button_singlePlayer.setLocation(x, y);
-//		button_twoPlayer.setLocation(x, y + h);
-//		combo_implementations1.setLocation(x, y + (2 * h));
-//		combo_implementations2.setLocation(x + (w / 2), y + (2 * h));
-//		button_replay.setLocation(x, y + (3 * h));
-//		combo_replays.setLocation(x, y + (4 * h));
-//		
-//		add(button_singlePlayer);
-//		add(button_twoPlayer);
-//		add(combo_implementations1);
-//		add(combo_implementations2);
-//		add(button_replay);
-//		add(combo_replays);
 		
-//		setupEvents();
+        // Setup Events
+		new MenuListener(mainFrame, sharedGuiListener, tabbedPane, firstListOfAnthills, secondListOfAnthills, thirdListOfAnthills, buttonStart);
 	}
 	
-	public void paintComponent(Graphics g) {
-//		pane.paintComponent(g);
-//		
-//		g.drawImage(backgroundImage, 0, 0, getWidth(), getHeight(), null);
-	}
-	
-	protected JPanel createButtonRow(boolean changeAlignment) {
-        JButton button1 = new JButton("A JButton",
-                                      createImageIcon("images/middle.gif"));
-        button1.setVerticalTextPosition(AbstractButton.BOTTOM);
-        button1.setHorizontalTextPosition(AbstractButton.CENTER);
- 
-        JButton button2 = new JButton("Another JButton",
-                                      createImageIcon("images/geek-cght.gif"));
-        button2.setVerticalTextPosition(AbstractButton.BOTTOM);
-        button2.setHorizontalTextPosition(AbstractButton.CENTER);
- 
-        String title;
-        if (changeAlignment) {
-            title = "Desired";
-            button1.setAlignmentY(BOTTOM_ALIGNMENT);
-            button2.setAlignmentY(BOTTOM_ALIGNMENT);
-        } else {
-            title = "Default";
-        }
- 
-        JPanel pane = new JPanel();
-        pane.setBorder(BorderFactory.createTitledBorder(title));
-        pane.setLayout(new BoxLayout(pane, BoxLayout.X_AXIS));
-        pane.add(button1);
-        pane.add(button2);
-        return pane;
-    }
- 
-    protected JPanel createLabelAndComponent(boolean doItRight) {
-        JPanel pane = new JPanel();
- 
-        JComponent component = new JPanel();
-        Dimension size = new Dimension(150,100);
-        component.setMaximumSize(size);
-        component.setPreferredSize(size);
-        component.setMinimumSize(size);
-        TitledBorder border = new TitledBorder(
-                                  new LineBorder(Color.black),
-                                  "A JPanel",
-                                  TitledBorder.CENTER,
-                                  TitledBorder.BELOW_TOP);
-        border.setTitleColor(Color.black);
-        component.setBorder(border);
- 
-        JLabel label = new JLabel("This is a JLabel");
-        String title;
-        if (doItRight) {
-            title = "Matched";
-            label.setAlignmentX(CENTER_ALIGNMENT);
-        } else {
-            title = "Mismatched";
-        }
- 
-        pane.setBorder(BorderFactory.createTitledBorder(title));
-        pane.setLayout(new BoxLayout(pane, BoxLayout.Y_AXIS));
-        pane.add(label);
-        pane.add(component);
-        return pane;
-    }
- 
-    protected JPanel createYAlignmentExample(boolean doItRight) {
-        JPanel pane = new JPanel();
-        String title;
- 
-        JComponent component1 = new JPanel();
-        Dimension size = new Dimension(100, 50);
-        component1.setMaximumSize(size);
-        component1.setPreferredSize(size);
-        component1.setMinimumSize(size);
-        TitledBorder border = new TitledBorder(
-                                  new LineBorder(Color.black),
-                                  "A JPanel",
-                                  TitledBorder.CENTER,
-                                  TitledBorder.BELOW_TOP);
-        border.setTitleColor(Color.black);
-        component1.setBorder(border);
- 
-        JComponent component2 = new JPanel();
-        size = new Dimension(100, 50);
-        component2.setMaximumSize(size);
-        component2.setPreferredSize(size);
-        component2.setMinimumSize(size);
-        border = new TitledBorder(new LineBorder(Color.black),
-                                  "A JPanel",
-                                  TitledBorder.CENTER,
-                                  TitledBorder.BELOW_TOP);
-        border.setTitleColor(Color.black);
-        component2.setBorder(border);
- 
-        if (doItRight) {
-            title = "Matched";
-        } else {
-            component1.setAlignmentY(TOP_ALIGNMENT);
-            title = "Mismatched";
-        }
- 
-        pane.setBorder(BorderFactory.createTitledBorder(title));
-        pane.setLayout(new BoxLayout(pane, BoxLayout.X_AXIS));
-        pane.add(component1);
-        pane.add(component2);
-        return pane;
-    }
- 
     /** Returns an ImageIcon, or null if the path was invalid. */
     protected static ImageIcon createImageIcon(String path) {
         java.net.URL imgURL = Menu.class.getResource(path);
@@ -482,47 +239,6 @@ public class Menu extends JPanel {
         }
     }
     
-	private void setupEvents() {
-		//TODO
-		button_singlePlayer.addActionListener(new ActionListener() {
-			@Override
-			public void actionPerformed(ActionEvent e) {
-				listener.actionPerformed(new GuiEvent(GuiEvent.EventTypes.SINGLE_PLAY_START, ""));
-			}
-		});
-		button_twoPlayer.addActionListener(new ActionListener() {
-			@Override
-			public void actionPerformed(ActionEvent e) {
-				listener.actionPerformed(new GuiEvent(GuiEvent.EventTypes.DOUBLE_PLAY_START, ""));
-			}
-			
-		});
-		button_replay.addActionListener(new ActionListener() {
-			@Override
-			public void actionPerformed(ActionEvent e) {
-				listener.actionPerformed(new GuiEvent(GuiEvent.EventTypes.REPLAY_SELECTED, ""));
-			}
-		});
-		combo_replays.addActionListener(new ActionListener() {
-			@Override
-			public void actionPerformed(ActionEvent e) {
-				listener.actionPerformed(new GuiEvent(GuiEvent.EventTypes.REPLAY_SELECTED, combo_replays.getSelectedItem().toString()));
-			}
-		});
-		combo_implementations1.addActionListener(new ActionListener() {
-			@Override
-			public void actionPerformed(ActionEvent e) {
-				listener.actionPerformed(new GuiEvent(GuiEvent.EventTypes.PLAYER_1_SELECTED, combo_implementations1.getSelectedItem().toString()));
-			}
-		});
-		combo_implementations2.addActionListener(new ActionListener() {
-			@Override
-			public void actionPerformed(ActionEvent e) {
-				listener.actionPerformed(new GuiEvent(GuiEvent.EventTypes.PLAYER_2_SELECTED, combo_implementations2.getSelectedItem().toString()));
-			}
-		});
-	}
-	
 	/**
      * Create the GUI and show it.  For thread safety,
      * this method should be invoked from the
@@ -535,7 +251,7 @@ public class Menu extends JPanel {
         frame.setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
  
         //Set up the content pane.
-        frame.add(new Menu(null, null, frame.getContentPane()), BorderLayout.CENTER);
+        frame.add(new Menu(new InitMenuData(), null, frame), BorderLayout.CENTER);
  
         //Display the window.
         frame.pack();
