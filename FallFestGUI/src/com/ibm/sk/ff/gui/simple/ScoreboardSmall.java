@@ -13,34 +13,35 @@ import com.ibm.sk.ff.gui.common.objects.operations.ScoreData;
 public class ScoreboardSmall extends JPanel {
 
 	private static final long serialVersionUID = 8475229618454645422L;
-	
+
 	private JLabel[] labels;
 	private JTextField[] texts;
-	
-	public ScoreboardSmall(CreateGameData cgd) {
+
+	public ScoreboardSmall(final CreateGameData cgd) {
 		setLayout(new FlowLayout());
 		setPreferredSize(new Dimension(100, 30));
-		
+
 		if (cgd.getTeams() != null) {
-			labels = new JLabel[cgd.getTeams().length];
-			texts = new JTextField[cgd.getTeams().length];
-			
+			this.labels = new JLabel[cgd.getTeams().length];
+			this.texts = new JTextField[cgd.getTeams().length];
+
 			int i = 0;
-			for (String it : cgd.getTeams()) {
-				labels[i] = new JLabel(it);
-				texts[i] = new JTextField();
-				texts[i].setColumns(5);
-				texts[i].setEditable(false);
-				add(labels[i]);
-				add(texts[i]);
+			for (final String it : cgd.getTeams()) {
+				this.labels[i] = new JLabel(it);
+				this.texts[i] = new JTextField();
+				this.texts[i].setColumns(5);
+				this.texts[i].setEditable(false);
+				add(this.labels[i]);
+				add(this.texts[i]);
+				i++;
 			}
 		}
 	}
-	
-	public void setScore(ScoreData sd) {
-		for (int i = 0; i < labels.length; i++) {
-			if (labels[i].getText().equals(sd.getMessage())) {
-				texts[i].setText(sd.getScore() + "");
+
+	public void setScore(final ScoreData sd) {
+		for (int i = 0; i < this.labels.length; i++) {
+			if (this.labels[i].getText().equals(sd.getMessage())) {
+				this.texts[i].setText(sd.getScore() + "");
 			}
 		}
 	}

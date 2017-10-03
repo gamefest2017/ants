@@ -2,7 +2,7 @@ package com.ibm.sk.engine;
 
 import static com.ibm.sk.engine.World.getWorldObjects;
 
-import java.awt.*;
+import java.awt.Point;
 import java.util.EnumMap;
 import java.util.Map;
 
@@ -26,8 +26,8 @@ public final class ProcessExecutor {
 		for (final IAnt ant : hill.getAnts()) {
 			singleStep(ant);
 		}
-
 		guiConnector.placeGuiObjects(getWorldObjects());
+		guiConnector.showScore(hill.getName(), hill.getFood());
 	}
 
 	public static void initGame(final Hill team1, final Hill team2) {
