@@ -2,13 +2,19 @@ package com.ibm.sk.ff.gui.client;
 
 import java.util.ArrayList;
 import java.util.EnumMap;
+import java.util.HashMap;
+import java.util.HashSet;
 import java.util.List;
 import java.util.Map;
+import java.util.Set;
 
 import com.ibm.sk.ff.gui.common.GUIOperations;
 import com.ibm.sk.ff.gui.common.events.GuiEvent;
 import com.ibm.sk.ff.gui.common.events.GuiEventListener;
 import com.ibm.sk.ff.gui.common.mapper.Mapper;
+import com.ibm.sk.ff.gui.common.objects.gui.GAntFoodObject;
+import com.ibm.sk.ff.gui.common.objects.gui.GAntObject;
+import com.ibm.sk.ff.gui.common.objects.gui.GFoodObject;
 import com.ibm.sk.ff.gui.common.objects.gui.GUIObject;
 import com.ibm.sk.ff.gui.common.objects.gui.GUIObjectTypes;
 import com.ibm.sk.ff.gui.common.objects.operations.CloseData;
@@ -22,6 +28,10 @@ public class GUIFacade {
 	private final Client CLIENT;
 
 	private final List<GuiEventListener> guiEventListeners = new ArrayList<>();
+	
+	private final Map<GAntObject, GAntFoodObject> afoMap = new HashMap<>();
+	
+	private final Set<GUIObject> accumulator = new HashSet<>();
 
 	public GUIFacade() {
 		this.CLIENT = new Client();
@@ -47,17 +57,57 @@ public class GUIFacade {
 
 	public void set(final GUIObject[] objects) {
 		if (objects != null && objects.length > 0) {
+			GUIObject[] mappedObjects = mapAntsToAntfoodObjects(objects);
+			
 			final Map<GUIObjectTypes, List<GUIObject>> objectsByType = new EnumMap<>(GUIObjectTypes.class);
 			for (final GUIObjectTypes type : GUIObjectTypes.values()) {
 				objectsByType.put(type, new ArrayList<>());
 			}
-			for (final GUIObject guiObject : objects) {
+			
+			// Add objects received
+			for (final GUIObject guiObject : mappedObjects) {
 				objectsByType.get(guiObject.getType()).add(guiObject);
 			}
+			
+			// Accumulator contains the splitted food objects previously held in the antfood object
+			for (final GUIObject guiObject : accumulator) {
+				objectsByType.get(guiObject.getType()).add(guiObject);
+			}
+			accumulator.clear();
+			
+			// Send objects to server
 			for (final GUIObjectTypes type : objectsByType.keySet()) {
 				this.CLIENT.postMessage(GUIOperations.SET.toString() + "/" + type.toString(),
 						Mapper.INSTANCE.pojoToJson(objectsByType.get(type).toArray()));
 			}
+		}
+	}
+	
+	private GUIObject[] mapAntsToAntfoodObjects(GUIObject[] objects) {
+		GUIObject[] mappedObjects = new GUIObject[objects.length];
+		for (int i = 0; i < objects.length; i++){
+			if (afoMap.containsKey(objects[i])) {
+				mappedObjects[i] = afoMap.get(objects[i]);
+			} else {
+				mappedObjects[i] = objects[i];
+			}
+		}
+		return mappedObjects;
+	}
+	
+	public void join(GAntObject ant, GFoodObject food) {
+		GAntFoodObject swp = new GAntFoodObject();
+		swp.setAnt(ant);
+		swp.setFood(food);
+		swp.setLocation(ant.getLocation());
+		afoMap.put(ant, swp);
+	}
+	
+	public void split(GAntObject ant) {
+		if (afoMap.containsKey(ant)) {
+			GAntFoodObject swp = afoMap.get(ant);
+			accumulator.add(swp.getFood());
+			afoMap.remove(ant);
 		}
 	}
 

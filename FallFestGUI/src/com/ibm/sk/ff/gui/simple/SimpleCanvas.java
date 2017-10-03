@@ -52,7 +52,7 @@ public class SimpleCanvas extends JComponent {
 
 	private final int MAGNIFICATION;
 	
-	private Map<Long, SimpleGUIComponent> objects = new HashMap<>();
+	private Map<GUIObject, SimpleGUIComponent> objects = new HashMap<>();
 	
 	private int w, h;
 	
@@ -110,25 +110,48 @@ public class SimpleCanvas extends JComponent {
 	public void set(GUIObject[] gos) {
 		for (GUIObject go : gos) {
 			SimpleGUIComponent toAdd = null;
-			if (objects.containsKey(go.getId())) {
-				toAdd = objects.get(go.getId());
-				objects.remove(go.getId());
+			if (objects.containsKey(go)) {
+				toAdd = objects.get(go);
+				objects.remove(go);
 				toAdd.moveToLocation(go.getLocation().getX(), go.getLocation().getY());
 			} else {
-				toAdd = new SimpleGUIComponent(MAGNIFICATION, Color.BLACK, getImage(go.getType()), getTeamColor(go));
+				toAdd = new SimpleGUIComponent(MAGNIFICATION, getImage(go.getType()), getTeamColor(go));
 				toAdd.setLocation(go.getLocation().getX(), go.getLocation().getY());
 			}
 			
 			if (go.getType().equals(GUIObjectTypes.ANT_FOOD)) {
 				GAntFoodObject gafo = (GAntFoodObject)go;
-				objects.remove(gafo.getAnt().getId());
-				objects.remove(gafo.getFood().getId());
+				objects.remove(gafo.getAnt());
+				objects.remove(gafo.getFood());
+//			} else
+//			if (go.getType().equals(GUIObjectTypes.ANT)){
+//				GAntFoodObject swp = findInAntFood(go);
+//				if (swp != null) {
+//					this.objects.put(swp.getFood(), new SimpleGUIComponent(MAGNIFICATION, getImage(GUIObjectTypes.FOOD), getTeamColor(go)));
+//					this.objects.remove(swp);
+//				}
+//			} else
+//			if (go.getType().equals(GUIObjectTypes.FOOD)) {
+//				GAntFoodObject swp = findInAntFood(go);
+//				if (swp != null) {
+//					this.objects.put(swp.getAnt(), new SimpleGUIComponent(MAGNIFICATION, getImage(GUIObjectTypes.ANT), getTeamColor(go)));
+//					this.objects.remove(swp);
+//				}
 			}
 	
-			this.objects.put(go.getId(), toAdd);
+			this.objects.put(go, toAdd);
 		}
 		
 		performRepaint();
+	}
+	
+	private GAntFoodObject findInAntFood(GUIObject object) {
+		return objects.keySet().stream()
+			.filter(o -> o.getType().equals(GUIObjectTypes.ANT_FOOD))
+			.map(o -> (GAntFoodObject)o)
+			.filter(af -> af.getAnt().getId() == object.getId() || af.getFood().getId() == object.getId())
+			.findAny()
+			.orElse(null);
 	}
 	
 	private Color getTeamColor(GUIObject go) {
