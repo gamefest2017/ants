@@ -16,4 +16,8 @@ public interface IAnt extends IWorldObject {
 
 	boolean isEnemy(IAnt otherAnt);
 
+	Food getFood();
+
+	boolean hasFood();
+
 }

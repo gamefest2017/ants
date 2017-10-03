@@ -47,10 +47,12 @@ public abstract class AbstractAnt extends WorldObject implements IAnt {
 		return retValue;
 	}
 
+	@Override
 	public boolean hasFood() {
 		return this.food != null;
 	}
 	
+	@Override
 	public Food getFood() {
 		return this.food;
 	}

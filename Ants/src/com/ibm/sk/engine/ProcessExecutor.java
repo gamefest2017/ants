@@ -1,19 +1,15 @@
 package com.ibm.sk.engine;
 
-import static com.ibm.sk.Main.getTurn;
 import static com.ibm.sk.engine.World.getWorldObjects;
 
 import java.awt.Point;
-import java.util.ArrayList;
 import java.util.EnumMap;
-import java.util.List;
 import java.util.Map;
 
 import com.ibm.sk.WorldConstans;
 import com.ibm.sk.dto.AbstractAnt;
 import com.ibm.sk.dto.Hill;
 import com.ibm.sk.dto.IAnt;
-import com.ibm.sk.dto.Step;
 import com.ibm.sk.dto.Vision;
 import com.ibm.sk.dto.enums.Direction;
 import com.ibm.sk.engine.exceptions.MoveException;
@@ -22,7 +18,6 @@ import com.ibm.sk.ff.gui.common.objects.operations.CreateGameData;
 public final class ProcessExecutor {
 
 	private ProcessExecutor() {}
-	private static List steps = new ArrayList();
 	private static final GuiConnector guiConnector = new GuiConnector();
 
 
@@ -31,8 +26,6 @@ public final class ProcessExecutor {
 		for (final IAnt ant : hill.getAnts()) {
 			singleStep(ant);
 		}
-
-		steps.add(new Step(getTurn(), getWorldObjects()));
 		guiConnector.placeGuiObjects(getWorldObjects());
 		guiConnector.showScore(hill.getName(), hill.getFood());
 	}
@@ -41,16 +34,12 @@ public final class ProcessExecutor {
 		final CreateGameData gameData = new CreateGameData();
 		gameData.setWidth(WorldConstans.X_BOUNDRY);
 		gameData.setHeight(WorldConstans.Y_BOUNDRY);
-		gameData.setTeams(new String[]{"King of ants","Queen of pants"});
+		gameData.setTeams(new String[] { team1.getName(), team2 != null ? team2.getName() : "" });
 		guiConnector.initGame(gameData);
 		guiConnector.placeGuiObject(team1);
 		if (team2 != null) {
 			guiConnector.placeGuiObject(team2);
 		}
-	}
-
-	public static List getSteps() {
-		return steps;
 	}
 
 	private static void singleStep(final IAnt ant) {
@@ -66,14 +55,14 @@ public final class ProcessExecutor {
 				boolean hadFood = false;
 
 				if (ant instanceof AbstractAnt) {
-					hadFood = ((AbstractAnt) ant).hasFood();
+					hadFood = ant.hasFood();
 				}
 
 				movementHandler.makeMove(ant, direction);
 
 				if (ant instanceof AbstractAnt) {
-					if (!hadFood && ((AbstractAnt) ant).hasFood()) {
-						guiConnector.removeGuiObject(((AbstractAnt) ant).getFood());
+					if (!hadFood && ant.hasFood()) {
+						guiConnector.removeGuiObject(ant.getFood());
 					}
 				}
 			} catch (final MoveException e) {

@@ -6,6 +6,6 @@
 	<classpathentry kind="lib" path="/FallFestGUILib/jackson-annotations-2.5.1.jar"/>
 	<classpathentry kind="lib" path="/FallFestGUILib/jackson-core-2.5.1.jar"/>
 	<classpathentry kind="lib" path="/FallFestGUILib/jackson-databind-2.5.1.jar"/>
-	<classpathentry kind="con" path="org.eclipse.jdt.launching.JRE_CONTAINER/org.eclipse.jdt.internal.debug.ui.launcher.StandardVMType/Java80"/>
+	<classpathentry kind="con" path="org.eclipse.jdt.launching.JRE_CONTAINER/org.eclipse.jdt.internal.debug.ui.launcher.StandardVMType/java-8-oracle"/>
 	<classpathentry kind="output" path="bin"/>
 </classpath>
