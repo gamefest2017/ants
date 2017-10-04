@@ -3,9 +3,11 @@ package com.ibm.sk.engine;
 import static com.ibm.sk.engine.World.getWorldObjects;
 
 import java.awt.Point;
+import java.util.ArrayList;
 import java.util.EnumMap;
 import java.util.Map;
 
+import com.ibm.sk.Main;
 import com.ibm.sk.WorldConstans;
 import com.ibm.sk.dto.AbstractAnt;
 import com.ibm.sk.dto.Hill;
@@ -37,13 +39,15 @@ public final class ProcessExecutor {
 		gameData.setTeams(new String[] { team1.getName(), team2 != null ? team2.getName() : "" });
 		guiConnector.initGame(gameData);
 		guiConnector.placeGuiObject(team1);
+		guiConnector.placeGuiObjects(new ArrayList<>(team1.getAnts()));
 		if (team2 != null) {
 			guiConnector.placeGuiObject(team2);
+			guiConnector.placeGuiObjects(new ArrayList<>(team2.getAnts()));
 		}
 	}
 
 	private static void singleStep(final IAnt ant) {
-		System.out.println("Ant " + ant.getId() + " said:");
+		System.out.println("Turn:" + Main.getTurn() + "Ant " + ant.getId() + " said:");
 		final Vision vision = new Vision(createVisionGrid(ant.getPosition()));
 		final Direction direction = ant.move(vision);
 		final MovementHandler movementHandler = new MovementHandler();
@@ -52,19 +56,19 @@ public final class ProcessExecutor {
 			System.out.println("I'm not moving. I like this place!");
 		} else {
 			try {
-				boolean hadFood = false;
+//				boolean hadFood = false;
 
-				if (ant instanceof AbstractAnt) {
-					hadFood = ant.hasFood();
-				}
+//				if (ant instanceof AbstractAnt) {
+//					hadFood = ant.hasFood();
+//				}
 
 				movementHandler.makeMove(ant, direction);
 
-				if (ant instanceof AbstractAnt) {
-					if (!hadFood && ant.hasFood()) {
-						guiConnector.removeGuiObject(ant.getFood());
-					}
-				}
+//				if (ant instanceof AbstractAnt) {
+//					if (!hadFood && ant.hasFood()) {
+//						guiConnector.removeGuiObject(ant.getFood());
+//					}
+//				}
 			} catch (final MoveException e) {
 				System.out.println("I cannot move to " + direction.name() + "! That would hurt me!");
 			}
@@ -84,8 +88,8 @@ public final class ProcessExecutor {
 	private static Object checkField(final Direction direction, final Point point) {
 		point.translate(direction.getPositionChange().x, direction.getPositionChange().y);
 		final Object foundObject = World.getWorldObject(point);
-		System.out.println("I see on position [" + point.x + ", " + point.y + "] "
-				+ (foundObject == null ? "nothing" : foundObject));
+//		System.out.println("I see on position [" + point.x + ", " + point.y + "] "
+//				+ (foundObject == null ? "nothing" : foundObject));
 		return foundObject;
 	}
 }

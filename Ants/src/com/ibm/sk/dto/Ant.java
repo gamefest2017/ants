@@ -36,7 +36,6 @@ public class Ant extends AbstractAnt {
 				returnValue = Direction.random();
 			}
 		} else {
-			System.out.println("Going home!");
 			returnValue = findWayHome();
 			System.out.println("Going home!" + " [" + this.position.x + ", " + this.position.y + "] >> ["
 					+ returnValue.getPositionChange().x + ", " + returnValue.getPositionChange().y + "] ~> ["

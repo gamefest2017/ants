@@ -53,15 +53,15 @@ public class SimpleGUI implements GUI {
 	
 	@Override
 	public void set(GAntFoodObject[] afo) {
-		List<GAntObject> antsList = new ArrayList<>();
-		for (int i = 0; i < afo.length; i++) {
-			GAntObject swp = afo[i].getAnt();
-			swp.setLocation(afo[i].getLocation());
-			antsList.add(swp);
-		}
-		if (antsList.size() > 0) {
-			canvas.set(antsList.stream().toArray(GAntObject[]::new));
-		}
+//		List<GAntFoodObject> antsList = new ArrayList<>();
+//		for (int i = 0; i < afo.length; i++) {
+//			GAntFoodObject swp = afo[i];
+//			swp.setLocation(afo[i].getAnt().getLocation());
+//			antsList.add(swp);
+//		}
+//		if (antsList.size() > 0) {
+//			canvas.set(antsList.stream().toArray(GAntFoodObject[]::new));
+//		}
 		canvas.set(afo);
 	}
 

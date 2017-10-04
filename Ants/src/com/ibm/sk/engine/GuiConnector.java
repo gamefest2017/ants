@@ -29,37 +29,47 @@ public class GuiConnector {
 
 	public void placeGuiObjects(final List<IWorldObject> worldObjects) {
 		final List<GUIObject> guiObjects = new ArrayList<>();
+		final List<GUIObject> guiFoodObjects = new ArrayList<>();
+		final List<GUIObject> guiAntObjects = new ArrayList<>();
+		final List<GAntObject> guiAntObjectsToSplit = new ArrayList<>();
+		
 		for (final IWorldObject worldObject : worldObjects) {
 			if (worldObject instanceof Food) {
 				final Food food = (Food) worldObject;
 				final GFoodObject gFoodObject = createGFoodObject(food);
 				System.out.println("Placing to GUI: " + food);
-				guiObjects.add(gFoodObject);
+				guiFoodObjects.add(gFoodObject);
 			} else if (worldObject instanceof AbstractAnt) {
 				final AbstractAnt ant = (AbstractAnt) worldObject;
-				GUIObject gAntObject;
+				GAntObject gAntObject;
 				if (ant.hasFood()) {
 					gAntObject = createGAntFoodObject(ant);
 					System.out.println("Changing type in GUI old object: " + GUIObjectTypes.ANT + " with object: " + GUIObjectTypes.ANT_FOOD);
 				} else {
 					gAntObject = createGAntObject(ant);
+					if (ant.getMyHill().getPosition().equals(ant.getPosition())) {
+						System.out.println("Splitting food from ant: " + ant);
+						guiAntObjectsToSplit.add(gAntObject);
+					}
 					System.out.println("Placing to GUI: " + ant);
 				}
-				guiObjects.add(gAntObject);
+				guiAntObjects.add(gAntObject);
 			}
 		}
+		
+		guiObjects.addAll(guiFoodObjects);
+		guiObjects.addAll(guiAntObjects);
+		
 		this.FACADE.set(guiObjects.toArray(new GUIObject[guiObjects.size()]));
+		for (GAntObject gAntObject : guiAntObjectsToSplit) {
+			FACADE.split(gAntObject);
+		}
 	}
 
-	private GUIObject createGAntFoodObject(final IAnt ant) {
-		final GAntFoodObject result = new GAntFoodObject();
-		result.setId(World.idSequence++);
-		final Point position = ant.getPosition();
-		result.setLocation(position.x, position.y);
-		result.setAnt(createGAntObject(ant));
-		result.setFood(createGFoodObject(ant.getFood()));
-		ant.setId(result.getId());
-		return result;
+	private GAntObject createGAntFoodObject(final IAnt ant) {
+		GAntObject gAntObject = createGAntObject(ant);
+		FACADE.join(gAntObject, createGFoodObject(ant.getFood()));
+		return gAntObject;
 	}
 
 	private GAntObject createGAntObject(final IAnt ant) {
@@ -110,9 +120,9 @@ public class GuiConnector {
 
 	public void removeGuiObject(final WorldObject worldObject) {
 		if (worldObject instanceof Food) {
-			final GFoodObject gFoodObject = createGFoodObject((Food) worldObject);
-			this.FACADE.remove(gFoodObject);
-			System.out.println("Removed from GUI object: " + worldObject);
+//			final GFoodObject gFoodObject = createGFoodObject((Food) worldObject);
+//			this.FACADE.remove(gFoodObject);
+//			System.out.println("Removed from GUI object: " + worldObject);
 		} else if (worldObject instanceof AbstractAnt) {
 			final AbstractAnt ant = (AbstractAnt) worldObject;
 			final GAntObject gAntObject = createGAntObject(ant);

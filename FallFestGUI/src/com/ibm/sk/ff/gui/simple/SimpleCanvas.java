@@ -109,12 +109,29 @@ public class SimpleCanvas extends JComponent {
 	
 	public void set(GUIObject[] gos) {
 		for (GUIObject go : gos) {
+			GUIObject key = go;
 			SimpleGUIComponent toAdd = null;
 			if (objects.containsKey(go)) {
 				toAdd = objects.get(go);
 				objects.remove(go);
 				toAdd.moveToLocation(go.getLocation().getX(), go.getLocation().getY());
 			} else {
+				if (GUIObjectTypes.ANT_FOOD.equals(go.getType())) {
+					GAntFoodObject gafo = (GAntFoodObject)go;
+					toAdd = objects.get(gafo.getAnt());
+					objects.remove(gafo.getAnt());
+					toAdd.moveToLocation(gafo.getAnt().getLocation().getX(), gafo.getAnt().getLocation().getY());
+					this.objects.put(gafo.getAnt(), toAdd);
+					performRepaint();
+				}
+//				else if (GUIObjectTypes.ANT.equals(go.getType())) {
+//					GAntObject gao = (GAntObject)go;
+//					toAdd = objects.get(gao);
+//					objects.remove(gao);
+//					toAdd.moveToLocation(gao.getLocation().getX(), gao.getLocation().getY());
+//					this.objects.put(gao, toAdd);
+//					performRepaint();
+//				}
 				toAdd = new SimpleGUIComponent(MAGNIFICATION, getImage(go.getType()), getTeamColor(go));
 				toAdd.setLocation(go.getLocation().getX(), go.getLocation().getY());
 			}
@@ -123,13 +140,15 @@ public class SimpleCanvas extends JComponent {
 				GAntFoodObject gafo = (GAntFoodObject)go;
 				objects.remove(gafo.getAnt());
 				objects.remove(gafo.getFood());
-//			} else
-//			if (go.getType().equals(GUIObjectTypes.ANT)){
-//				GAntFoodObject swp = findInAntFood(go);
-//				if (swp != null) {
-//					this.objects.put(swp.getFood(), new SimpleGUIComponent(MAGNIFICATION, getImage(GUIObjectTypes.FOOD), getTeamColor(go)));
-//					this.objects.remove(swp);
-//				}
+			} else
+			if (go.getType().equals(GUIObjectTypes.ANT)){
+				GAntFoodObject swp = findInAntFood(go);
+				if (swp != null) {
+					this.objects.remove(swp);
+//					toAdd = this.objects.remove(swp);
+//					toAdd.moveToLocation(go.getLocation().getX(), go.getLocation().getY());	
+//					key = swp;
+				}
 //			} else
 //			if (go.getType().equals(GUIObjectTypes.FOOD)) {
 //				GAntFoodObject swp = findInAntFood(go);
@@ -139,7 +158,7 @@ public class SimpleCanvas extends JComponent {
 //				}
 			}
 	
-			this.objects.put(go, toAdd);
+			this.objects.put(key, toAdd);
 		}
 		
 		performRepaint();

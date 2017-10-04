@@ -87,7 +87,10 @@ public class GUIFacade {
 		GUIObject[] mappedObjects = new GUIObject[objects.length];
 		for (int i = 0; i < objects.length; i++){
 			if (afoMap.containsKey(objects[i])) {
-				mappedObjects[i] = afoMap.get(objects[i]);
+				GAntFoodObject swp = afoMap.remove(objects[i]);
+				(swp).setLocation(objects[i].getLocation());
+				afoMap.put((GAntObject)objects[i], swp);
+				mappedObjects[i] = swp;
 			} else {
 				mappedObjects[i] = objects[i];
 			}
@@ -96,18 +99,21 @@ public class GUIFacade {
 	}
 	
 	public void join(GAntObject ant, GFoodObject food) {
-		GAntFoodObject swp = new GAntFoodObject();
-		swp.setAnt(ant);
-		swp.setFood(food);
-		swp.setLocation(ant.getLocation());
-		afoMap.put(ant, swp);
+		if (!afoMap.containsKey(ant)) {
+			GAntFoodObject swp = new GAntFoodObject();
+			swp.setAnt(ant);
+			swp.setFood(food);
+			swp.setLocation(ant.getLocation());
+			afoMap.put(ant, swp);
+		}
 	}
 	
 	public void split(GAntObject ant) {
 		if (afoMap.containsKey(ant)) {
 			GAntFoodObject swp = afoMap.get(ant);
-			accumulator.add(swp.getFood());
+//			accumulator.add(swp.getFood());
 			afoMap.remove(ant);
+			set(ant);
 		}
 	}
 
