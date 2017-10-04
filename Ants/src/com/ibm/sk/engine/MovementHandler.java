@@ -30,7 +30,7 @@ public final class MovementHandler {
 
 		final Object worldObject = World.getWorldObject(position);
 
-		if (worldObject == null) {
+		if (worldObject == null || ant.getMyHill().getPosition().equals(position)) {
 			System.out.println("I'm moving from [" + ant.getPosition().x + ", " + ant.getPosition().y + "] to "
 					+ direction.name() + "[" + position.x + ", " + position.y + "]" + ", out of my way!");
 			ant.setPosition(position);

@@ -116,6 +116,22 @@ public class SimpleCanvas extends JComponent {
 				objects.remove(go);
 				toAdd.moveToLocation(go.getLocation().getX(), go.getLocation().getY());
 			} else {
+				if (GUIObjectTypes.ANT_FOOD.equals(go.getType())) {
+					GAntFoodObject gafo = (GAntFoodObject)go;
+					toAdd = objects.get(gafo.getAnt());
+					objects.remove(gafo.getAnt());
+					toAdd.moveToLocation(gafo.getAnt().getLocation().getX(), gafo.getAnt().getLocation().getY());
+					this.objects.put(gafo.getAnt(), toAdd);
+					performRepaint();
+				}
+//				else if (GUIObjectTypes.ANT.equals(go.getType())) {
+//					GAntObject gao = (GAntObject)go;
+//					toAdd = objects.get(gao);
+//					objects.remove(gao);
+//					toAdd.moveToLocation(gao.getLocation().getX(), gao.getLocation().getY());
+//					this.objects.put(gao, toAdd);
+//					performRepaint();
+//				}
 				toAdd = new SimpleGUIComponent(MAGNIFICATION, getImage(go.getType()), getTeamColor(go));
 				toAdd.setLocation(go.getLocation().getX(), go.getLocation().getY());
 			}

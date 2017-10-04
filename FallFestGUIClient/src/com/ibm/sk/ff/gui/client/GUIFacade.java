@@ -113,6 +113,7 @@ public class GUIFacade {
 			GAntFoodObject swp = afoMap.get(ant);
 //			accumulator.add(swp.getFood());
 			afoMap.remove(ant);
+			set(ant);
 		}
 	}
 
