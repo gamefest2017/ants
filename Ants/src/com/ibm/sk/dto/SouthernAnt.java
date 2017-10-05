@@ -1,14 +1,14 @@
 package com.ibm.sk.dto;
 
 import java.awt.Point;
-import java.util.Random;
 
 import com.ibm.sk.dto.enums.Direction;
 
-public class Ant extends AbstractAnt {
+public class SouthernAnt extends AbstractAnt {
 
-	public Ant(final int id, final Point position, final Hill myHill) {
+	public SouthernAnt(int id, Point position, Hill myHill) {
 		super(id, position, myHill);
+		// TODO Auto-generated constructor stub
 	}
 
 	/**
@@ -29,12 +29,16 @@ public class Ant extends AbstractAnt {
 				if (item instanceof Food) {
 					System.out.println("I see food!");
 					returnValue = direction;
-				}
+				}				
 			}
 
 			if (Direction.NO_MOVE.equals(returnValue)) {
 				System.out.println("Where to go?");
-				returnValue = randomDirection();
+				if (this.position.y > this.getMyHill().position.y) {
+					returnValue = Direction.SOUTH;					
+				}else {
+					returnValue = randomDirection();
+				}
 			}
 		} else {
 			System.out.println("Going home!");
@@ -44,4 +48,5 @@ public class Ant extends AbstractAnt {
 
 		return returnValue;
 	}
+
 }

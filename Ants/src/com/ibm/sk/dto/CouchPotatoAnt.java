@@ -1,14 +1,16 @@
 package com.ibm.sk.dto;
 
 import java.awt.Point;
-import java.util.Random;
 
 import com.ibm.sk.dto.enums.Direction;
 
-public class Ant extends AbstractAnt {
+public class CouchPotatoAnt extends AbstractAnt {
+	
+	private int maxAllowedDistance = 30; 
 
-	public Ant(final int id, final Point position, final Hill myHill) {
+	public CouchPotatoAnt(int id, Point position, Hill myHill) {
 		super(id, position, myHill);
+		// TODO Auto-generated constructor stub
 	}
 
 	/**
@@ -29,12 +31,16 @@ public class Ant extends AbstractAnt {
 				if (item instanceof Food) {
 					System.out.println("I see food!");
 					returnValue = direction;
-				}
+				}				
 			}
 
 			if (Direction.NO_MOVE.equals(returnValue)) {
 				System.out.println("Where to go?");
-				returnValue = randomDirection();
+				if (Direction.getDistance(this.getMyHill().position, this.position) > this.maxAllowedDistance) {
+					returnValue = Direction.getDirectionFromStartToTarget(this.getMyHill().position, this.position);
+				}else {
+					returnValue = randomDirection();
+				}
 			}
 		} else {
 			System.out.println("Going home!");

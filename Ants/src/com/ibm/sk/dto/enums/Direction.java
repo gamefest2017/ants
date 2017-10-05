@@ -87,4 +87,45 @@ public enum Direction {
 		
 		return returnValue;
 	}
+	
+	public static Direction getDirectionFromStartToTarget(Point startP, Point targetP) {
+		Direction returnValue = Direction.NO_MOVE;
+		int x = targetP.x - startP.x;
+		int y = targetP.y - startP.y;
+		
+		if (x == 0) {
+			if (y == 0) {
+				returnValue = Direction.NO_MOVE;
+			}
+			else if (y > 0) {
+				returnValue = Direction.NORTH;
+			} else {
+				returnValue = Direction.SOUTH;
+			}			
+		} else if (x<0) {
+			if (y == 0) {
+				returnValue = Direction.WEST;
+			}
+			else if (y > 0) {
+				returnValue = Direction.NORTHWEST;
+			} else {
+				returnValue = Direction.SOUTHWEST;
+			}
+		} else {
+			if (y == 0) {
+				returnValue = Direction.EAST;
+			}
+			else if (y > 0) {
+				returnValue = Direction.NORTHEAST;
+			} else {
+				returnValue = Direction.SOUTHEAST;
+			}
+		}
+		
+		return returnValue;
+	}
+	
+	public static int getDistance(Point p1, Point p2) {		
+		return Math.max(Math.abs(p1.x - p2.x), Math.abs(p1.y - p2.y));		
+	}
 }
