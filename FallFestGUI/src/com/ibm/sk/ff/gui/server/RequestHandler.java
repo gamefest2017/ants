@@ -11,6 +11,7 @@ import com.ibm.sk.ff.gui.common.objects.gui.GAntFoodObject;
 import com.ibm.sk.ff.gui.common.objects.gui.GAntObject;
 import com.ibm.sk.ff.gui.common.objects.gui.GFoodObject;
 import com.ibm.sk.ff.gui.common.objects.gui.GHillObject;
+import com.ibm.sk.ff.gui.common.objects.gui.GUIObjectCrate;
 import com.ibm.sk.ff.gui.common.objects.gui.GUIObjectTypes;
 import com.ibm.sk.ff.gui.common.objects.operations.CloseData;
 import com.ibm.sk.ff.gui.common.objects.operations.CreateGameData;
@@ -22,39 +23,39 @@ import com.sun.net.httpserver.HttpExchange;
 import com.sun.net.httpserver.HttpHandler;
 
 public class RequestHandler implements HttpHandler {
-	
+
 	private final Logger LOGGER = Logger.getLogger(RequestHandler.class);
 	private final Facade FACADE;
-	
-	public RequestHandler(Facade facade) {
-		FACADE = facade;
+
+	public RequestHandler(final Facade facade) {
+		this.FACADE = facade;
 	}
-	
+
 	@Override
-	public void handle(HttpExchange paramHttpExchange) throws IOException {
+	public void handle(final HttpExchange paramHttpExchange) throws IOException {
 		String path = paramHttpExchange.getRequestURI().getPath();
 		if (path.startsWith("/")) {
 			path = path.substring(1);
 		}
-		String [] swp = path.split("/");
-		GUIOperations operation = createGUIOperation(swp);
-		
+		final String [] swp = path.split("/");
+		final GUIOperations operation = createGUIOperation(swp);
+
 		if (operation.equals(GUIOperations.EVENT_POLL)) {
-			String response = callEventPoll();
+			final String response = callEventPoll();
 			paramHttpExchange.sendResponseHeaders(200, 0);
 			paramHttpExchange.setAttribute("Content-Length", Integer.valueOf(response.length()));
 			paramHttpExchange.getResponseBody().write(response.getBytes());
 			paramHttpExchange.close();
 		} else {
-			String json = readRequestBody(paramHttpExchange.getRequestBody());
-			
-			handle(operation, (swp.length > 1) ? swp[1] : null, json);
-			
+			final String json = readRequestBody(paramHttpExchange.getRequestBody());
+
+			handle(operation, swp.length > 1 ? swp[1] : null, json);
+
 			paramHttpExchange.sendResponseHeaders(200, 0);
 		}
 	}
-	
-	private void handle(GUIOperations operation, String leftoverURL, String json) {
+
+	private void handle(final GUIOperations operation, final String leftoverURL, final String json) {
 		switch (operation) {
 		case SHOW_INIT_MENU:	showInitMenu(leftoverURL, json);	break;
 		case CREATE_GAME: 		callCreateGame(leftoverURL, json);	break;
@@ -66,71 +67,87 @@ public class RequestHandler implements HttpHandler {
 		default: break;
 		}
 	}
-	
+
 	private String callEventPoll() {
-		return FACADE.getEvents();
+		return this.FACADE.getEvents();
 	}
-	
-	private void showInitMenu(String url, String json) {
-		log("Showing init menu."); 
-		FACADE.initMenu(Mapper.INSTANCE.jsonToPojo(json, InitMenuData.class));
+
+	private void showInitMenu(final String url, final String json) {
+		log("Showing init menu.");
+		this.FACADE.initMenu(Mapper.INSTANCE.jsonToPojo(json, InitMenuData.class));
 	}
-	
-	private void callCreateGame(String url, String json) {
+
+	private void callCreateGame(final String url, final String json) {
 		log("Creating window.");
-		FACADE.createGame(Mapper.INSTANCE.jsonToPojo(json, CreateGameData.class));
+		this.FACADE.createGame(Mapper.INSTANCE.jsonToPojo(json, CreateGameData.class));
 	}
-	
-	private void callSet(String url, String json) {
-		switch (GUIObjectTypes.forValue(url)) {
-		case ANT: log("Adding new ant."); FACADE.set(Mapper.INSTANCE.jsonToPojo(json, GAntObject[].class)); break;
-		case ANT_FOOD: log("Adding new antfood."); FACADE.set(Mapper.INSTANCE.jsonToPojo(json, GAntFoodObject[].class)); break;
-		case FOOD: log("Adding new food."); FACADE.set(Mapper.INSTANCE.jsonToPojo(json, GFoodObject[].class)); break;
-		case HILL: log("Adding new hill."); FACADE.set(Mapper.INSTANCE.jsonToPojo(json, GHillObject[].class)); break;
+
+	private void callSet(final String url, final String json) {
+		if (url == null) {
+			this.FACADE.set(Mapper.INSTANCE.jsonToPojo(json, GUIObjectCrate.class));
+		} else {
+			switch (GUIObjectTypes.forValue(url)) {
+			case ANT:
+				log("Adding new ant.");
+				this.FACADE.set(Mapper.INSTANCE.jsonToPojo(json, GAntObject[].class));
+				break;
+			case ANT_FOOD:
+				log("Adding new antfood.");
+				this.FACADE.set(Mapper.INSTANCE.jsonToPojo(json, GAntFoodObject[].class));
+				break;
+			case FOOD:
+				log("Adding new food.");
+				this.FACADE.set(Mapper.INSTANCE.jsonToPojo(json, GFoodObject[].class));
+				break;
+			case HILL:
+				log("Adding new hill.");
+				this.FACADE.set(Mapper.INSTANCE.jsonToPojo(json, GHillObject[].class));
+				break;
+			}
 		}
 	}
-	
-	private void callRemove(String url, String json) {
+
+	private void callRemove(final String url, final String json) {
 		switch (GUIObjectTypes.forValue(url)) {
-		case ANT: log("Removing ant."); FACADE.remove(Mapper.INSTANCE.jsonToPojo(json, GAntObject[].class)); break;
-		case ANT_FOOD: log("Removing antfood."); FACADE.remove(Mapper.INSTANCE.jsonToPojo(json, GAntFoodObject[].class)); break;
-		case FOOD: log("Removing food."); FACADE.remove(Mapper.INSTANCE.jsonToPojo(json, GFoodObject[].class)); break;
-		case HILL: log("Removing hil			StringBuilder sb = new StringBuilder();l."); FACADE.remove(Mapper.INSTANCE.jsonToPojo(json, GHillObject[].class)); break;
+		case ANT: log("Removing ant."); this.FACADE.remove(Mapper.INSTANCE.jsonToPojo(json, GAntObject[].class)); break;
+		case ANT_FOOD: log("Removing antfood."); this.FACADE.remove(Mapper.INSTANCE.jsonToPojo(json, GAntFoodObject[].class)); break;
+		case FOOD: log("Removing food."); this.FACADE.remove(Mapper.INSTANCE.jsonToPojo(json, GFoodObject[].class)); break;
+		case HILL: log("Removing hil			StringBuilder sb = new StringBuilder();l."); this.FACADE.remove(Mapper.INSTANCE.jsonToPojo(json, GHillObject[].class)); break;
 		}
 	}
-	
-	private void callScore(String url, String json) {
+
+	private void callScore(final String url, final String json) {
 		log("Showing score.");
-		FACADE.score(Mapper.INSTANCE.jsonToPojo(json, ScoreData.class));
+		this.FACADE.score(Mapper.INSTANCE.jsonToPojo(json, ScoreData.class));
 	}
-	
-	private void callShowResult(String url, String json) {
+
+	private void callShowResult(final String url, final String json) {
 		log("Showing results.");
-		FACADE.showResults(Mapper.INSTANCE.jsonToPojo(json, ResultData.class));
+		this.FACADE.showResults(Mapper.INSTANCE.jsonToPojo(json, ResultData.class));
 	}
-	
-	private void callClose(String url, String json) {
+
+	private void callClose(final String url, final String json) {
 		log("Closing window.");
-		FACADE.close(Mapper.INSTANCE.jsonToPojo(json, CloseData.class));
+		this.FACADE.close(Mapper.INSTANCE.jsonToPojo(json, CloseData.class));
 	}
-	
-	private GUIOperations createGUIOperation(String [] path) {
+
+	private GUIOperations createGUIOperation(final String [] path) {
 		GUIOperations ret = null;
 
 		if (path.length >= 1) {
 			ret = GUIOperations.forValue(path[0].trim());
 		}
-		
+
 		return ret;
 	}
-	
-	private String readRequestBody(InputStream in) throws IOException {
-		StringBuilder sb = new StringBuilder();
-		
+
+	private String readRequestBody(final InputStream in) throws IOException {
+		final StringBuilder sb = new StringBuilder();
+
 		if (in != null && in.available() > 0) {
-			byte [] buffer = new byte [1024];
+			final byte [] buffer = new byte [1024];
 			int read;
-			
+
 			while ((read = in.read(buffer)) > 0) {
 				sb.append(new String(buffer, 0, read));
 			}
@@ -138,9 +155,9 @@ public class RequestHandler implements HttpHandler {
 
 		return sb.toString();
 	}
-	
-	private void log(String message) {
-		LOGGER.log(Level.INFO, message);
+
+	private void log(final String message) {
+		this.LOGGER.log(Level.INFO, message);
 	}
 
 }

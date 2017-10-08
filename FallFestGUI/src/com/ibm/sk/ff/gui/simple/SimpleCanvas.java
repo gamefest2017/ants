@@ -21,23 +21,23 @@ import com.ibm.sk.ff.gui.config.Config;
 
 public class SimpleCanvas extends JComponent {
 	private static final long serialVersionUID = 1L;
-	
+
 	private final Color[] COLORS = {Color.BLACK, Color.RED};
-	
+
 	private final boolean DEV_MODE = Boolean.parseBoolean(Config.DEV_MODE.toString());
-	
+
 	private static long SLEEP_INTERVAL = Long.parseLong(Config.GUI_MOVE_INTERVAL.toString()) / Long.parseLong(Config.GUI_MAGNIFICATION.toString());
-	
+
 	private static Image IMAGES_GRASS = null;
 	private static Image[] IMAGES_ANT = null;
 	private static Image IMAGES_FOOD = null;
 	private static Image IMAGES_HILL = null;
 	private static Image[] IMAGES_ANT_FOOD = null;
-	
+
 	private static final Color BACKGROUND_COLOR = Color.GREEN;
-	
+
 	private boolean finishedRedraw = true;
-	
+
 	static {
 		try {
 			IMAGES_GRASS = ImageIO.read(new File("res/grass2.jpg"));
@@ -45,20 +45,20 @@ public class SimpleCanvas extends JComponent {
 			IMAGES_FOOD = ImageIO.read(new File("res/food.png"));
 			IMAGES_HILL = ImageIO.read(new File("res/hill.png"));
 			IMAGES_ANT_FOOD = new Image [] {ImageIO.read(new File("res/antWithCookie_left.png")), ImageIO.read(new File("res/antWithCookie_right.png"))};
-		} catch (Exception e) {
+		} catch (final Exception e) {
 			e.printStackTrace();
 		}
 	}
 
 	private final int MAGNIFICATION;
-	
-	private Map<GUIObject, SimpleGUIComponent> objects = new HashMap<>();
-	
-	private int w, h;
-	
-	private String [] teams;
-	
-	public SimpleCanvas(int width, int height, int magnification, String[] teams) {
+
+	private final Map<GUIObject, SimpleGUIComponent> objects = new HashMap<>();
+
+	private final int w, h;
+
+	private final String [] teams;
+
+	public SimpleCanvas(final int width, final int height, final int magnification, final String[] teams) {
 		this.MAGNIFICATION = magnification;
 		this.w = width;
 		this.h = height;
@@ -66,145 +66,146 @@ public class SimpleCanvas extends JComponent {
 		setPreferredSize(new Dimension(width * magnification, height * magnification));
 		this.teams = teams;
 	}
-	
-	public void paint(Graphics g) {
+
+	@Override
+	public void paint(final Graphics g) {
 		try {
-			g.drawImage(IMAGES_GRASS, 0, 0, w * MAGNIFICATION, h * MAGNIFICATION, Color.GREEN, null);
-			if (DEV_MODE) {
+			g.drawImage(IMAGES_GRASS, 0, 0, this.w * this.MAGNIFICATION, this.h * this.MAGNIFICATION, Color.GREEN, null);
+			if (this.DEV_MODE) {
 				paintGrid(g);
 			}
-		} catch (Exception e) {
+		} catch (final Exception e) {
 			g.setColor(BACKGROUND_COLOR);
 			g.fillRect(0, 0, getWidth(), getHeight());
 		}
-		finishedRedraw = true;
-			
-		for (SimpleGUIComponent it : objects.values().stream().toArray(SimpleGUIComponent[]::new)) {
+		this.finishedRedraw = true;
+
+		for (final SimpleGUIComponent it : this.objects.values().stream().toArray(SimpleGUIComponent[]::new)) {
 			if (!it.paint(g)) {
-				finishedRedraw = false;
+				this.finishedRedraw = false;
 			}
 		}
 	}
-	
-	private void paintGrid(Graphics g) {
+
+	private void paintGrid(final Graphics g) {
 		g.setColor(Color.GRAY);
-		for (int i = 0; i < w; i++) {
-			g.drawLine(i * MAGNIFICATION, 0, i * MAGNIFICATION, h * MAGNIFICATION);
+		for (int i = 0; i < this.w; i++) {
+			g.drawLine(i * this.MAGNIFICATION, 0, i * this.MAGNIFICATION, this.h * this.MAGNIFICATION);
 		}
-		for (int i = 0; i < h; i++) {
-			g.drawLine(0, i * MAGNIFICATION, w * MAGNIFICATION, i * MAGNIFICATION);
+		for (int i = 0; i < this.h; i++) {
+			g.drawLine(0, i * this.MAGNIFICATION, this.w * this.MAGNIFICATION, i * this.MAGNIFICATION);
 		}
 	}
-	
+
 	private void performRepaint() {
 		do {
 			paintImmediately(0, 0, getWidth(), getHeight());
 			try {
 				Thread.sleep(SLEEP_INTERVAL);
-			} catch (Exception e) {
+			} catch (final Exception e) {
 				e.printStackTrace();
 			}
-		} while (!finishedRedraw);
+		} while (!this.finishedRedraw);
 	}
-	
-	public void set(GUIObject[] gos) {
-		for (GUIObject go : gos) {
-			GUIObject key = go;
+
+	public void set(final GUIObject[] gos) {
+		for (final GUIObject go : gos) {
+			final GUIObject key = go;
 			SimpleGUIComponent toAdd = null;
-			if (objects.containsKey(go)) {
-				toAdd = objects.get(go);
-				objects.remove(go);
+			if (this.objects.containsKey(go)) {
+				toAdd = this.objects.get(go);
+				this.objects.remove(go);
 				toAdd.moveToLocation(go.getLocation().getX(), go.getLocation().getY());
 			} else {
 				if (GUIObjectTypes.ANT_FOOD.equals(go.getType())) {
-					GAntFoodObject gafo = (GAntFoodObject)go;
-					toAdd = objects.get(gafo.getAnt());
-					objects.remove(gafo.getAnt());
+					final GAntFoodObject gafo = (GAntFoodObject)go;
+					toAdd = this.objects.get(gafo.getAnt());
+					this.objects.remove(gafo.getAnt());
 					toAdd.moveToLocation(gafo.getAnt().getLocation().getX(), gafo.getAnt().getLocation().getY());
 					this.objects.put(gafo.getAnt(), toAdd);
 					performRepaint();
 				}
-//				else if (GUIObjectTypes.ANT.equals(go.getType())) {
-//					GAntObject gao = (GAntObject)go;
-//					toAdd = objects.get(gao);
-//					objects.remove(gao);
-//					toAdd.moveToLocation(gao.getLocation().getX(), gao.getLocation().getY());
-//					this.objects.put(gao, toAdd);
-//					performRepaint();
-//				}
-				toAdd = new SimpleGUIComponent(MAGNIFICATION, getImage(go.getType()), getTeamColor(go));
+				//				else if (GUIObjectTypes.ANT.equals(go.getType())) {
+				//					GAntObject gao = (GAntObject)go;
+				//					toAdd = objects.get(gao);
+				//					objects.remove(gao);
+				//					toAdd.moveToLocation(gao.getLocation().getX(), gao.getLocation().getY());
+				//					this.objects.put(gao, toAdd);
+				//					performRepaint();
+				//				}
+				toAdd = new SimpleGUIComponent(this.MAGNIFICATION, getImage(go.getType()), getTeamColor(go));
 				toAdd.setLocation(go.getLocation().getX(), go.getLocation().getY());
 			}
-			
+
 			if (go.getType().equals(GUIObjectTypes.ANT_FOOD)) {
-				GAntFoodObject gafo = (GAntFoodObject)go;
-				objects.remove(gafo.getAnt());
-				objects.remove(gafo.getFood());
+				final GAntFoodObject gafo = (GAntFoodObject)go;
+				this.objects.remove(gafo.getAnt());
+				this.objects.remove(gafo.getFood());
 			} else
-			if (go.getType().equals(GUIObjectTypes.ANT)){
-				GAntFoodObject swp = findInAntFood(go);
-				if (swp != null) {
-					this.objects.remove(swp);
-//					toAdd = this.objects.remove(swp);
-//					toAdd.moveToLocation(go.getLocation().getX(), go.getLocation().getY());	
-//					key = swp;
+				if (go.getType().equals(GUIObjectTypes.ANT)){
+					final GAntFoodObject swp = findInAntFood(go);
+					if (swp != null) {
+						this.objects.remove(swp);
+						//					toAdd = this.objects.remove(swp);
+						//					toAdd.moveToLocation(go.getLocation().getX(), go.getLocation().getY());
+						//					key = swp;
+					}
+					//			} else
+					//			if (go.getType().equals(GUIObjectTypes.FOOD)) {
+					//				GAntFoodObject swp = findInAntFood(go);
+					//				if (swp != null) {
+					//					this.objects.put(swp.getAnt(), new SimpleGUIComponent(MAGNIFICATION, getImage(GUIObjectTypes.ANT), getTeamColor(go)));
+					//					this.objects.remove(swp);
+					//				}
 				}
-//			} else
-//			if (go.getType().equals(GUIObjectTypes.FOOD)) {
-//				GAntFoodObject swp = findInAntFood(go);
-//				if (swp != null) {
-//					this.objects.put(swp.getAnt(), new SimpleGUIComponent(MAGNIFICATION, getImage(GUIObjectTypes.ANT), getTeamColor(go)));
-//					this.objects.remove(swp);
-//				}
-			}
-	
+
 			this.objects.put(key, toAdd);
 		}
-		
+
 		performRepaint();
 	}
-	
-	private GAntFoodObject findInAntFood(GUIObject object) {
-		return objects.keySet().stream()
-			.filter(o -> o.getType().equals(GUIObjectTypes.ANT_FOOD))
-			.map(o -> (GAntFoodObject)o)
-			.filter(af -> af.getAnt().getId() == object.getId() || af.getFood().getId() == object.getId())
-			.findAny()
-			.orElse(null);
+
+	private GAntFoodObject findInAntFood(final GUIObject object) {
+		return this.objects.keySet().stream()
+				.filter(o -> o.getType().equals(GUIObjectTypes.ANT_FOOD))
+				.map(o -> (GAntFoodObject)o)
+				.filter(af -> af.getAnt().getId() == object.getId() || af.getFood().getId() == object.getId())
+				.findAny()
+				.orElse(null);
 	}
-	
-	private Color getTeamColor(GUIObject go) {
+
+	private Color getTeamColor(final GUIObject go) {
 		Color ret = null;
 		if (go instanceof GAntObject) {
-			GAntObject swp = (GAntObject)go;
-			for (int i = 0; i < teams.length; i++) {
-				if (teams[i].equals(swp.getTeam())) {
-					ret = COLORS[i];
+			final GAntObject swp = (GAntObject)go;
+			for (int i = 0; i < this.teams.length; i++) {
+				if (this.teams[i].equals(swp.getTeam())) {
+					ret = this.COLORS[i];
 				}
 			}
 		}
 		if (go instanceof GHillObject) {
-			GHillObject swp = (GHillObject)go;
-			for (int i = 0; i < teams.length; i++) {
-				if (teams[i].equals(swp.getTeam())) {
-					ret = COLORS[i];
+			final GHillObject swp = (GHillObject)go;
+			for (int i = 0; i < this.teams.length; i++) {
+				if (this.teams[i].equals(swp.getTeam())) {
+					ret = this.COLORS[i];
 				}
 			}
 		}
 		if (go instanceof GAntFoodObject) {
-			GAntFoodObject swp = (GAntFoodObject)go;
-			for (int i = 0; i < teams.length; i++) {
-				if (swp.getAnt() != null && teams[i].equals(swp.getAnt().getTeam())) {
-					ret = COLORS[i];
+			final GAntFoodObject swp = (GAntFoodObject)go;
+			for (int i = 0; i < this.teams.length; i++) {
+				if (swp.getAnt() != null && this.teams[i].equals(swp.getAnt().getTeam())) {
+					ret = this.COLORS[i];
 				}
 			}
 		}
 		return ret;
 	}
 
-	public void remove(GUIObject[] object) {
+	public void remove(final GUIObject[] object) {
 		boolean changed = false;
-		for (GUIObject it : object) {
+		for (final GUIObject it : object) {
 			if (this.objects.containsKey(it.getId())) {
 				this.objects.remove(it.getId());
 				changed = true;
@@ -214,8 +215,8 @@ public class SimpleCanvas extends JComponent {
 			performRepaint();
 		}
 	}
-	
-	private Image[] getImage(GUIObjectTypes type) {
+
+	private Image[] getImage(final GUIObjectTypes type) {
 		Image[] ret = null;
 		switch (type) {
 		case ANT: ret = IMAGES_ANT;	break;
@@ -225,15 +226,15 @@ public class SimpleCanvas extends JComponent {
 		}
 		return ret;
 	}
-	
-	public void reset(InitMenuData data) {
-		objects.clear();
+
+	public void reset(final InitMenuData data) {
+		this.objects.clear();
 
 		performRepaint();
 	}
-	
-	public boolean contains(GUIObject go) {  
-		return objects.containsKey(go.getId());
+
+	public boolean contains(final GUIObject go) {
+		return this.objects.containsKey(go.getId());
 	}
 
 }
