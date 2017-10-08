@@ -9,19 +9,24 @@ import java.util.Map;
 
 import com.ibm.sk.Main;
 import com.ibm.sk.WorldConstans;
-import com.ibm.sk.dto.AbstractAnt;
+import com.ibm.sk.dto.Ant;
+import com.ibm.sk.dto.Food;
 import com.ibm.sk.dto.Hill;
 import com.ibm.sk.dto.IAnt;
+import com.ibm.sk.dto.IWorldObject;
 import com.ibm.sk.dto.Vision;
+import com.ibm.sk.dto.Warrior;
 import com.ibm.sk.dto.enums.Direction;
+import com.ibm.sk.dto.enums.ObjectType;
 import com.ibm.sk.engine.exceptions.MoveException;
 import com.ibm.sk.ff.gui.common.objects.operations.CreateGameData;
 
 public final class ProcessExecutor {
 
-	private ProcessExecutor() {}
-	private static final GuiConnector guiConnector = new GuiConnector();
+	private ProcessExecutor() {
+	}
 
+	private static final GuiConnector guiConnector = new GuiConnector();
 
 	public static void execute(final Hill hill) {
 
@@ -48,7 +53,7 @@ public final class ProcessExecutor {
 
 	private static void singleStep(final IAnt ant) {
 		System.out.println("Turn:" + Main.getTurn() + "Ant " + ant.getId() + " said:");
-		final Vision vision = new Vision(createVisionGrid(ant.getPosition()));
+		final Vision vision = new Vision(createVisionGrid(ant));
 		final Direction direction = ant.move(vision);
 		final MovementHandler movementHandler = new MovementHandler();
 
@@ -56,40 +61,68 @@ public final class ProcessExecutor {
 			System.out.println("I'm not moving. I like this place!");
 		} else {
 			try {
-//				boolean hadFood = false;
+				// boolean hadFood = false;
 
-//				if (ant instanceof AbstractAnt) {
-//					hadFood = ant.hasFood();
-//				}
+				// if (ant instanceof AbstractAnt) {
+				// hadFood = ant.hasFood();
+				// }
 
 				movementHandler.makeMove(ant, direction);
 
-//				if (ant instanceof AbstractAnt) {
-//					if (!hadFood && ant.hasFood()) {
-//						guiConnector.removeGuiObject(ant.getFood());
-//					}
-//				}
+				// if (ant instanceof AbstractAnt) {
+				// if (!hadFood && ant.hasFood()) {
+				// guiConnector.removeGuiObject(ant.getFood());
+				// }
+				// }
 			} catch (final MoveException e) {
 				System.out.println("I cannot move to " + direction.name() + "! That would hurt me!");
 			}
 		}
 	}
 
-	private static Map<Direction, Object> createVisionGrid(final Point visionPosition) {
-		final Map<Direction, Object> visionGrid = new EnumMap<>(Direction.class);
+	private static Map<Direction, ObjectType> createVisionGrid(final IAnt ant) {
+		final Map<Direction, ObjectType> visionGrid = new EnumMap<>(Direction.class);
 
 		for (final Direction visionDirection : Direction.values()) {
-			visionGrid.put(visionDirection, checkField(visionDirection, new Point(visionPosition)));
+			visionGrid.put(visionDirection, checkField(visionDirection, ant));
 		}
 
 		return visionGrid;
 	}
 
-	private static Object checkField(final Direction direction, final Point point) {
+	private static ObjectType checkField(final Direction direction, final IAnt ant) {
+		ObjectType result = ObjectType.EMPTY_SQUARE;
+		final Point point = new Point(ant.getPosition());
 		point.translate(direction.getPositionChange().x, direction.getPositionChange().y);
-		final Object foundObject = World.getWorldObject(point);
-//		System.out.println("I see on position [" + point.x + ", " + point.y + "] "
-//				+ (foundObject == null ? "nothing" : foundObject));
-		return foundObject;
+		final IWorldObject foundObject = World.getWorldObject(point);
+		if (foundObject instanceof Ant) {
+			final Ant otherAnt = (Ant) foundObject;
+			if (ant.isEnemy(otherAnt) && otherAnt.hasFood()) {
+				result = ObjectType.ENEMY_ANT_WITH_FOOD;
+			} else if (ant.isEnemy(otherAnt)) {
+				result = ObjectType.ENEMY_ANT;
+			} else if (otherAnt.hasFood()) {
+				result = ObjectType.ANT_WITH_FOOD;
+			} else {
+				result = ObjectType.ANT;
+			}
+		} else if (foundObject instanceof Warrior) {
+			final Warrior warrior = (Warrior) foundObject;
+			if (ant.isEnemy(warrior)) {
+				result = ObjectType.ENEMY_WARRIOR;
+			} else {
+				result = ObjectType.WARRIOR;
+			}
+		} else if (foundObject instanceof Hill) {
+			final Hill hill = (Hill) foundObject;
+			if (hill.equals(ant)) {
+				result = ObjectType.HILL;
+			} else {
+				result = ObjectType.ENEMY_HILL;
+			}
+		} else if (foundObject instanceof Food) {
+			result = ObjectType.FOOD;
+		}
+		return result;
 	}
 }
