@@ -3,6 +3,7 @@ package com.ibm.sk.dto;
 import java.awt.Point;
 
 import com.ibm.sk.dto.enums.Direction;
+import com.ibm.sk.dto.enums.ObjectType;
 
 public class Ant extends AbstractAnt {
 
@@ -13,8 +14,8 @@ public class Ant extends AbstractAnt {
 	/**
 	 * @param vision
 	 *            - Vision is the grid of 8 positions surrounding the ant. It's
-	 *            get(Direction) method returns one of the game items (Ant,
-	 *            Food, Hill, Border) or null, if the position is empty.
+	 *            get(Direction) method returns enum representing one of the
+	 *            game items (Ant, Enemy ant, Ant with food...
 	 *
 	 * @return - the direction (cardinal), where the ant will move in the
 	 *         current round
@@ -24,8 +25,8 @@ public class Ant extends AbstractAnt {
 		Direction returnValue = Direction.NO_MOVE;
 		if (!this.hasFood()) {
 			for (final Direction direction : Direction.values()) {
-				final Object item = vision.look(direction);
-				if (item instanceof Food) {
+				final ObjectType objectType = vision.look(direction);
+				if (ObjectType.FOOD.equals(objectType)) {
 					System.out.println("I see food!");
 					returnValue = direction;
 				}
