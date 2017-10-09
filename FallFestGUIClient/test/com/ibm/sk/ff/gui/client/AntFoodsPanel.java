@@ -53,12 +53,15 @@ public class AntFoodsPanel extends JPanel {
 			@Override
 			public void actionPerformed(ActionEvent e) {
 				GAntFoodObject gad = antfoodView.createAntFoodObject();
+				
 				if (listModel.contains(gad)) {
 					listModel.set(listModel.indexOf(gad), gad);
 				} else {
 					listModel.addElement(gad);
+					facade.join(gad.getAnt(), gad.getFood());
 				}
-				facade.set(gad);
+				
+				facade.set(gad.getAnt());
 			}
 		});
 		

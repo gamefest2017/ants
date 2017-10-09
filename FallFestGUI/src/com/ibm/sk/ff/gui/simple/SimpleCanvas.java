@@ -1,21 +1,23 @@
 package com.ibm.sk.ff.gui.simple;
 
 import java.awt.Color;
-import java.awt.Dimension;
 import java.awt.Graphics;
 import java.awt.Image;
+import java.awt.event.KeyEvent;
+import java.awt.event.KeyListener;
 import java.io.File;
 import java.util.HashMap;
 import java.util.Map;
 
 import javax.imageio.ImageIO;
 import javax.swing.JComponent;
+import javax.swing.JFrame;
 
 import com.ibm.sk.ff.gui.common.objects.gui.GAntFoodObject;
 import com.ibm.sk.ff.gui.common.objects.gui.GAntObject;
+import com.ibm.sk.ff.gui.common.objects.gui.GFoodObject;
 import com.ibm.sk.ff.gui.common.objects.gui.GHillObject;
 import com.ibm.sk.ff.gui.common.objects.gui.GUIObject;
-import com.ibm.sk.ff.gui.common.objects.gui.GUIObjectTypes;
 import com.ibm.sk.ff.gui.common.objects.operations.InitMenuData;
 import com.ibm.sk.ff.gui.config.Config;
 
@@ -26,21 +28,17 @@ public class SimpleCanvas extends JComponent {
 	
 	private final boolean DEV_MODE = Boolean.parseBoolean(Config.DEV_MODE.toString());
 	
-	private static long SLEEP_INTERVAL = Long.parseLong(Config.GUI_MOVE_INTERVAL.toString()) / Long.parseLong(Config.GUI_MAGNIFICATION.toString());
+	private static long SLEEP_INTERVAL = 10; //TODO - the transition interval should be set correctly!
 	
-	private static Image IMAGES_GRASS = null;
 	private static Image[] IMAGES_ANT = null;
 	private static Image IMAGES_FOOD = null;
 	private static Image IMAGES_HILL = null;
 	private static Image[] IMAGES_ANT_FOOD = null;
 	
-	private static final Color BACKGROUND_COLOR = Color.GREEN;
-	
 	private boolean finishedRedraw = true;
 	
 	static {
 		try {
-			IMAGES_GRASS = ImageIO.read(new File("res/grass2.jpg"));
 			IMAGES_ANT = new Image[] {ImageIO.read(new File("res/ant_left.png")), ImageIO.read(new File("res/ant_right.png"))};
 			IMAGES_FOOD = ImageIO.read(new File("res/food.png"));
 			IMAGES_HILL = ImageIO.read(new File("res/hill.png"));
@@ -50,36 +48,45 @@ public class SimpleCanvas extends JComponent {
 		}
 	}
 
-	private final int MAGNIFICATION;
+	private final Map<GUIObject, SimpleGUIComponent> OBJECTS = new HashMap<>();
 	
-	private Map<Long, SimpleGUIComponent> objects = new HashMap<>();
-	
-	private int w, h;
+	private final int WIDTH, HEIGHT;
 	
 	private String [] teams;
 	
-	public SimpleCanvas(int width, int height, int magnification, String[] teams) {
-		this.MAGNIFICATION = magnification;
-		this.w = width;
-		this.h = height;
-		setSize(width * magnification, height * magnification);
-		setPreferredSize(new Dimension(width * magnification, height * magnification));
+	private JFrame parentFrame;
+	
+	public SimpleCanvas(int width, int height, String[] teams, JFrame parent) {
+		this.WIDTH = width;
+		this.HEIGHT = height;
+		
 		this.teams = teams;
+		this.parentFrame = parent;
+		
+		addKeyListener(new KeyListener() {
+			@Override
+			public void keyTyped(KeyEvent e) {}
+			@Override
+			public void keyPressed(KeyEvent e) {}
+			@Override
+			public void keyReleased(KeyEvent e) {
+				System.out.println("asdfasdf");
+				if (e.getKeyCode() == KeyEvent.VK_ESCAPE || e.getKeyCode() == KeyEvent.VK_SPACE) {
+					parentFrame.setVisible(false);
+					parentFrame.dispose();
+				}
+			}
+		});
 	}
 	
 	public void paint(Graphics g) {
-		try {
-			g.drawImage(IMAGES_GRASS, 0, 0, w * MAGNIFICATION, h * MAGNIFICATION, Color.GREEN, null);
-			if (DEV_MODE) {
-				paintGrid(g);
-			}
-		} catch (Exception e) {
-			g.setColor(BACKGROUND_COLOR);
-			g.fillRect(0, 0, getWidth(), getHeight());
+		if (DEV_MODE) {
+			paintGrid(g);
 		}
+		
 		finishedRedraw = true;
 			
-		for (SimpleGUIComponent it : objects.values().stream().toArray(SimpleGUIComponent[]::new)) {
+		for (SimpleGUIComponent it : OBJECTS.values().stream().toArray(SimpleGUIComponent[]::new)) {
 			if (!it.paint(g)) {
 				finishedRedraw = false;
 			}
@@ -88,11 +95,11 @@ public class SimpleCanvas extends JComponent {
 	
 	private void paintGrid(Graphics g) {
 		g.setColor(Color.GRAY);
-		for (int i = 0; i < w; i++) {
-			g.drawLine(i * MAGNIFICATION, 0, i * MAGNIFICATION, h * MAGNIFICATION);
+		for (int i = 0; i < WIDTH; i++) {
+			g.drawLine(i * MAGNIFICATION_X(), 0, i * MAGNIFICATION_X(), HEIGHT * MAGNIFICATION_Y());
 		}
-		for (int i = 0; i < h; i++) {
-			g.drawLine(0, i * MAGNIFICATION, w * MAGNIFICATION, i * MAGNIFICATION);
+		for (int i = 0; i < HEIGHT; i++) {
+			g.drawLine(0, i * MAGNIFICATION_Y(), WIDTH * MAGNIFICATION_X(), i * MAGNIFICATION_Y());
 		}
 	}
 	
@@ -107,27 +114,63 @@ public class SimpleCanvas extends JComponent {
 		} while (!finishedRedraw);
 	}
 	
-	public void set(GUIObject[] gos) {
-		for (GUIObject go : gos) {
-			SimpleGUIComponent toAdd = null;
-			if (objects.containsKey(go.getId())) {
-				toAdd = objects.get(go.getId());
-				objects.remove(go.getId());
-				toAdd.moveToLocation(go.getLocation().getX(), go.getLocation().getY());
-			} else {
-				toAdd = new SimpleGUIComponent(MAGNIFICATION, Color.BLACK, getImage(go.getType()), getTeamColor(go));
-				toAdd.setLocation(go.getLocation().getX(), go.getLocation().getY());
-			}
-			
-			if (go.getType().equals(GUIObjectTypes.ANT_FOOD)) {
-				GAntFoodObject gafo = (GAntFoodObject)go;
-				objects.remove(gafo.getAnt().getId());
-				objects.remove(gafo.getFood().getId());
-			}
+	private void animate() {
+		//TODO
+	}
 	
-			this.objects.put(go.getId(), toAdd);
+	public void set(GHillObject[] hills) {
+		for (GHillObject it : hills) {
+			SimpleGUIComponent toAdd = null;
+			if (OBJECTS.containsKey(it)) {
+				OBJECTS.remove(it);
+			}
+			toAdd = new SimpleGUIComponent(MAGNIFICATION_X(), MAGNIFICATION_Y(), new Image[] {IMAGES_HILL}, null, getTeamColor(it));
+			toAdd.setLocation(it.getLocation().getX(), it.getLocation().getY());
+			OBJECTS.put(it, toAdd);
 		}
-		
+		performRepaint();
+	}
+	
+	public void set(GFoodObject[] foods) {
+		for (GFoodObject it : foods) {
+			SimpleGUIComponent toAdd = null;
+			if (OBJECTS.containsKey(it)) {
+				OBJECTS.remove(it);
+			}
+			toAdd = new SimpleGUIComponent(MAGNIFICATION_X(), MAGNIFICATION_Y(), new Image[] {IMAGES_FOOD}, null, getTeamColor(it));
+			toAdd.setLocation(it.getLocation().getX(), it.getLocation().getY());
+			OBJECTS.put(it, toAdd);
+		}
+		performRepaint();
+	}
+	
+	public void set(GAntObject[] ants) {
+		for (GAntObject it : ants) {
+			SimpleGUIComponent toAdd = null;
+			if (OBJECTS.containsKey(it)) {
+				toAdd = OBJECTS.remove(it);
+				toAdd.moveToLocation(it.getLocation().getX(), it.getLocation().getY());
+			} else {
+				toAdd = new SimpleGUIComponent(MAGNIFICATION_X(), MAGNIFICATION_Y(), IMAGES_ANT, null, getTeamColor(it));
+				toAdd.setLocation(it.getLocation().getX(), it.getLocation().getY());
+			}
+			OBJECTS.put(it, toAdd);
+		}
+		performRepaint();
+	}
+	
+	public void set(GAntFoodObject[] gafos) {
+		for (GAntFoodObject it : gafos) {
+			SimpleGUIComponent toAdd = null;
+			if (OBJECTS.containsKey(it)) {
+				toAdd = OBJECTS.remove(it);
+				toAdd.moveToLocation(it.getLocation().getX(), it.getLocation().getY());
+			} else {
+				toAdd = new SimpleGUIComponent(MAGNIFICATION_X(), MAGNIFICATION_Y(), IMAGES_ANT_FOOD, null, getTeamColor(it));
+				toAdd.moveToLocation(it.getLocation().getX(), it.getLocation().getY());
+			}
+			OBJECTS.put(it, toAdd);
+		}
 		performRepaint();
 	}
 	
@@ -159,12 +202,16 @@ public class SimpleCanvas extends JComponent {
 		}
 		return ret;
 	}
-
+	
+	public void remove(GUIObject object) {
+		remove (new GUIObject[] {object});
+	}
+	
 	public void remove(GUIObject[] object) {
 		boolean changed = false;
 		for (GUIObject it : object) {
-			if (this.objects.containsKey(it.getId())) {
-				this.objects.remove(it.getId());
+			if (this.OBJECTS.containsKey(it.getId())) {
+				this.OBJECTS.remove(it.getId());
 				changed = true;
 			}
 		}
@@ -173,25 +220,30 @@ public class SimpleCanvas extends JComponent {
 		}
 	}
 	
-	private Image[] getImage(GUIObjectTypes type) {
-		Image[] ret = null;
-		switch (type) {
-		case ANT: ret = IMAGES_ANT;	break;
-		case ANT_FOOD: ret = IMAGES_ANT_FOOD; break;
-		case FOOD: ret = new Image [] {IMAGES_FOOD}; break;
-		case HILL: ret = new Image [] {IMAGES_HILL}; break;
-		}
-		return ret;
-	}
-	
 	public void reset(InitMenuData data) {
-		objects.clear();
+		OBJECTS.clear();
 
 		performRepaint();
 	}
 	
 	public boolean contains(GUIObject go) {  
-		return objects.containsKey(go.getId());
+		return OBJECTS.containsKey(go.getId());
+	}
+	
+	private int magnificationX = -1;
+	private int MAGNIFICATION_X() {
+		if (magnificationX == -1) {
+			magnificationX = getWidth() / WIDTH;
+		}
+		return magnificationX;
+	}
+	
+	private int magnificationY = -1;
+	private int MAGNIFICATION_Y() {
+		if (magnificationY == -1) {
+			magnificationY = getHeight() / HEIGHT;
+		}
+		return magnificationY;
 	}
 
 }

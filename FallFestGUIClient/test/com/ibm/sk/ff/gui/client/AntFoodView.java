@@ -65,6 +65,7 @@ public class AntFoodView extends JPanel {
 			GAntObject a = new GAntObject();
 			a.setId(Long.parseLong(textAntId.getText()));
 			a.setTeam(comboBox.getSelectedItem().toString());
+			a.setLocation(ret.getLocation());
 			GFoodObject f = new GFoodObject();
 			f.setId(Long.parseLong(textFoodId.getText()));
 			ret.setAnt(a);

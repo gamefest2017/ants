@@ -2,13 +2,18 @@ package com.ibm.sk.ff.gui.client;
 
 import java.util.ArrayList;
 import java.util.EnumMap;
+import java.util.HashSet;
 import java.util.List;
 import java.util.Map;
+import java.util.Set;
 
 import com.ibm.sk.ff.gui.common.GUIOperations;
 import com.ibm.sk.ff.gui.common.events.GuiEvent;
 import com.ibm.sk.ff.gui.common.events.GuiEventListener;
 import com.ibm.sk.ff.gui.common.mapper.Mapper;
+import com.ibm.sk.ff.gui.common.objects.gui.GAntFoodObject;
+import com.ibm.sk.ff.gui.common.objects.gui.GAntObject;
+import com.ibm.sk.ff.gui.common.objects.gui.GFoodObject;
 import com.ibm.sk.ff.gui.common.objects.gui.GUIObject;
 import com.ibm.sk.ff.gui.common.objects.gui.GUIObjectTypes;
 import com.ibm.sk.ff.gui.common.objects.operations.CloseData;
@@ -22,7 +27,11 @@ public class GUIFacade {
 	private final Client CLIENT;
 
 	private final List<GuiEventListener> guiEventListeners = new ArrayList<>();
-
+	
+	private final List<GAntFoodObject> antFoodObjects = new ArrayList<>();
+	
+	private final Set<GAntFoodObject> notRenderedYet = new HashSet<>();
+	
 	public GUIFacade() {
 		this.CLIENT = new Client();
 		new Thread(new Runnable() {
@@ -45,8 +54,9 @@ public class GUIFacade {
 		set(new GUIObject[] {object});
 	}
 
-	public void set(final GUIObject[] objects) {
-		if (objects != null && objects.length > 0) {
+	public void set(final GUIObject[] o) {
+		if (o != null && o.length > 0) {
+			GUIObject [] objects = map(o);
 			final Map<GUIObjectTypes, List<GUIObject>> objectsByType = new EnumMap<>(GUIObjectTypes.class);
 			for (final GUIObjectTypes type : GUIObjectTypes.values()) {
 				objectsByType.put(type, new ArrayList<>());
@@ -59,8 +69,66 @@ public class GUIFacade {
 						Mapper.INSTANCE.pojoToJson(objectsByType.get(type).toArray()));
 			}
 		}
+		
+		if (notRenderedYet.size() > 0) {
+			notRenderedYet.stream().forEach(af -> {remove(af.getFood()); remove(af.getAnt());});
+			this.CLIENT.postMessage(
+				GUIOperations.SET.toString() + "/" + GUIObjectTypes.ANT_FOOD.toString(), 
+				Mapper.INSTANCE.pojoToJson(notRenderedYet.stream().toArray(GAntFoodObject[]::new))
+			);
+			notRenderedYet.clear();
+		}
+	}
+	
+	private GUIObject[] map(GUIObject[] orig) {
+		List<GUIObject> ret = new ArrayList<>(orig.length);
+		for (GUIObject it : orig) {
+			if (it.getType() == GUIObjectTypes.ANT) {
+				GAntFoodObject mapped = getMapped((GAntObject)it);
+				if (mapped != null && !notRenderedYet.contains(mapped)) {
+					ret.add(mapped);
+				} else {
+					ret.add(it);
+				}
+			} else {
+				ret.add(it);
+			}
+		}
+		return ret.stream().toArray(GUIObject[]::new);
+	}
+	
+	private GAntFoodObject getMapped(GAntObject ant) {
+		return antFoodObjects.stream().filter(af -> af.getAnt().equals(ant)).findFirst().orElse(null);
 	}
 
+	public GAntFoodObject join(GAntObject ant, GFoodObject food) {
+		GAntFoodObject gafo = new GAntFoodObject();
+		gafo.setAnt(ant);
+		gafo.setFood(food);
+		antFoodObjects.add(gafo);
+		notRenderedYet.add(gafo);
+		return gafo;
+	}
+	
+	public GUIObject[] separate(GAntObject ant) {
+		List<GUIObject> retList = new ArrayList<>();
+		//TODO
+		
+		antFoodObjects.stream()
+			.filter(afo -> afo.getAnt().equals(ant))
+			.forEach(afo -> retList.add(afo.getFood()));
+		
+		return retList.stream().toArray(GUIObject[]::new);
+	}
+	
+	public void separate(GFoodObject food) {
+		//TODO
+	}
+	
+	public void separate(GAntObject ant, GFoodObject food) {
+		//TODO
+	}
+	
 	public void remove(final GUIObject data) {
 		remove(new GUIObject [] {data});
 	}

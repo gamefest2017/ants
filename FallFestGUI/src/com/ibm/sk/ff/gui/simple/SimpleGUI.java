@@ -1,12 +1,13 @@
 package com.ibm.sk.ff.gui.simple;
 
 import java.awt.BorderLayout;
-import java.awt.GridLayout;
-import java.util.ArrayList;
-import java.util.List;
+import java.awt.image.BufferedImage;
+import java.io.File;
 
+import javax.imageio.ImageIO;
+import javax.swing.ImageIcon;
 import javax.swing.JFrame;
-import javax.swing.JPanel;
+import javax.swing.JLabel;
 
 import com.ibm.sk.ff.gui.GUI;
 import com.ibm.sk.ff.gui.common.events.GuiEventListener;
@@ -19,14 +20,10 @@ import com.ibm.sk.ff.gui.common.objects.operations.CreateGameData;
 import com.ibm.sk.ff.gui.common.objects.operations.InitMenuData;
 import com.ibm.sk.ff.gui.common.objects.operations.ResultData;
 import com.ibm.sk.ff.gui.common.objects.operations.ScoreData;
-import com.ibm.sk.ff.gui.config.Config;
 
 public class SimpleGUI implements GUI {
 
-	private static final int MAGNIFICATION = Integer.parseInt(Config.GUI_MAGNIFICATION.toString());
-
 	private JFrame frame = null;
-	private Menu menu = null;
 	
 	private SimpleCanvas canvas = null;
 	private ScoreboardSmall scoreboard = null;
@@ -37,8 +34,8 @@ public class SimpleGUI implements GUI {
 	}
 	
 	@Override
-	public void set(GAntObject[] it) {
-		canvas.set(it);
+	public void set(GAntObject[] ants) {
+		canvas.set(ants);
 	}
 
 	@Override
@@ -53,15 +50,6 @@ public class SimpleGUI implements GUI {
 	
 	@Override
 	public void set(GAntFoodObject[] afo) {
-		List<GAntObject> antsList = new ArrayList<>();
-		for (int i = 0; i < afo.length; i++) {
-			GAntObject swp = afo[i].getAnt();
-			swp.setLocation(afo[i].getLocation());
-			antsList.add(swp);
-		}
-		if (antsList.size() > 0) {
-			canvas.set(antsList.stream().toArray(GAntObject[]::new));
-		}
 		canvas.set(afo);
 	}
 
@@ -71,22 +59,33 @@ public class SimpleGUI implements GUI {
 			frame.dispose();
 			frame = null;
 		}
+		
 		frame = new JFrame();
 		frame.setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
+		frame.setContentPane(new JLabel(new ImageIcon(loadBackgroundImage())));
+		
+		scoreboard = new ScoreboardSmall(data);
+		canvas = new SimpleCanvas(data.getWidth(), data.getHeight(), data.getTeams(), frame);
 		
 		frame.setLayout(new BorderLayout());
-		
-		canvas = new SimpleCanvas(data.getWidth(), data.getHeight(), MAGNIFICATION, data.getTeams());
-		scoreboard = new ScoreboardSmall(data);
-		
-		JPanel swpPanel = new JPanel();
-		swpPanel.setLayout(new GridLayout(1, 1));
-		swpPanel.add(canvas);
-		
-		frame.add(swpPanel, BorderLayout.CENTER);
+		frame.add(canvas, BorderLayout.CENTER);
 		frame.add(scoreboard, BorderLayout.NORTH);
+		
+		frame.setExtendedState(JFrame.MAXIMIZED_BOTH);
+		frame.setUndecorated(true);
 		frame.pack();
+		frame.setLocationRelativeTo(null);
 		frame.setVisible(true);
+	}
+	
+	private BufferedImage loadBackgroundImage() {
+		BufferedImage ret = null;
+		try {
+			ret = ImageIO.read(new File("res/grass2.jpg"));
+		} catch (Exception e) {
+			e.printStackTrace();
+		}
+		return ret;
 	}
 
 	@Override
