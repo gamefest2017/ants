@@ -15,6 +15,20 @@ import com.ibm.sk.engine.exceptions.MoveException;
 
 public final class MovementHandler {
 
+	private static MovementHandler movementHandler;
+	private static PopulationHandler populationHandler;
+
+	private MovementHandler() {
+	}
+
+	public static synchronized MovementHandler getInstance() {
+		if (movementHandler == null) {
+			movementHandler = new MovementHandler();
+			populationHandler = PopulationHandler.getInstance();
+		}
+		return movementHandler;
+	}
+
 	public IAnt makeMove(final IAnt ant, final Direction direction) throws MoveException {
 		final double newXPos = ant.getPosition().getX() + direction.getPositionChange().getX();
 		final double newYPos = ant.getPosition().getY() + direction.getPositionChange().getY();
@@ -52,7 +66,7 @@ public final class MovementHandler {
 	private void moveHome(final Hill hill, final IAnt ant) {
 		final Food droppedFood = ant.dropFood();
 		if (droppedFood != null && droppedFood.getAmount() > 0) {
-			hill.incrementFood(droppedFood.getAmount());
+			populationHandler.incrementFood(hill, droppedFood.getAmount());
 		}
 	}
 

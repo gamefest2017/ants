@@ -16,8 +16,20 @@ import com.ibm.sk.dto.enums.Direction;
 import com.ibm.sk.engine.exceptions.InvalidWorldPositionException;
 
 public class PopulationHandler {
-
+	
 	private static final Random RANDOMIZER = new Random();
+
+	private static PopulationHandler populationHandler;
+
+	private PopulationHandler() {
+	}
+
+	public static synchronized PopulationHandler getInstance() {
+		if (populationHandler == null) {
+			populationHandler = new PopulationHandler();
+		}
+		return populationHandler;
+	}
 
 	public IAnt breedAnt(final Hill hill) {
 		System.out.println("Welcome new worker of this world! From now on you belong to " + hill.getName()
@@ -87,4 +99,28 @@ public class PopulationHandler {
 		}
 		return result;
 	}
+	
+	public void initHill(final Hill hill, final int population, final double populationWarFactor) {
+		for (int i = 0; i < Math.ceil(population * (1.0 - populationWarFactor)); i++) {
+			hill.getAnts().add(breedAnt(hill));
+		}
+		for (int i = 0; i < Math.floor(population * populationWarFactor); i++) {
+			hill.getAnts().add(breedWarrior(hill));
+		}
+	}
+
+	public void incrementFood(final Hill hill, final int count) {
+		hill.setFood(hill.getFood() + count);
+		System.out.println(
+				"The food in hill '" + hill.getName() + "' increased by " + count + ". Food amount is now " + hill.getFood());
+		if (hill.getFood() % WorldConstans.NEW_ANT_FOOD_COST == 0) {
+			hill.getAnts().add(breedAntOrWarrior(hill));
+		}
+	}
+
+	public void decrementFood(final Hill hill, final int count) {
+		hill.setFood(Math.max(hill.getFood() - count, 0));
+		System.out.println(
+				"The food in hill '" + hill.getName() + "' descreased by " + count + ". Food amount is now " + hill.getFood());
+	}	
 }
