@@ -19,8 +19,8 @@ public class AntFoodsPanel extends JPanel {
 	
 	private static final long serialVersionUID = -8780098469519172008L;
 	
-	private DefaultListModel<GAntFoodObject> listModel = new DefaultListModel<GAntFoodObject>();
-	private JList<GAntFoodObject> list = new JList<GAntFoodObject>(listModel);
+	private DefaultListModel<GAntFoodObject> listModel = new DefaultListModel<>();
+	private JList<GAntFoodObject> list = new JList<>(listModel);
 	
 	private AntFoodView antfoodView = new AntFoodView();
 	
@@ -53,12 +53,15 @@ public class AntFoodsPanel extends JPanel {
 			@Override
 			public void actionPerformed(ActionEvent e) {
 				GAntFoodObject gad = antfoodView.createAntFoodObject();
+				
 				if (listModel.contains(gad)) {
 					listModel.set(listModel.indexOf(gad), gad);
 				} else {
 					listModel.addElement(gad);
+					facade.join(gad.getAnt(), gad.getFood());
 				}
-				facade.set(gad);
+				
+				facade.set(gad.getAnt());
 			}
 		});
 		

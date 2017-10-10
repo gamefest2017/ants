@@ -21,7 +21,6 @@ import javax.swing.JTable;
 import javax.swing.JTextPane;
 import javax.swing.ListSelectionModel;
 import javax.swing.border.LineBorder;
-import javax.swing.table.DefaultTableCellRenderer;
 import javax.swing.table.TableColumn;
 import javax.swing.text.SimpleAttributeSet;
 import javax.swing.text.StyleConstants;
@@ -196,7 +195,7 @@ public class Menu extends JPanel {
         		"Robert Sevcik\n" +
         		"Tibor Schvartz\n" +
         		"\n" +
-        	    "© Copyright IBM Slovakia 2017\n"
+        	    "ï¿½ Copyright IBM Slovakia 2017\n"
         	);
         textPane.setEditable(false);
         textPane.setFont(new Font("Serif", Font.ITALIC, 16));

@@ -2,10 +2,8 @@ package com.ibm.sk.ff.gui.client;
 
 import java.util.ArrayList;
 import java.util.HashMap;
-import java.util.HashSet;
 import java.util.List;
 import java.util.Map;
-import java.util.Set;
 
 import com.ibm.sk.ff.gui.common.GUIOperations;
 import com.ibm.sk.ff.gui.common.events.GuiEvent;
@@ -17,6 +15,7 @@ import com.ibm.sk.ff.gui.common.objects.gui.GFoodObject;
 import com.ibm.sk.ff.gui.common.objects.gui.GHillObject;
 import com.ibm.sk.ff.gui.common.objects.gui.GUIObject;
 import com.ibm.sk.ff.gui.common.objects.gui.GUIObjectCrate;
+import com.ibm.sk.ff.gui.common.objects.gui.GUIObjectTypes;
 import com.ibm.sk.ff.gui.common.objects.operations.CloseData;
 import com.ibm.sk.ff.gui.common.objects.operations.CreateGameData;
 import com.ibm.sk.ff.gui.common.objects.operations.InitMenuData;
@@ -28,11 +27,11 @@ public class GUIFacade {
 	private final Client CLIENT;
 
 	private final List<GuiEventListener> guiEventListeners = new ArrayList<>();
-
-	private final Map<GAntObject, GAntFoodObject> afoMap = new HashMap<>();
-
-	private final Set<GUIObject> accumulator = new HashSet<>();
-
+	
+	private final List<GAntFoodObject> antFoodObjects = new ArrayList<>();
+	
+	private final Map<GAntObject, GAntFoodObject> notRenderedYet = new HashMap<>();
+	
 	public GUIFacade() {
 		this.CLIENT = new Client();
 		new Thread(new Runnable() {
@@ -55,14 +54,12 @@ public class GUIFacade {
 		set(new GUIObject[] {object});
 	}
 
-	public void set(final GUIObject[] objects) {
-		if (objects != null && objects.length > 0) {
-			final GUIObject[] mappedObjects = mapAntsToAntfoodObjects(objects);
-
-			this.accumulator.clear();
+	public void set(final GUIObject[] o) {
+		if (o != null && o.length > 0) {
+			GUIObject [] objects = map(o);
 
 			final GUIObjectCrate crate = new GUIObjectCrate();
-			for (final GUIObject guiObject : mappedObjects) {
+			for (final GUIObject guiObject : objects) {
 				if (guiObject instanceof GHillObject) {
 					final GHillObject hill = (GHillObject) guiObject;
 					crate.getHills().add(hill);
@@ -80,47 +77,101 @@ public class GUIFacade {
 					crate.getAntFoods().add(antFood);
 				}
 			}
-			// Send objects to server
-			// for (final GUIObjectTypes type : objectsByType.keySet()) {
-			this.CLIENT.postMessage(GUIOperations.SET.toString() + "/", Mapper.INSTANCE.pojoToJson(crate));
-			// }
+			
+			this.CLIENT.postMessage(GUIOperations.SET.toString(), Mapper.INSTANCE.pojoToJson(crate));
+		}
+		
+		sendNotYetRenderedData(o);
+	}
+	
+	private void sendNotYetRenderedData(GUIObject[] o) {
+		if (notRenderedYet.size() > 0) {
+			List<GAntObject> antsToRemove = new ArrayList<>();
+			List<GFoodObject> foodsToRemove = new ArrayList<>();
+			
+			notRenderedYet.values().stream().forEach(af -> {
+				antsToRemove.add(af.getAnt());
+				foodsToRemove.add(af.getFood());
+				}
+			);
+			
+			remove(antsToRemove.stream().toArray(GAntObject[]::new));
+			remove(foodsToRemove.stream().toArray(GFoodObject[]::new));
+			
+			this.CLIENT.postMessage(
+				GUIOperations.SET.toString() + "/" + GUIObjectTypes.ANT_FOOD.toString(), 
+				Mapper.INSTANCE.pojoToJson(mapNotYetRendered(o))
+			);
 		}
 	}
-
-	private GUIObject[] mapAntsToAntfoodObjects(final GUIObject[] objects) {
-		final GUIObject[] mappedObjects = new GUIObject[objects.length];
-		for (int i = 0; i < objects.length; i++){
-			if (this.afoMap.containsKey(objects[i])) {
-				final GAntFoodObject swp = this.afoMap.remove(objects[i]);
-				swp.setLocation(objects[i].getLocation());
-				this.afoMap.put((GAntObject)objects[i], swp);
-				mappedObjects[i] = swp;
-			} else {
-				mappedObjects[i] = objects[i];
+	
+	private GAntFoodObject[] mapNotYetRendered(GUIObject[] o) {
+		List<GAntFoodObject> ret = new ArrayList<>();
+		
+		for (GUIObject it : o) {
+			if (it.getType() == GUIObjectTypes.ANT) {
+				GAntObject swp = (GAntObject)it;
+				if (notRenderedYet.containsKey(swp)) {
+					GAntFoodObject toAdd = notRenderedYet.remove(swp);
+					toAdd.setLocation(swp.getLocation());
+					ret.add(toAdd);
+				}
 			}
 		}
-		return mappedObjects;
+		
+		return ret.stream().toArray(GAntFoodObject[]::new);
 	}
-
-	public void join(final GAntObject ant, final GFoodObject food) {
-		if (!this.afoMap.containsKey(ant)) {
-			final GAntFoodObject swp = new GAntFoodObject();
-			swp.setAnt(ant);
-			swp.setFood(food);
-			swp.setLocation(ant.getLocation());
-			this.afoMap.put(ant, swp);
+	
+	private GUIObject[] map(GUIObject[] orig) {
+		List<GUIObject> ret = new ArrayList<>(orig.length);
+		for (GUIObject it : orig) {
+			if (it.getType() == GUIObjectTypes.ANT) {
+				GAntFoodObject mapped = getMapped((GAntObject)it);
+				if (mapped != null && !notRenderedYet.containsValue(mapped)) {
+					mapped.setLocation(it.getLocation());
+					ret.add(mapped);
+				} else {
+					ret.add(it);
+				}
+			} else {
+				ret.add(it);
+			}
 		}
+		return ret.stream().toArray(GUIObject[]::new);
+	}
+	
+	private GAntFoodObject getMapped(GAntObject ant) {
+		return antFoodObjects.stream().filter(af -> af.getAnt().equals(ant)).findFirst().orElse(null);
 	}
 
-	public void split(final GAntObject ant) {
-		if (this.afoMap.containsKey(ant)) {
-			final GAntFoodObject swp = this.afoMap.get(ant);
-			//			accumulator.add(swp.getFood());
-			this.afoMap.remove(ant);
-			set(ant);
-		}
+	public GAntFoodObject join(GAntObject ant, GFoodObject food) {
+		GAntFoodObject gafo = new GAntFoodObject();
+		gafo.setAnt(ant);
+		gafo.setFood(food);
+		antFoodObjects.add(gafo);
+		notRenderedYet.put(ant, gafo);
+		return gafo;
 	}
-
+	
+	public GUIObject[] separate(GAntObject ant) {
+		List<GUIObject> retList = new ArrayList<>();
+		//TODO
+		
+		antFoodObjects.stream()
+			.filter(afo -> afo.getAnt().equals(ant))
+			.forEach(afo -> retList.add(afo.getFood()));
+		
+		return retList.stream().toArray(GUIObject[]::new);
+	}
+	
+	public void separate(GFoodObject food) {
+		//TODO
+	}
+	
+	public void separate(GAntObject ant, GFoodObject food) {
+		//TODO
+	}
+	
 	public void remove(final GUIObject data) {
 		remove(new GUIObject [] {data});
 	}

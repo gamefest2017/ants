@@ -2,10 +2,14 @@ package com.ibm.sk.ff.gui.simple;
 
 import java.awt.BorderLayout;
 import java.awt.Frame;
+import java.awt.image.BufferedImage;
+import java.io.File;
 import java.awt.GridLayout;
 
+import javax.imageio.ImageIO;
+import javax.swing.ImageIcon;
 import javax.swing.JFrame;
-import javax.swing.JPanel;
+import javax.swing.JLabel;
 
 import com.ibm.sk.ff.gui.GUI;
 import com.ibm.sk.ff.gui.common.events.GuiEventListener;
@@ -19,26 +23,22 @@ import com.ibm.sk.ff.gui.common.objects.operations.CreateGameData;
 import com.ibm.sk.ff.gui.common.objects.operations.InitMenuData;
 import com.ibm.sk.ff.gui.common.objects.operations.ResultData;
 import com.ibm.sk.ff.gui.common.objects.operations.ScoreData;
-import com.ibm.sk.ff.gui.config.Config;
 
 public class SimpleGUI implements GUI {
 
-	private static final int MAGNIFICATION = Integer.parseInt(Config.GUI_MAGNIFICATION.toString());
-
 	private JFrame frame = null;
-	private final Menu menu = null;
-
+	
 	private SimpleCanvas canvas = null;
 	private ScoreboardSmall scoreboard = null;
-
+	
 	private GuiEventListener listener = null;
-
-	public SimpleGUI() {
+	
+	public SimpleGUI() { 
 	}
-
+	
 	@Override
-	public void set(final GAntObject[] it) {
-		this.canvas.set(it);
+	public void set(final GAntObject[] ants) {
+		this.canvas.set(ants);
 	}
 
 	@Override
@@ -50,19 +50,10 @@ public class SimpleGUI implements GUI {
 	public void set(final GHillObject[] hill) {
 		this.canvas.set(hill);
 	}
-
+	
 	@Override
-	public void set(final GAntFoodObject[] afo) {
-		//		List<GAntFoodObject> antsList = new ArrayList<>();
-		//		for (int i = 0; i < afo.length; i++) {
-		//			GAntFoodObject swp = afo[i];
-		//			swp.setLocation(afo[i].getAnt().getLocation());
-		//			antsList.add(swp);
-		//		}
-		//		if (antsList.size() > 0) {
-		//			canvas.set(antsList.stream().toArray(GAntFoodObject[]::new));
-		//		}
-		this.canvas.set(afo);
+	public void set(GAntFoodObject[] afo) {
+		canvas.set(afo);
 	}
 
 	@Override
@@ -71,22 +62,34 @@ public class SimpleGUI implements GUI {
 			this.frame.dispose();
 			this.frame = null;
 		}
+		
 		this.frame = new JFrame();
 		this.frame.setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
-
-		this.frame.setLayout(new BorderLayout());
-
-		this.canvas = new SimpleCanvas(data.getWidth(), data.getHeight(), MAGNIFICATION, data.getTeams());
-		this.scoreboard = new ScoreboardSmall(data);
-
-		final JPanel swpPanel = new JPanel();
-		swpPanel.setLayout(new GridLayout(1, 1));
-		swpPanel.add(this.canvas);
-
-		this.frame.add(swpPanel, BorderLayout.CENTER);
-		this.frame.add(this.scoreboard, BorderLayout.NORTH);
-		this.frame.pack();
-		this.frame.setVisible(true);
+		JLabel label = new JLabel(new ImageIcon(loadBackgroundImage()));
+		frame.setContentPane(label);
+		
+		scoreboard = new ScoreboardSmall(data);
+		canvas = new SimpleCanvas(data.getWidth(), data.getHeight(), data.getTeams(), frame);
+		
+		frame.setLayout(new BorderLayout());
+		frame.add(canvas, BorderLayout.CENTER);
+		frame.add(scoreboard, BorderLayout.NORTH);
+		
+		frame.setExtendedState(JFrame.MAXIMIZED_BOTH);
+		frame.setUndecorated(true);
+		frame.pack();
+		frame.setLocationRelativeTo(null);
+		frame.setVisible(true);
+	}
+	
+	private BufferedImage loadBackgroundImage() {
+		BufferedImage ret = null;
+		try {
+			ret = ImageIO.read(new File("res/grass2.jpg"));
+		} catch (Exception e) {
+			e.printStackTrace();
+		}
+		return ret;
 	}
 
 	@Override
@@ -103,7 +106,7 @@ public class SimpleGUI implements GUI {
 	public void remove(final GHillObject[] hill) {
 		this.canvas.remove(hill);
 	}
-
+	
 	@Override
 	public void remove(final GAntFoodObject[] antfood) {
 		this.canvas.remove(antfood);
@@ -133,11 +136,11 @@ public class SimpleGUI implements GUI {
 		this.frame.setExtendedState(this.frame.getExtendedState()|Frame.MAXIMIZED_BOTH);
 		this.frame.setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
 		this.frame.setLayout(new BorderLayout());
-
-		//Set up the content pane.
+		
+        //Set up the content pane.
 		this.frame.add(new Menu(data, this.listener, this.frame));
-
-		//Display the window.
+		
+        //Display the window.
 		this.frame.pack();
 		this.frame.setVisible(true);
 	}
