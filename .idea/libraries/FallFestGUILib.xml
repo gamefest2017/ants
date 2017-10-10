@@ -1,0 +1,10 @@
+<component name="libraryTable">
+  <library name="FallFestGUILib">
+    <CLASSES>
+      <root url="file://$PROJECT_DIR$/FallFestGUILib" />
+    </CLASSES>
+    <JAVADOC />
+    <SOURCES />
+    <jarDirectory url="file://$PROJECT_DIR$/FallFestGUILib" recursive="false" />
+  </library>
+</component>

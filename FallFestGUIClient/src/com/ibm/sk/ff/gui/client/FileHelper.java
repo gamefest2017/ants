@@ -7,6 +7,7 @@ import java.io.BufferedWriter;
 import java.io.FileReader;
 import java.io.FileWriter;
 import java.io.IOException;
+import java.util.List;
 
 public final class FileHelper {
     private FileHelper() {
@@ -14,12 +15,12 @@ public final class FileHelper {
 
     private static final String FILE_NAME= "ants.txt";
 
-    public static void write(Step step) {
+    public static void write(List<Step> steps) {
         try {
             FileWriter writer = new FileWriter(FILE_NAME, true);
             BufferedWriter bufferedWriter = new BufferedWriter(writer);
 
-            bufferedWriter.write(INSTANCE.pojoToJson(step));
+            bufferedWriter.write(INSTANCE.pojoToJson(steps));
             bufferedWriter.close();
         } catch (IOException e) {
             System.out.println("Failed to write to the file!" + e);
@@ -27,7 +28,7 @@ public final class FileHelper {
 
     }
 
-    public static Step read() {
+    public static List<Step> read() {
         String fileContent = "";
         try {
             FileReader reader = new FileReader(FILE_NAME);
@@ -42,6 +43,6 @@ public final class FileHelper {
         } catch (IOException e) {
             System.out.println("Failed to read from the file!" + e);
         }
-        return INSTANCE.jsonToPojo(fileContent, Step.class);
+        return INSTANCE.jsonToPojo(fileContent, List.class);
     }
 }

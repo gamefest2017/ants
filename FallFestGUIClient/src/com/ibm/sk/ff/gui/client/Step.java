@@ -11,6 +11,9 @@ public class Step {
         this.operationData = operationData;
     }
 
+    public Step() {
+    }
+
     public Object getOperationData() {
         return operationData;
     }

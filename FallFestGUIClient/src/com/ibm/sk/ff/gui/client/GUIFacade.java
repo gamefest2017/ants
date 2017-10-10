@@ -33,6 +33,8 @@ public class GUIFacade {
 
 	private final Map<GAntObject, GAntFoodObject> notRenderedYet = new HashMap<>();
 
+	private List<Step> steps;
+
 	public GUIFacade() {
 		this.CLIENT = new Client();
 		new Thread(new Runnable() {
@@ -89,6 +91,7 @@ public class GUIFacade {
 		}
 	}
 
+<<<<<<< HEAD
 	private GAntFoodObject[] mapNotYetRendered(final GUIObject[] o) {
 		final List<GAntFoodObject> ret = new ArrayList<>();
 
@@ -100,6 +103,13 @@ public class GUIFacade {
 					toAdd.setLocation(swp.getLocation());
 					ret.add(toAdd);
 				}
+=======
+			// Send objects to server
+			for (final GUIObjectTypes type : objectsByType.keySet()) {
+				this.CLIENT.postMessage(SET.toString() + "/" + type.toString(),
+										INSTANCE.pojoToJson(objectsByType.get(type).toArray()));
+				steps.add(new Step(SET, type));
+>>>>>>> Add support for read replay
 			}
 		}
 
@@ -166,18 +176,25 @@ if (this.antFoodObjects.contains(gafo)) {
 		remove(new GUIObject [] {data});
 	}
 
+<<<<<<< HEAD
 	public void remove(final GUIObject[] objects) {
 		final GUIObjectCrate crate = new GUIObjectCrate();
 		final GUIObject[] mapped = map(objects);
 		crate.sortOut(mapped);
 		this.CLIENT.postMessage(GUIOperations.REMOVE.toString() + "/", Mapper.INSTANCE.pojoToJson(crate));
 		write(new Step(REMOVE, data));
+=======
+	public void remove(final GUIObject[] data) {
+		if (data.length > 0) {
+			this.CLIENT.postMessage(REMOVE.toString() + "/" + data[0].getType().toString(), INSTANCE.pojoToJson(data));
+			steps.add(new Step(REMOVE, data));
+		}
+>>>>>>> Add support for read replay
 	}
 
 	public void showScore(final ScoreData data) {
 		String scoreDataJson = INSTANCE.pojoToJson(data);
 		this.CLIENT.postMessage(SCORE.toString(), scoreDataJson);
-		write(new Step(SCORE, scoreDataJson));
 	}
 
 	//
@@ -186,25 +203,24 @@ if (this.antFoodObjects.contains(gafo)) {
 	public void showInitMenu(final InitMenuData data) {
 		String initMenuDataJson = INSTANCE.pojoToJson(data);
 		this.CLIENT.postMessage(SHOW_INIT_MENU.toString(), initMenuDataJson);
-		write(new Step(SHOW_INIT_MENU, initMenuDataJson));
 	}
 
 	public void createGame(final CreateGameData data) {
 		String createGameDataJson = INSTANCE.pojoToJson(data);
 		this.CLIENT.postMessage(CREATE_GAME.toString(), createGameDataJson);
-		write(new Step(CREATE_GAME, createGameDataJson));
+		steps = new ArrayList<>();
 	}
 
 	public void showResult(final ResultData data) {
 		String resultDataJson = INSTANCE.pojoToJson(data);
 		this.CLIENT.postMessage(SHOW_RESULT.toString(), resultDataJson);
-		write(new Step(SHOW_RESULT, resultDataJson));
+		steps.add(new Step(SHOW_RESULT, resultDataJson));
 	}
 
 	public void close(final CloseData data) {
 		String closeDataJson = INSTANCE.pojoToJson(data);
 		this.CLIENT.postMessage(CLOSE.toString(), closeDataJson);
-		write(new Step(CLOSE, closeDataJson));
+		write(steps);
 	}
 
 	// Poll for events
@@ -213,7 +229,7 @@ if (this.antFoodObjects.contains(gafo)) {
 		if (events != null && events.length() > 0) {
 			final GuiEvent[] swp = INSTANCE.jsonToPojo(events, GuiEvent[].class);
 			castEvent(swp);
-			write(new Step(EVENT_POLL, swp));
+			steps.add(new Step(EVENT_POLL, swp));
 		}
 	}
 
