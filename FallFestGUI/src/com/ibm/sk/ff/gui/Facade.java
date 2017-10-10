@@ -10,6 +10,7 @@ import com.ibm.sk.ff.gui.common.objects.gui.GAntFoodObject;
 import com.ibm.sk.ff.gui.common.objects.gui.GAntObject;
 import com.ibm.sk.ff.gui.common.objects.gui.GFoodObject;
 import com.ibm.sk.ff.gui.common.objects.gui.GHillObject;
+import com.ibm.sk.ff.gui.common.objects.gui.GUIObjectCrate;
 import com.ibm.sk.ff.gui.common.objects.operations.CloseData;
 import com.ibm.sk.ff.gui.common.objects.operations.CreateGameData;
 import com.ibm.sk.ff.gui.common.objects.operations.InitMenuData;
@@ -18,80 +19,84 @@ import com.ibm.sk.ff.gui.common.objects.operations.ScoreData;
 import com.sun.istack.internal.logging.Logger;
 
 public class Facade implements GuiEventListener {
-	
-	private GUI gui;
-	
-	private Logger LOG = Logger.getLogger(Facade.class);
-	
-	public Facade(GUI gui) {
+
+	private final GUI gui;
+
+	private final Logger LOG = Logger.getLogger(Facade.class);
+
+	public Facade(final GUI gui) {
 		this.gui = gui;
 	}
-	
-	public void set(GAntObject[] ants) {
-		gui.set(ants);
+
+	public void set(final GAntObject[] ants) {
+		this.gui.set(ants);
 	}
-	
-	public void set(GFoodObject[] foods) {
-		gui.set(foods);
+
+	public void set(final GFoodObject[] foods) {
+		this.gui.set(foods);
 	}
-	
-	public void set(GHillObject[] hills) {
-		gui.set(hills);
+
+	public void set(final GHillObject[] hills) {
+		this.gui.set(hills);
 	}
-	
-	public void set(GAntFoodObject[] antfood) {
-		gui.set(antfood);
+
+	public void set(final GAntFoodObject[] antfood) {
+		this.gui.set(antfood);
 	}
-	
-	public void remove(GAntObject[] ants) {
-		gui.remove(ants);
+
+	public void remove(final GAntObject[] ants) {
+		this.gui.remove(ants);
 	}
-	
-	public void remove(GAntFoodObject[] antfood) {
-		gui.remove(antfood);
+
+	public void remove(final GAntFoodObject[] antfood) {
+		this.gui.remove(antfood);
 	}
-	
-	public void remove(GFoodObject[] foods) {
-		gui.remove(foods);
+
+	public void remove(final GFoodObject[] foods) {
+		this.gui.remove(foods);
 	}
-	
-	public void remove(GHillObject[] hills) {
-		gui.remove(hills);
+
+	public void remove(final GHillObject[] hills) {
+		this.gui.remove(hills);
 	}
-	
-	public void initMenu(InitMenuData imData) {
-		gui.createMenu(imData);
+
+	public void initMenu(final InitMenuData imData) {
+		this.gui.createMenu(imData);
 	}
-	
-	public void createGame(CreateGameData cgData) {
-		gui.createGame(cgData);
+
+	public void createGame(final CreateGameData cgData) {
+		this.gui.createGame(cgData);
 	}
-	
-	public void score(ScoreData score) {
-		gui.score(score);
+
+	public void score(final ScoreData score) {
+		this.gui.score(score);
 	}
-	
-	public void showResults(ResultData result) {
-		gui.showResult(result);
+
+	public void showResults(final ResultData result) {
+		this.gui.showResult(result);
 	}
-	
-	public void close(CloseData data) {
-		gui.close(data);
+
+	public void close(final CloseData data) {
+		this.gui.close(data);
 	}
-	
+
 	public String getEvents() {
-		GuiEvent[] eventsArray = events.stream().toArray(GuiEvent[]::new);
-		String ret = Mapper.INSTANCE.pojoToJson(eventsArray);
-		events.clear();
+		final GuiEvent[] eventsArray = this.events.stream().toArray(GuiEvent[]::new);
+		final String ret = Mapper.INSTANCE.pojoToJson(eventsArray);
+		this.events.clear();
 		return ret;
 	}
-	
-	private List<GuiEvent> events = new ArrayList<>();
+
+	private final List<GuiEvent> events = new ArrayList<>();
 
 	@Override
-	public void actionPerformed(GuiEvent event) {
-		LOG.info("Gui Event occured: " + event.getType().toString() + ", " + event.getData());
-		events.add(event);
+	public void actionPerformed(final GuiEvent event) {
+		this.LOG.info("Gui Event occured: " + event.getType().toString() + ", " + event.getData());
+		this.events.add(event);
 	}
-	
+
+	public void set(final GUIObjectCrate crate) {
+		this.gui.set(crate.dump());
+	}
+
 }

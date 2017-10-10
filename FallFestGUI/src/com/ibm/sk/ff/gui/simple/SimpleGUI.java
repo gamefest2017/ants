@@ -1,8 +1,10 @@
 package com.ibm.sk.ff.gui.simple;
 
 import java.awt.BorderLayout;
+import java.awt.Frame;
 import java.awt.image.BufferedImage;
 import java.io.File;
+import java.awt.GridLayout;
 
 import javax.imageio.ImageIO;
 import javax.swing.ImageIcon;
@@ -15,6 +17,7 @@ import com.ibm.sk.ff.gui.common.objects.gui.GAntFoodObject;
 import com.ibm.sk.ff.gui.common.objects.gui.GAntObject;
 import com.ibm.sk.ff.gui.common.objects.gui.GFoodObject;
 import com.ibm.sk.ff.gui.common.objects.gui.GHillObject;
+import com.ibm.sk.ff.gui.common.objects.gui.GUIObject;
 import com.ibm.sk.ff.gui.common.objects.operations.CloseData;
 import com.ibm.sk.ff.gui.common.objects.operations.CreateGameData;
 import com.ibm.sk.ff.gui.common.objects.operations.InitMenuData;
@@ -34,18 +37,18 @@ public class SimpleGUI implements GUI {
 	}
 	
 	@Override
-	public void set(GAntObject[] ants) {
-		canvas.set(ants);
+	public void set(final GAntObject[] ants) {
+		this.canvas.set(ants);
 	}
 
 	@Override
-	public void set(GFoodObject[] food) {
-		canvas.set(food);
+	public void set(final GFoodObject[] food) {
+		this.canvas.set(food);
 	}
 
 	@Override
-	public void set(GHillObject[] hill) {
-		canvas.set(hill);
+	public void set(final GHillObject[] hill) {
+		this.canvas.set(hill);
 	}
 	
 	@Override
@@ -54,14 +57,14 @@ public class SimpleGUI implements GUI {
 	}
 
 	@Override
-	public void createGame(CreateGameData data) {
-		if (frame != null) {
-			frame.dispose();
-			frame = null;
+	public void createGame(final CreateGameData data) {
+		if (this.frame != null) {
+			this.frame.dispose();
+			this.frame = null;
 		}
 		
-		frame = new JFrame();
-		frame.setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
+		this.frame = new JFrame();
+		this.frame.setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
 		JLabel label = new JLabel(new ImageIcon(loadBackgroundImage()));
 		frame.setContentPane(label);
 		
@@ -90,66 +93,71 @@ public class SimpleGUI implements GUI {
 	}
 
 	@Override
-	public void remove(GAntObject[] ant) {
-		canvas.remove(ant);
+	public void remove(final GAntObject[] ant) {
+		this.canvas.remove(ant);
 	}
 
 	@Override
-	public void remove(GFoodObject[] food) {
-		canvas.remove(food);
+	public void remove(final GFoodObject[] food) {
+		this.canvas.remove(food);
 	}
 
 	@Override
-	public void remove(GHillObject[] hill) {
-		canvas.remove(hill);
+	public void remove(final GHillObject[] hill) {
+		this.canvas.remove(hill);
 	}
 	
 	@Override
-	public void remove(GAntFoodObject[] antfood) {
-		canvas.remove(antfood);
+	public void remove(final GAntFoodObject[] antfood) {
+		this.canvas.remove(antfood);
 	}
 
 	@Override
-	public void close(CloseData data) {
+	public void close(final CloseData data) {
 		System.exit(0);
 	}
 
 	@Override
-	public void showResult(ResultData data) {
+	public void showResult(final ResultData data) {
 		// TODO Auto-generated method stub
 	}
 
 	@Override
-	public void createMenu(InitMenuData data) {
-		if (frame != null) {
-			frame.dispose();
-			canvas = null;
-			scoreboard = null;
-			frame = null;
+	public void createMenu(final InitMenuData data) {
+		if (this.frame != null) {
+			this.frame.dispose();
+			this.canvas = null;
+			this.scoreboard = null;
+			this.frame = null;
 		}
 
 		//Create and set up the window.
-		frame = new JFrame("IBM Slovakia / Fall Fest 2017 / Anthill");
-        frame.setExtendedState(frame.getExtendedState()|JFrame.MAXIMIZED_BOTH);
-		frame.setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
-		frame.setLayout(new BorderLayout());
+		this.frame = new JFrame("IBM Slovakia / Fall Fest 2017 / Anthill");
+		this.frame.setExtendedState(this.frame.getExtendedState()|Frame.MAXIMIZED_BOTH);
+		this.frame.setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
+		this.frame.setLayout(new BorderLayout());
 		
         //Set up the content pane.
-		frame.add(new Menu(data, listener, frame.getContentPane()));
+		this.frame.add(new Menu(data, this.listener, this.frame));
 		
         //Display the window.
-		frame.pack();
-		frame.setVisible(true);
+		this.frame.pack();
+		this.frame.setVisible(true);
 	}
 
 	@Override
-	public void score(ScoreData score) {
-		scoreboard.setScore(score);
+	public void score(final ScoreData score) {
+		this.scoreboard.setScore(score);
 	}
 
 	@Override
-	public void addGuiEventListener(GuiEventListener listener) {
+	public void addGuiEventListener(final GuiEventListener listener) {
 		this.listener = listener;
+	}
+
+	@Override
+	public void set(final GUIObject[] objects) {
+		this.canvas.set(objects);
 	}
 
 }

@@ -3,8 +3,10 @@ package com.ibm.sk.ff.gui.client;
 import java.util.ArrayList;
 import java.util.EnumMap;
 import java.util.HashMap;
+import java.util.HashSet;
 import java.util.List;
 import java.util.Map;
+import java.util.Set;
 
 import com.ibm.sk.ff.gui.common.GUIOperations;
 import com.ibm.sk.ff.gui.common.events.GuiEvent;
@@ -13,8 +15,10 @@ import com.ibm.sk.ff.gui.common.mapper.Mapper;
 import com.ibm.sk.ff.gui.common.objects.gui.GAntFoodObject;
 import com.ibm.sk.ff.gui.common.objects.gui.GAntObject;
 import com.ibm.sk.ff.gui.common.objects.gui.GFoodObject;
+import com.ibm.sk.ff.gui.common.objects.gui.GHillObject;
 import com.ibm.sk.ff.gui.common.objects.gui.GUIObject;
 import com.ibm.sk.ff.gui.common.objects.gui.GUIObjectTypes;
+import com.ibm.sk.ff.gui.common.objects.gui.GUIObjectCrate;
 import com.ibm.sk.ff.gui.common.objects.operations.CloseData;
 import com.ibm.sk.ff.gui.common.objects.operations.CreateGameData;
 import com.ibm.sk.ff.gui.common.objects.operations.InitMenuData;
@@ -56,18 +60,26 @@ public class GUIFacade {
 	public void set(final GUIObject[] o) {
 		if (o != null && o.length > 0) {
 			GUIObject [] objects = map(o);
-			final Map<GUIObjectTypes, List<GUIObject>> objectsByType = new EnumMap<>(GUIObjectTypes.class);
-			for (final GUIObjectTypes type : GUIObjectTypes.values()) {
-				objectsByType.put(type, new ArrayList<>());
-			}
-			for (final GUIObject guiObject : objects) {
-				objectsByType.get(guiObject.getType()).add(guiObject);
-			}
-			for (final GUIObjectTypes type : objectsByType.keySet()) {
-				this.CLIENT.postMessage(
-					GUIOperations.SET.toString() + "/" + type.toString(),
-					Mapper.INSTANCE.pojoToJson(objectsByType.get(type).toArray())
-				);
+			final GUIObject[] mappedObjects = mapNotYetRendered(objects);
+
+			final GUIObjectCrate crate = new GUIObjectCrate();
+			for (final GUIObject guiObject : mappedObjects) {
+				if (guiObject instanceof GHillObject) {
+					final GHillObject hill = (GHillObject) guiObject;
+					crate.getHills().add(hill);
+				}
+				if (guiObject instanceof GAntObject) {
+					final GAntObject ant = (GAntObject) guiObject;
+					crate.getAnts().add(ant);
+				}
+				if (guiObject instanceof GFoodObject) {
+					final GFoodObject food = (GFoodObject) guiObject;
+					crate.getFoods().add(food);
+				}
+				if (guiObject instanceof GAntFoodObject) {
+					final GAntFoodObject antFood = (GAntFoodObject) guiObject;
+					crate.getAntFoods().add(antFood);
+				}
 			}
 		}
 		
@@ -173,7 +185,7 @@ public class GUIFacade {
 	}
 
 	public void showScore(final ScoreData data) {
-		this.CLIENT.postMessage(GUIOperations.SHOW_RESULT.toString(), Mapper.INSTANCE.pojoToJson(data));
+		this.CLIENT.postMessage(GUIOperations.SCORE.toString(), Mapper.INSTANCE.pojoToJson(data));
 	}
 
 	//

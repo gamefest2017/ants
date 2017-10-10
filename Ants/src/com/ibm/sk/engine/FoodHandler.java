@@ -34,25 +34,16 @@ public final class FoodHandler {
 			
 			try {
 				placeObject(newFood);
-				System.out.println("Dropped: " + newFood);
 			} catch (InvalidWorldPositionException e) {
 				System.out.println("Position had not space, food was not dropped. Position was: " + newFood.getPosition());
 			}
 		}
 	}
 
-	public static void pickUpFood(final IAnt ant, final Point position) {
-		final Object object = World.getWorldObject(position);
-		if (object instanceof Food) {
-			ant.pickUpFood((Food) object);
-		} else {
-			System.out.println("I'm not picking that unknown thing!");
-		}
-	}
-	
 	public static void pickUpFood(final IAnt ant, final Food food) {
+		if (!ant.hasFood()) {
 		ant.pickUpFood(food);
 		removeObject(food);
-		System.out.println("I'm not picking that unknown thing!");
+		}
 	}
 }

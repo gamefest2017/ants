@@ -23,27 +23,27 @@ import com.ibm.sk.ff.gui.config.Config;
 
 public class SimpleCanvas extends JComponent {
 	private static final long serialVersionUID = 1L;
-	
+
 	private final Color[] COLORS = {Color.BLACK, Color.RED};
-	
+
 	private final boolean DEV_MODE = Boolean.parseBoolean(Config.DEV_MODE.toString());
 	
 	private static long SLEEP_INTERVAL = 10; //TODO - the transition interval should be set correctly!
-	
+
 	private static Image[] IMAGES_ANT = null;
 	private static Image IMAGES_FOOD = null;
 	private static Image IMAGES_HILL = null;
 	private static Image[] IMAGES_ANT_FOOD = null;
-	
+
 	private boolean finishedRedraw = true;
-	
+
 	static {
 		try {
 			IMAGES_ANT = new Image[] {ImageIO.read(new File("res/ant_left.png")), ImageIO.read(new File("res/ant_right.png"))};
 			IMAGES_FOOD = ImageIO.read(new File("res/food.png"));
 			IMAGES_HILL = ImageIO.read(new File("res/hill.png"));
 			IMAGES_ANT_FOOD = new Image [] {ImageIO.read(new File("res/antWithCookie_left.png")), ImageIO.read(new File("res/antWithCookie_right.png"))};
-		} catch (Exception e) {
+		} catch (final Exception e) {
 			e.printStackTrace();
 		}
 	}
@@ -88,12 +88,12 @@ public class SimpleCanvas extends JComponent {
 			
 		for (SimpleGUIComponent it : OBJECTS.values().stream().toArray(SimpleGUIComponent[]::new)) {
 			if (!it.paint(g)) {
-				finishedRedraw = false;
+				this.finishedRedraw = false;
 			}
 		}
 	}
-	
-	private void paintGrid(Graphics g) {
+
+	private void paintGrid(final Graphics g) {
 		g.setColor(Color.GRAY);
 		for (int i = 0; i < WIDTH; i++) {
 			g.drawLine(i * MAGNIFICATION_X(), 0, i * MAGNIFICATION_X(), HEIGHT * MAGNIFICATION_Y());
@@ -102,16 +102,16 @@ public class SimpleCanvas extends JComponent {
 			g.drawLine(0, i * MAGNIFICATION_Y(), WIDTH * MAGNIFICATION_X(), i * MAGNIFICATION_Y());
 		}
 	}
-	
+
 	private void performRepaint() {
 		do {
 			paintImmediately(0, 0, getWidth(), getHeight());
 			try {
 				Thread.sleep(SLEEP_INTERVAL);
-			} catch (Exception e) {
+			} catch (final Exception e) {
 				e.printStackTrace();
 			}
-		} while (!finishedRedraw);
+		} while (!this.finishedRedraw);
 	}
 	
 	public void set(GUIObject[] hills) {
@@ -126,6 +126,7 @@ public class SimpleCanvas extends JComponent {
 			}
 			OBJECTS.put(it, toAdd);
 		}
+
 		performRepaint();
 	}
 	
@@ -139,30 +140,30 @@ public class SimpleCanvas extends JComponent {
 		}
 		return ret;
 	}
-	
-	private Color getTeamColor(GUIObject go) {
+
+	private Color getTeamColor(final GUIObject go) {
 		Color ret = null;
 		if (go instanceof GAntObject) {
-			GAntObject swp = (GAntObject)go;
-			for (int i = 0; i < teams.length; i++) {
-				if (teams[i].equals(swp.getTeam())) {
-					ret = COLORS[i];
+			final GAntObject swp = (GAntObject)go;
+			for (int i = 0; i < this.teams.length; i++) {
+				if (this.teams[i].equals(swp.getTeam())) {
+					ret = this.COLORS[i];
 				}
 			}
 		}
 		if (go instanceof GHillObject) {
-			GHillObject swp = (GHillObject)go;
-			for (int i = 0; i < teams.length; i++) {
-				if (teams[i].equals(swp.getTeam())) {
-					ret = COLORS[i];
+			final GHillObject swp = (GHillObject)go;
+			for (int i = 0; i < this.teams.length; i++) {
+				if (this.teams[i].equals(swp.getTeam())) {
+					ret = this.COLORS[i];
 				}
 			}
 		}
 		if (go instanceof GAntFoodObject) {
-			GAntFoodObject swp = (GAntFoodObject)go;
-			for (int i = 0; i < teams.length; i++) {
-				if (swp.getAnt() != null && teams[i].equals(swp.getAnt().getTeam())) {
-					ret = COLORS[i];
+			final GAntFoodObject swp = (GAntFoodObject)go;
+			for (int i = 0; i < this.teams.length; i++) {
+				if (swp.getAnt() != null && this.teams[i].equals(swp.getAnt().getTeam())) {
+					ret = this.COLORS[i];
 				}
 			}
 		}
