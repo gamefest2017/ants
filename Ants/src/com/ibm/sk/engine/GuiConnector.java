@@ -11,7 +11,6 @@ import com.ibm.sk.dto.IAnt;
 import com.ibm.sk.dto.IWorldObject;
 import com.ibm.sk.dto.WorldObject;
 import com.ibm.sk.ff.gui.client.GUIFacade;
-import com.ibm.sk.ff.gui.common.objects.gui.GAntFoodObject;
 import com.ibm.sk.ff.gui.common.objects.gui.GAntObject;
 import com.ibm.sk.ff.gui.common.objects.gui.GFoodObject;
 import com.ibm.sk.ff.gui.common.objects.gui.GHillObject;

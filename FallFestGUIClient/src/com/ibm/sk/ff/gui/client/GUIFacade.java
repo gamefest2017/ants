@@ -1,12 +1,9 @@
 package com.ibm.sk.ff.gui.client;
 
 import java.util.ArrayList;
-import java.util.EnumMap;
 import java.util.HashMap;
-import java.util.HashSet;
 import java.util.List;
 import java.util.Map;
-import java.util.Set;
 
 import com.ibm.sk.ff.gui.common.GUIOperations;
 import com.ibm.sk.ff.gui.common.events.GuiEvent;
@@ -17,8 +14,8 @@ import com.ibm.sk.ff.gui.common.objects.gui.GAntObject;
 import com.ibm.sk.ff.gui.common.objects.gui.GFoodObject;
 import com.ibm.sk.ff.gui.common.objects.gui.GHillObject;
 import com.ibm.sk.ff.gui.common.objects.gui.GUIObject;
-import com.ibm.sk.ff.gui.common.objects.gui.GUIObjectTypes;
 import com.ibm.sk.ff.gui.common.objects.gui.GUIObjectCrate;
+import com.ibm.sk.ff.gui.common.objects.gui.GUIObjectTypes;
 import com.ibm.sk.ff.gui.common.objects.operations.CloseData;
 import com.ibm.sk.ff.gui.common.objects.operations.CreateGameData;
 import com.ibm.sk.ff.gui.common.objects.operations.InitMenuData;
@@ -60,10 +57,9 @@ public class GUIFacade {
 	public void set(final GUIObject[] o) {
 		if (o != null && o.length > 0) {
 			GUIObject [] objects = map(o);
-			final GUIObject[] mappedObjects = mapNotYetRendered(objects);
 
 			final GUIObjectCrate crate = new GUIObjectCrate();
-			for (final GUIObject guiObject : mappedObjects) {
+			for (final GUIObject guiObject : objects) {
 				if (guiObject instanceof GHillObject) {
 					final GHillObject hill = (GHillObject) guiObject;
 					crate.getHills().add(hill);
@@ -81,6 +77,8 @@ public class GUIFacade {
 					crate.getAntFoods().add(antFood);
 				}
 			}
+			
+			this.CLIENT.postMessage(GUIOperations.SET.toString(), Mapper.INSTANCE.pojoToJson(crate));
 		}
 		
 		sendNotYetRenderedData(o);
