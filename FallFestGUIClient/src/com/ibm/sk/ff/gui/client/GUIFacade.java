@@ -65,13 +65,30 @@ public class GUIFacade {
 				objectsByType.get(guiObject.getType()).add(guiObject);
 			}
 			for (final GUIObjectTypes type : objectsByType.keySet()) {
-				this.CLIENT.postMessage(GUIOperations.SET.toString() + "/" + type.toString(),
-						Mapper.INSTANCE.pojoToJson(objectsByType.get(type).toArray()));
+				this.CLIENT.postMessage(
+					GUIOperations.SET.toString() + "/" + type.toString(),
+					Mapper.INSTANCE.pojoToJson(objectsByType.get(type).toArray())
+				);
 			}
 		}
 		
+		sendNotYetRenderedData();
+	}
+	
+	private void sendNotYetRenderedData() {
 		if (notRenderedYet.size() > 0) {
-			notRenderedYet.stream().forEach(af -> {remove(af.getFood()); remove(af.getAnt());});
+			List<GAntObject> antsToRemove = new ArrayList<>();
+			List<GFoodObject> foodsToRemove = new ArrayList<>();
+			
+			notRenderedYet.stream().forEach(af -> {
+				antsToRemove.add(af.getAnt());
+				foodsToRemove.add(af.getFood());
+				}
+			);
+			
+			remove(antsToRemove.stream().toArray(GAntObject[]::new));
+			remove(foodsToRemove.stream().toArray(GFoodObject[]::new));
+			
 			this.CLIENT.postMessage(
 				GUIOperations.SET.toString() + "/" + GUIObjectTypes.ANT_FOOD.toString(), 
 				Mapper.INSTANCE.pojoToJson(notRenderedYet.stream().toArray(GAntFoodObject[]::new))

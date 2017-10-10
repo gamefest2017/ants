@@ -62,7 +62,8 @@ public class SimpleGUI implements GUI {
 		
 		frame = new JFrame();
 		frame.setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
-		frame.setContentPane(new JLabel(new ImageIcon(loadBackgroundImage())));
+		JLabel label = new JLabel(new ImageIcon(loadBackgroundImage()));
+		frame.setContentPane(label);
 		
 		scoreboard = new ScoreboardSmall(data);
 		canvas = new SimpleCanvas(data.getWidth(), data.getHeight(), data.getTeams(), frame);

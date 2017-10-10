@@ -65,17 +65,17 @@ public class SimpleCanvas extends JComponent {
 		
 		addKeyListener(new KeyListener() {
 			@Override
-			public void keyTyped(KeyEvent e) {}
-			@Override
-			public void keyPressed(KeyEvent e) {}
-			@Override
-			public void keyReleased(KeyEvent e) {
+			public void keyTyped(KeyEvent e) {
 				System.out.println("asdfasdf");
 				if (e.getKeyCode() == KeyEvent.VK_ESCAPE || e.getKeyCode() == KeyEvent.VK_SPACE) {
 					parentFrame.setVisible(false);
 					parentFrame.dispose();
 				}
 			}
+			@Override
+			public void keyPressed(KeyEvent e) {}
+			@Override
+			public void keyReleased(KeyEvent e) {}
 		});
 	}
 	
@@ -167,7 +167,7 @@ public class SimpleCanvas extends JComponent {
 				toAdd.moveToLocation(it.getLocation().getX(), it.getLocation().getY());
 			} else {
 				toAdd = new SimpleGUIComponent(MAGNIFICATION_X(), MAGNIFICATION_Y(), IMAGES_ANT_FOOD, null, getTeamColor(it));
-				toAdd.moveToLocation(it.getLocation().getX(), it.getLocation().getY());
+				toAdd.setLocation(it.getLocation().getX(), it.getLocation().getY());
 			}
 			OBJECTS.put(it, toAdd);
 		}
@@ -210,8 +210,8 @@ public class SimpleCanvas extends JComponent {
 	public void remove(GUIObject[] object) {
 		boolean changed = false;
 		for (GUIObject it : object) {
-			if (this.OBJECTS.containsKey(it.getId())) {
-				this.OBJECTS.remove(it.getId());
+			if (this.OBJECTS.containsKey(it)) {
+				this.OBJECTS.remove(it);
 				changed = true;
 			}
 		}
