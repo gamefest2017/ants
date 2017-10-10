@@ -55,7 +55,7 @@ public final class ProcessExecutor {
 		System.out.println("Turn:" + Main.getTurn() + "Ant " + ant.getId() + " said:");
 		final Vision vision = new Vision(createVisionGrid(ant));
 		final Direction direction = ant.move(vision);
-		final MovementHandler movementHandler = new MovementHandler();
+		final MovementHandler movementHandler = MovementHandler.getInstance();
 
 		if (Direction.NO_MOVE.equals(direction)) {
 			System.out.println("I'm not moving. I like this place!");
