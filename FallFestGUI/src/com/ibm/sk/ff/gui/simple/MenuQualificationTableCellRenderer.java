@@ -36,7 +36,7 @@ public class MenuQualificationTableCellRenderer extends DefaultTableCellRenderer
          if (candidate == null) {
         	 l.setBackground(Color.WHITE);
          } else {
-        	 l.setBackground(candidate.isQualified() ? new Color(24, 142, 0) : new Color(238, 238, 238));
+        	 l.setBackground(candidate.isQualified() ? new Color(200, 221, 242) : new Color(238, 238, 238));
          }
 
          //Return the JLabel which renders the cell.
