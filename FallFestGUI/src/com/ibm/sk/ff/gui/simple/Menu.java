@@ -2,7 +2,6 @@ package com.ibm.sk.ff.gui.simple;
 
 import java.awt.BorderLayout;
 import java.awt.Color;
-import java.awt.Container;
 import java.awt.Font;
 import java.awt.GridBagConstraints;
 import java.awt.GridBagLayout;
@@ -18,13 +17,18 @@ import javax.swing.JList;
 import javax.swing.JPanel;
 import javax.swing.JScrollPane;
 import javax.swing.JTabbedPane;
+import javax.swing.JTable;
 import javax.swing.JTextPane;
 import javax.swing.ListSelectionModel;
 import javax.swing.border.LineBorder;
+import javax.swing.table.DefaultTableCellRenderer;
+import javax.swing.table.TableColumn;
 import javax.swing.text.SimpleAttributeSet;
 import javax.swing.text.StyleConstants;
 import javax.swing.text.StyledDocument;
 
+import com.ibm.sk.dto.qualification.Candidate;
+import com.ibm.sk.dto.qualification.Qualification;
 import com.ibm.sk.ff.gui.common.events.GuiEventListener;
 import com.ibm.sk.ff.gui.common.objects.operations.InitMenuData;
 
@@ -46,6 +50,20 @@ public class Menu extends JPanel {
 	 */
 	public Menu(InitMenuData initMenuData, GuiEventListener sharedGuiListener, JFrame mainFrame) {
 		super(new BorderLayout());
+		
+		// TODO Remove me later on
+		Qualification qualification = new Qualification();
+		qualification.addCandidate(new Candidate(1, "Player 1", true, 34L, 45L, 27L));
+		qualification.addCandidate(new Candidate(2, "Player 2", true, 32L, 46L, 23L));
+		qualification.addCandidate(new Candidate(3, "Player 3", true, 31L, 23L, 13L));
+		qualification.addCandidate(new Candidate(4, "Player 4", true, 30L, 21L, 12L));
+		qualification.addCandidate(new Candidate(5, "Player 5", true, 29L, 19L, 13L));
+		qualification.addCandidate(new Candidate(6, "Player 6", true, 28L, 17L, 14L));
+		qualification.addCandidate(new Candidate(7, "Player 7", true, 27L, 15L, 15L));
+		qualification.addCandidate(new Candidate(8, "Player 8", true, 26L, 13L, 13L));
+		qualification.addCandidate(new Candidate(9, "Player 9", false, 25L, 11L));
+		qualification.addCandidate(new Candidate(10, "Player 10", false, 24L));
+		initMenuData.setQualification(qualification);
 		
 		this.initMenuData = initMenuData;
 		this.sharedGuiListener = sharedGuiListener;
@@ -126,10 +144,36 @@ public class Menu extends JPanel {
         tabbedPane.addTab("Duel", panelDuel);
  
         // 3rd Sheet: Tournament
+        boolean selectPanelTournament;
         JPanel panelTournament = new JPanel();
         panelTournament.setLayout(new GridLayout(1, 1));
-        panelTournament.add(menuSkullLabel);
-        tabbedPane.addTab("Tournament", panelTournament);
+        String title;
+        if (initMenuData.getQualification() == null) {
+            title = "Tournament";
+            selectPanelTournament = false;
+        	panelTournament.add(menuSkullLabel);
+        } else {
+        	title = "Tournament - Qualification";
+            selectPanelTournament = true;
+        	JTable tableQualification = new JTable(new MenuQualificationTableModel(initMenuData.getQualification()));
+        	for (int i = 0; i < tableQualification.getModel().getColumnCount(); i++) {
+        		TableColumn tableColumn = tableQualification.getColumnModel().getColumn(i);
+        		tableColumn.setCellRenderer(new MenuQualificationTableCellRenderer(initMenuData.getQualification()));
+        		if (i == 1) {
+        			tableColumn.setPreferredWidth(300);
+        		} else {
+        			tableColumn.setPreferredWidth(10);
+        		}
+        	}
+        	JScrollPane scrollPaneQualification = new JScrollPane(tableQualification);
+        	tableQualification.setFillsViewportHeight(true);
+        	panelTournament.add(scrollPaneQualification, BorderLayout.CENTER);
+        }
+//    	title = "Tournament - Quarter"; // Semi, Finals
+        tabbedPane.addTab(title, panelTournament);
+        if (selectPanelTournament) {
+        	tabbedPane.setSelectedComponent(panelTournament);
+        }
  
         // 4th Sheet: About
         JPanel panelAbout = new JPanel(false);
