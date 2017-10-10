@@ -15,9 +15,9 @@ import javax.swing.JFrame;
 
 import com.ibm.sk.ff.gui.common.objects.gui.GAntFoodObject;
 import com.ibm.sk.ff.gui.common.objects.gui.GAntObject;
-import com.ibm.sk.ff.gui.common.objects.gui.GFoodObject;
 import com.ibm.sk.ff.gui.common.objects.gui.GHillObject;
 import com.ibm.sk.ff.gui.common.objects.gui.GUIObject;
+import com.ibm.sk.ff.gui.common.objects.gui.GUIObjectTypes;
 import com.ibm.sk.ff.gui.common.objects.operations.InitMenuData;
 import com.ibm.sk.ff.gui.config.Config;
 
@@ -114,44 +114,14 @@ public class SimpleCanvas extends JComponent {
 		} while (!finishedRedraw);
 	}
 	
-	private void animate() {
-		//TODO
-	}
-	
-	public void set(GHillObject[] hills) {
-		for (GHillObject it : hills) {
-			SimpleGUIComponent toAdd = null;
-			if (OBJECTS.containsKey(it)) {
-				OBJECTS.remove(it);
-			}
-			toAdd = new SimpleGUIComponent(MAGNIFICATION_X(), MAGNIFICATION_Y(), new Image[] {IMAGES_HILL}, null, getTeamColor(it));
-			toAdd.setLocation(it.getLocation().getX(), it.getLocation().getY());
-			OBJECTS.put(it, toAdd);
-		}
-		performRepaint();
-	}
-	
-	public void set(GFoodObject[] foods) {
-		for (GFoodObject it : foods) {
-			SimpleGUIComponent toAdd = null;
-			if (OBJECTS.containsKey(it)) {
-				OBJECTS.remove(it);
-			}
-			toAdd = new SimpleGUIComponent(MAGNIFICATION_X(), MAGNIFICATION_Y(), new Image[] {IMAGES_FOOD}, null, getTeamColor(it));
-			toAdd.setLocation(it.getLocation().getX(), it.getLocation().getY());
-			OBJECTS.put(it, toAdd);
-		}
-		performRepaint();
-	}
-	
-	public void set(GAntObject[] ants) {
-		for (GAntObject it : ants) {
+	public void set(GUIObject[] hills) {
+		for (GUIObject it : hills) {
 			SimpleGUIComponent toAdd = null;
 			if (OBJECTS.containsKey(it)) {
 				toAdd = OBJECTS.remove(it);
 				toAdd.moveToLocation(it.getLocation().getX(), it.getLocation().getY());
 			} else {
-				toAdd = new SimpleGUIComponent(MAGNIFICATION_X(), MAGNIFICATION_Y(), IMAGES_ANT, null, getTeamColor(it));
+				toAdd = new SimpleGUIComponent(MAGNIFICATION_X(), MAGNIFICATION_Y(), getImage(it.getType()), null, getTeamColor(it));
 				toAdd.setLocation(it.getLocation().getX(), it.getLocation().getY());
 			}
 			OBJECTS.put(it, toAdd);
@@ -159,19 +129,15 @@ public class SimpleCanvas extends JComponent {
 		performRepaint();
 	}
 	
-	public void set(GAntFoodObject[] gafos) {
-		for (GAntFoodObject it : gafos) {
-			SimpleGUIComponent toAdd = null;
-			if (OBJECTS.containsKey(it)) {
-				toAdd = OBJECTS.remove(it);
-				toAdd.moveToLocation(it.getLocation().getX(), it.getLocation().getY());
-			} else {
-				toAdd = new SimpleGUIComponent(MAGNIFICATION_X(), MAGNIFICATION_Y(), IMAGES_ANT_FOOD, null, getTeamColor(it));
-				toAdd.setLocation(it.getLocation().getX(), it.getLocation().getY());
-			}
-			OBJECTS.put(it, toAdd);
+	private Image[] getImage(GUIObjectTypes type) {
+		Image [] ret = null;
+		switch (type) {
+		case ANT: ret = IMAGES_ANT; break;
+		case ANT_FOOD: ret = IMAGES_ANT_FOOD; break;
+		case FOOD: ret = new Image[] {IMAGES_FOOD}; break;
+		case HILL: ret = new Image[] {IMAGES_HILL};	break;
 		}
-		performRepaint();
+		return ret;
 	}
 	
 	private Color getTeamColor(GUIObject go) {
