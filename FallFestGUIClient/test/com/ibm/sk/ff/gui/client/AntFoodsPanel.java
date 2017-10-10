@@ -19,8 +19,8 @@ public class AntFoodsPanel extends JPanel {
 	
 	private static final long serialVersionUID = -8780098469519172008L;
 	
-	private DefaultListModel<GAntFoodObject> listModel = new DefaultListModel<GAntFoodObject>();
-	private JList<GAntFoodObject> list = new JList<GAntFoodObject>(listModel);
+	private DefaultListModel<GAntFoodObject> listModel = new DefaultListModel<>();
+	private JList<GAntFoodObject> list = new JList<>(listModel);
 	
 	private AntFoodView antfoodView = new AntFoodView();
 	

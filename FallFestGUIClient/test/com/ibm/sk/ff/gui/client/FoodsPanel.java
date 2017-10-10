@@ -6,7 +6,6 @@ import java.awt.FlowLayout;
 import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
 
-import javax.swing.DefaultListModel;
 import javax.swing.JButton;
 import javax.swing.JList;
 import javax.swing.JPanel;
@@ -19,7 +18,7 @@ public class FoodsPanel extends JPanel {
 	
 	private static final long serialVersionUID = -8780098469519172008L;
 	
-	private DefaultListModel<GFoodObject> listModel = new DefaultListModel<GFoodObject>();
+	private DataHolder<GFoodObject> listModel = UniversalGuiTester.INSTANCE.foods;
 	private JList<GFoodObject> list = new JList<GFoodObject>(listModel);
 	
 	private FoodView foodView = new FoodView();

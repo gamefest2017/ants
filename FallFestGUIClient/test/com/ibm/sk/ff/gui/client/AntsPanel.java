@@ -6,7 +6,6 @@ import java.awt.FlowLayout;
 import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
 
-import javax.swing.DefaultListModel;
 import javax.swing.JButton;
 import javax.swing.JList;
 import javax.swing.JPanel;
@@ -19,7 +18,7 @@ public class AntsPanel extends JPanel {
 	
 	private static final long serialVersionUID = -8780098469519172008L;
 	
-	private DefaultListModel<GAntObject> listModel = new DefaultListModel<GAntObject>();
+	private DataHolder<GAntObject> listModel = UniversalGuiTester.INSTANCE.ants;
 	private JList<GAntObject> list = new JList<GAntObject>(listModel);
 	
 	private AntView antView = new AntView();

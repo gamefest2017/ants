@@ -2,10 +2,9 @@ package com.ibm.sk.ff.gui.client;
 
 import java.util.ArrayList;
 import java.util.EnumMap;
-import java.util.HashSet;
+import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
-import java.util.Set;
 
 import com.ibm.sk.ff.gui.common.GUIOperations;
 import com.ibm.sk.ff.gui.common.events.GuiEvent;
@@ -30,7 +29,7 @@ public class GUIFacade {
 	
 	private final List<GAntFoodObject> antFoodObjects = new ArrayList<>();
 	
-	private final Set<GAntFoodObject> notRenderedYet = new HashSet<>();
+	private final Map<GAntObject, GAntFoodObject> notRenderedYet = new HashMap<>();
 	
 	public GUIFacade() {
 		this.CLIENT = new Client();
@@ -72,15 +71,15 @@ public class GUIFacade {
 			}
 		}
 		
-		sendNotYetRenderedData();
+		sendNotYetRenderedData(o);
 	}
 	
-	private void sendNotYetRenderedData() {
+	private void sendNotYetRenderedData(GUIObject[] o) {
 		if (notRenderedYet.size() > 0) {
 			List<GAntObject> antsToRemove = new ArrayList<>();
 			List<GFoodObject> foodsToRemove = new ArrayList<>();
 			
-			notRenderedYet.stream().forEach(af -> {
+			notRenderedYet.values().stream().forEach(af -> {
 				antsToRemove.add(af.getAnt());
 				foodsToRemove.add(af.getFood());
 				}
@@ -91,10 +90,26 @@ public class GUIFacade {
 			
 			this.CLIENT.postMessage(
 				GUIOperations.SET.toString() + "/" + GUIObjectTypes.ANT_FOOD.toString(), 
-				Mapper.INSTANCE.pojoToJson(notRenderedYet.stream().toArray(GAntFoodObject[]::new))
+				Mapper.INSTANCE.pojoToJson(mapNotYetRendered(o))
 			);
-			notRenderedYet.clear();
 		}
+	}
+	
+	private GAntFoodObject[] mapNotYetRendered(GUIObject[] o) {
+		List<GAntFoodObject> ret = new ArrayList<>();
+		
+		for (GUIObject it : o) {
+			if (it.getType() == GUIObjectTypes.ANT) {
+				GAntObject swp = (GAntObject)it;
+				if (notRenderedYet.containsKey(swp)) {
+					GAntFoodObject toAdd = notRenderedYet.remove(swp);
+					toAdd.setLocation(swp.getLocation());
+					ret.add(toAdd);
+				}
+			}
+		}
+		
+		return ret.stream().toArray(GAntFoodObject[]::new);
 	}
 	
 	private GUIObject[] map(GUIObject[] orig) {
@@ -102,7 +117,8 @@ public class GUIFacade {
 		for (GUIObject it : orig) {
 			if (it.getType() == GUIObjectTypes.ANT) {
 				GAntFoodObject mapped = getMapped((GAntObject)it);
-				if (mapped != null && !notRenderedYet.contains(mapped)) {
+				if (mapped != null && !notRenderedYet.containsValue(mapped)) {
+					mapped.setLocation(it.getLocation());
 					ret.add(mapped);
 				} else {
 					ret.add(it);
@@ -123,7 +139,7 @@ public class GUIFacade {
 		gafo.setAnt(ant);
 		gafo.setFood(food);
 		antFoodObjects.add(gafo);
-		notRenderedYet.add(gafo);
+		notRenderedYet.put(ant, gafo);
 		return gafo;
 	}
 	
