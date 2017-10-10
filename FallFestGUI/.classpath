@@ -7,5 +7,6 @@
 	<classpathentry kind="lib" path="/FallFestGUILib/jackson-core-2.5.1.jar"/>
 	<classpathentry kind="lib" path="/FallFestGUILib/jackson-databind-2.5.1.jar"/>
 	<classpathentry kind="con" path="org.eclipse.jdt.launching.JRE_CONTAINER"/>
+	<classpathentry combineaccessrules="false" kind="src" path="/Dto"/>
 	<classpathentry kind="output" path="bin"/>
 </classpath>
