@@ -1,6 +1,8 @@
 package com.ibm.sk.engine;
 
 import static com.ibm.sk.engine.World.getWorldObjects;
+import static com.ibm.sk.WorldConstans.INITIAL_ANT_COUNT;
+import static com.ibm.sk.WorldConstans.POPULATION_WAR_FACTOR;
 
 import java.awt.Point;
 import java.util.ArrayList;
@@ -42,12 +44,23 @@ public final class ProcessExecutor {
 		gameData.setWidth(WorldConstans.X_BOUNDRY);
 		gameData.setHeight(WorldConstans.Y_BOUNDRY);
 		gameData.setTeams(new String[] { team1.getName(), team2 != null ? team2.getName() : "" });
+		initAnts(team1);
 		guiConnector.initGame(gameData);
 		guiConnector.placeGuiObject(team1);
 		guiConnector.placeGuiObjects(new ArrayList<>(team1.getAnts()));
 		if (team2 != null) {
+			initAnts(team2);
 			guiConnector.placeGuiObject(team2);
 			guiConnector.placeGuiObjects(new ArrayList<>(team2.getAnts()));
+		}
+	}
+	
+	private static void initAnts(final Hill hill) {
+		for (int i = 0; i < Math.ceil(INITIAL_ANT_COUNT * (1.0 - POPULATION_WAR_FACTOR)); i++) {
+			hill.getAnts().add(PopulationHandler.breedAnt(hill));
+		}
+		for (int i = 0; i < Math.floor(INITIAL_ANT_COUNT * POPULATION_WAR_FACTOR); i++) {
+			hill.getAnts().add(PopulationHandler.breedWarrior(hill));
 		}
 	}
 
