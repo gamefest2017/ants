@@ -145,23 +145,32 @@ public class GUIFacade {
 	}
 
 	public GAntFoodObject join(GAntObject ant, GFoodObject food) {
-		GAntFoodObject gafo = new GAntFoodObject();
-		gafo.setAnt(ant);
-		gafo.setFood(food);
-		if (!antFoodObjects.contains(getMapped(ant))) {
+		GAntFoodObject gafo = getMapped(ant);
+		
+		if (!antFoodObjects.contains(gafo)) {
+			gafo = new GAntFoodObject();
+			gafo.setAnt(ant);
+			gafo.setFood(food);
+			
 			antFoodObjects.add(gafo);
 			notRenderedYet.put(ant, gafo);
 		}
+		
 		return gafo;
 	}
 	
 	public GUIObject[] separate(GAntObject ant) {
 		List<GUIObject> retList = new ArrayList<>();
-		//TODO
 		
-		antFoodObjects.stream()
-			.filter(afo -> afo.getAnt().equals(ant))
-			.forEach(afo -> retList.add(afo.getFood()));
+		GAntFoodObject gafo = getMapped(ant);
+		if (antFoodObjects.contains(gafo)) {
+			antFoodObjects.stream()
+				.filter(afo -> afo.getAnt().equals(ant))
+				.forEach(afo -> retList.add(afo.getFood()));
+			antFoodObjects.remove(gafo);
+			remove(gafo);
+			set(ant);
+		}
 		
 		return retList.stream().toArray(GUIObject[]::new);
 	}
