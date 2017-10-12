@@ -1,8 +1,8 @@
 package com.ibm.sk.engine;
 
-import static com.ibm.sk.engine.World.getWorldObjects;
 import static com.ibm.sk.WorldConstans.INITIAL_ANT_COUNT;
 import static com.ibm.sk.WorldConstans.POPULATION_WAR_FACTOR;
+import static com.ibm.sk.engine.World.getWorldObjects;
 
 import java.awt.Point;
 import java.util.ArrayList;
@@ -22,6 +22,7 @@ import com.ibm.sk.dto.enums.Direction;
 import com.ibm.sk.dto.enums.ObjectType;
 import com.ibm.sk.engine.exceptions.MoveException;
 import com.ibm.sk.ff.gui.common.objects.operations.CreateGameData;
+import com.ibm.sk.models.WorldBorder;
 
 public final class ProcessExecutor {
 
@@ -54,7 +55,7 @@ public final class ProcessExecutor {
 			guiConnector.placeGuiObjects(new ArrayList<>(team2.getAnts()));
 		}
 	}
-	
+
 	private static void initAnts(final Hill hill) {
 		for (int i = 0; i < Math.ceil(INITIAL_ANT_COUNT * (1.0 - POPULATION_WAR_FACTOR)); i++) {
 			hill.getAnts().add(PopulationHandler.breedAnt(hill));
@@ -135,6 +136,8 @@ public final class ProcessExecutor {
 			}
 		} else if (foundObject instanceof Food) {
 			result = ObjectType.FOOD;
+		} else if (foundObject instanceof WorldBorder) {
+			result = ObjectType.BORDER;
 		}
 		return result;
 	}

@@ -26,24 +26,25 @@ public final class FoodHandler {
 			int row;
 			int coll;
 			do {
-				row = RANDOMIZER.nextInt(X_BOUNDRY);
-				coll = RANDOMIZER.nextInt(Y_BOUNDRY);
+				row = RANDOMIZER.nextInt(X_BOUNDRY - 1);
+				coll = RANDOMIZER.nextInt(Y_BOUNDRY - 1);
 			} while (World.isPositionOccupied(new Point(row, coll)));
-			
+
 			final Food newFood = new Food(World.idSequence++, 1, new Point(row, coll));
-			
+
 			try {
 				placeObject(newFood);
 			} catch (InvalidWorldPositionException e) {
-				System.out.println("Position had not space, food was not dropped. Position was: " + newFood.getPosition());
+				System.out.println(
+						"Position had not space, food was not dropped. Position was: " + newFood.getPosition());
 			}
 		}
 	}
 
 	public static void pickUpFood(final IAnt ant, final Food food) {
 		if (!ant.hasFood()) {
-		ant.pickUpFood(food);
-		removeObject(food);
+			ant.pickUpFood(food);
+			removeObject(food);
 		}
 	}
 }

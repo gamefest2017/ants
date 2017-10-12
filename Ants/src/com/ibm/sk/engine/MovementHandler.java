@@ -1,8 +1,5 @@
 package com.ibm.sk.engine;
 
-import static com.ibm.sk.WorldConstans.X_BOUNDRY;
-import static com.ibm.sk.WorldConstans.Y_BOUNDRY;
-
 import java.awt.Point;
 
 import com.ibm.sk.dto.AbstractAnt;
@@ -32,8 +29,9 @@ public final class MovementHandler {
 	public IAnt makeMove(final IAnt ant, final Direction direction) throws MoveException {
 		final double newXPos = ant.getPosition().getX() + direction.getPositionChange().getX();
 		final double newYPos = ant.getPosition().getY() + direction.getPositionChange().getY();
-		if (newXPos < 0 || newXPos > X_BOUNDRY - 1 || newYPos < 0 || newYPos > Y_BOUNDRY - 1) {
-			throw new MoveException("Can't go to empty space! I am not an astronaut, I am just a little ant!");
+		final Point destination = new Point((int) newXPos, (int) newYPos);
+		if (World.isPositionOccupiedByBorder(destination)) {
+			throw new MoveException("Can't go to border of the world grid at position " + destination);
 		}
 		final Point position = new Point();
 		position.setLocation(newXPos, newYPos);
@@ -51,8 +49,7 @@ public final class MovementHandler {
 		} else if (worldObject instanceof Food && ant instanceof AbstractAnt) {
 			FoodHandler.pickUpFood(ant, (Food) worldObject);
 			ant.setPosition(position);
-		} else if (worldObject instanceof IAnt
-				&& ant instanceof AbstractWarrior && ant.isEnemy((IAnt) worldObject)) {
+		} else if (worldObject instanceof IAnt && ant instanceof AbstractWarrior && ant.isEnemy((IAnt) worldObject)) {
 			final AbstractWarrior warrior = (AbstractWarrior) ant;
 			moveToEnemyAndKill(warrior, (IAnt) worldObject);
 			warrior.setPosition(position);

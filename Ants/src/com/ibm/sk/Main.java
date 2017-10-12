@@ -8,6 +8,7 @@ import com.ibm.sk.dto.IAnt;
 import com.ibm.sk.dto.enums.HillOrder;
 import com.ibm.sk.engine.FoodHandler;
 import com.ibm.sk.engine.ProcessExecutor;
+import com.ibm.sk.engine.World;
 
 public class Main {
 
@@ -17,6 +18,8 @@ public class Main {
 		System.out.println("Game starting...");
 		System.out.println("World size: " + WorldConstans.X_BOUNDRY + " x " + WorldConstans.Y_BOUNDRY);
 		System.out.println("Turns: " + TURNS);
+
+		World.createWorldBorder();
 		final Hill hill = createHill(HillOrder.FIRST, "King of ants");
 		ProcessExecutor.initGame(hill, null);
 		final long startTime = System.currentTimeMillis();
