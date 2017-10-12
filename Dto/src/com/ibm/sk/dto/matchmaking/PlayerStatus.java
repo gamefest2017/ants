@@ -1,6 +1,6 @@
 package com.ibm.sk.dto.matchmaking;
 
-public class PlayerStatus implements Comparable<PlayerStatus>{
+public class PlayerStatus {
 	private final Player player;
 	private Integer score = 0;
 	
@@ -26,8 +26,9 @@ public class PlayerStatus implements Comparable<PlayerStatus>{
 	}
 	
 	@Override
-	public int compareTo(PlayerStatus o) {
-		return Integer.compare(o.score, this.score);
+	public String toString() {
+		// TODO Auto-generated method stub
+		return player.getName() + " : " + getScore();
 	}
 	
 }

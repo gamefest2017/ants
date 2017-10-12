@@ -5,8 +5,9 @@ import java.util.Calendar;
 import java.util.Collections;
 import java.util.List;
 import java.util.Optional;
-import java.util.stream.Collector;
 import java.util.stream.Collectors;
+
+import com.ibm.sk.dto.matchmaking.comparator.PlayerScoreComparator;
 
 import lombok.AccessLevel;
 import lombok.Data;
@@ -14,31 +15,41 @@ import lombok.Setter;
 import lombok.ToString;
 
 @Data
-@ToString(exclude= {"startTime","endTime"})
+@ToString(exclude= {"startTime", "endTime", "players"})
 public class Match {
-	private final List<PlayerStatus> players;
-	//private final String map; //TODO not part of the match?
-	//TODO history? reference to game state?
+	private final List<Player> players;
+	private final List<PlayerStatus> playerStatus;
 	
 	@Setter(AccessLevel.NONE) private Optional<Calendar> startTime = Optional.empty();
 	@Setter(AccessLevel.NONE) private Optional<Calendar> endTime = Optional.empty();
 	
+	public Match(List<Player> players) {
+		this.players = players;
+		this.playerStatus = players.stream().map(PlayerStatus::new).collect(Collectors.toList());
+	}
+	
 	public Match(PlayerStatus playerStatus1, PlayerStatus playerStatus2) {
+		playerStatus = new ArrayList<>();
+		playerStatus.add(playerStatus1);
+		playerStatus.add(playerStatus2);
 		players = new ArrayList<>();
-		players.add(playerStatus1);
-		players.add(playerStatus2);
+		players.add(playerStatus1.getPlayer());
+		players.add(playerStatus2.getPlayer());
 	}
 	
 	public Match(PlayerStatus playerStatus1, PlayerStatus playerStatus2, boolean finished) {
+		playerStatus = new ArrayList<>();
+		playerStatus.add(playerStatus1);
+		playerStatus.add(playerStatus2);
 		players = new ArrayList<>();
-		players.add(playerStatus1);
-		players.add(playerStatus2);
+		players.add(playerStatus1.getPlayer());
+		players.add(playerStatus2.getPlayer());
 		if (finished) {
 			startMatch();
 			endMatch();
 		}
 	}
-
+	
 	public Boolean isFinished() {
 		return endTime.isPresent();
 	}
@@ -51,14 +62,14 @@ public class Match {
 		if (!isFinished()) {
 			return Collections.emptyList();//TODO consider exception
 		}
-		return players.stream()
+		return getPlayerStatus().stream()
 				.filter(ps -> ps.getScore().equals(highestScore()))
 				.map(ps -> ps.getPlayer())
 				.collect(Collectors.toList());
 	}
 	
 	public Integer highestScore() {
-		return players.stream().sorted().findFirst().get().getScore();
+		return getPlayerStatus().stream().sorted(new PlayerScoreComparator().reversed()).findFirst().get().getScore();
 	}
 	
 	public void startMatch() {
@@ -74,25 +85,20 @@ public class Match {
 	}
 	
 	public String printScore() {
-		if (players == null || !isFinished()) {
+		if (playerStatus == null || !isFinished()) {
 			return "";
 		} else {
-			return players.stream().map(playerScore -> String.valueOf(playerScore.getScore())).collect(Collectors.joining(" : "));
+			return playerStatus.stream().map(playerScore -> String.valueOf(playerScore.getScore())).collect(Collectors.joining(" : "));
 		}
-	}
-	private static synchronized Calendar now() {
-		Calendar cal = Calendar.getInstance();//TODO set default timezone
-		cal.setTimeInMillis(System.currentTimeMillis());
-		return cal;
 	}
 	
 	public PlayerStatus getPlayerStatus(int index) {
 		
-		if (index < 0 || players == null || players.size() < index) {
+		if (index < 0 || playerStatus == null || playerStatus.size() < index) {
 			return null;
 		}
 		
-		return players.get(index);
+		return playerStatus.get(index);
 	}
 	
 	public Player getPlayer(int index) {
@@ -103,4 +109,11 @@ public class Match {
 		
 		return getPlayerStatus(index).getPlayer();
 	}
+	
+	private static synchronized Calendar now() {
+		Calendar cal = Calendar.getInstance();//TODO set default timezone
+		cal.setTimeInMillis(System.currentTimeMillis());
+		return cal;
+	}
+	
 }
