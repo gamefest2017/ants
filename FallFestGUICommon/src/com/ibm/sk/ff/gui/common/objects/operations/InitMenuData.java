@@ -2,8 +2,8 @@ package com.ibm.sk.ff.gui.common.objects.operations;
 
 import java.util.Arrays;
 
-import com.ibm.sk.dto.matchmaking.Tournament;
-import com.ibm.sk.dto.qualification.Qualification;
+import com.ibm.sk.dto.qualification.QualificationTable;
+import com.ibm.sk.dto.tournament.TournamentTable;
 
 public class InitMenuData {
 	
@@ -11,23 +11,23 @@ public class InitMenuData {
 	
 	public String[] replays = {};
 	
-	public Qualification qualification;
+	public QualificationTable qualification;
 	
-	public Tournament tournament;
+	public TournamentTable tournament;
 
-	public Qualification getQualification() {
+	public QualificationTable getQualification() {
 		return qualification;
 	}
 
-	public void setQualification(Qualification qualification) {
+	public void setQualification(QualificationTable qualification) {
 		this.qualification = qualification;
 	}
 
-	public Tournament getTournament() {
+	public TournamentTable getTournament() {
 		return tournament;
 	}
 
-	public void setTournament(Tournament tournament) {
+	public void setTournament(TournamentTable tournament) {
 		this.tournament = tournament;
 	}
 

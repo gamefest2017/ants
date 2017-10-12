@@ -6,12 +6,12 @@ import java.util.List;
 
 import com.ibm.sk.dto.matchmaking.Player;
 
-public class Candidate extends Player {
+public class QualificationCandidate extends Player {
 
 	private List<Long> score = new ArrayList<>();
 	private boolean qualified = false;
 
-	public Candidate(Integer id, String name, boolean qualified, Long... scoreInQualificationRounds) {
+	public QualificationCandidate(Integer id, String name, boolean qualified, Long... scoreInQualificationRounds) {
 		super(id, name);
 		this.qualified = qualified;
 		this.score = Arrays.asList(scoreInQualificationRounds);

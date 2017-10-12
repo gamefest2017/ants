@@ -36,10 +36,9 @@ public class RoundRobin implements MatchmakingStrategy {
 		for (Player player : players) {
 			for (Player player2 : players) {
 				if (!player.equals(player2)) {
-					List<PlayerStatus> pp = new ArrayList<>();
-					pp.add(new PlayerStatus(player));
-					pp.add(new PlayerStatus(player2));
-					matches.add(new Match(pp)); 
+					PlayerStatus ps1 = new PlayerStatus(player);
+					PlayerStatus ps2 = new PlayerStatus(player2);
+					matches.add(new Match(ps1, ps2)); 
 				}
 			}
 		}

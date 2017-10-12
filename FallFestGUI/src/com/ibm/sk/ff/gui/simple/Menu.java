@@ -2,12 +2,21 @@ package com.ibm.sk.ff.gui.simple;
 
 import java.awt.BorderLayout;
 import java.awt.Color;
+import java.awt.Dimension;
 import java.awt.Font;
 import java.awt.GridBagConstraints;
 import java.awt.GridBagLayout;
 import java.awt.GridLayout;
 import java.awt.Insets;
+import java.util.ArrayList;
+import java.util.HashMap;
+import java.util.List;
+import java.util.Map;
 
+import javax.swing.BorderFactory;
+import javax.swing.Box;
+import javax.swing.BoxLayout;
+import javax.swing.ButtonGroup;
 import javax.swing.DefaultListModel;
 import javax.swing.ImageIcon;
 import javax.swing.JButton;
@@ -15,6 +24,7 @@ import javax.swing.JFrame;
 import javax.swing.JLabel;
 import javax.swing.JList;
 import javax.swing.JPanel;
+import javax.swing.JRadioButton;
 import javax.swing.JScrollPane;
 import javax.swing.JTabbedPane;
 import javax.swing.JTable;
@@ -26,10 +36,16 @@ import javax.swing.text.SimpleAttributeSet;
 import javax.swing.text.StyleConstants;
 import javax.swing.text.StyledDocument;
 
-import com.ibm.sk.dto.qualification.Candidate;
-import com.ibm.sk.dto.qualification.Qualification;
+import com.ibm.sk.dto.matchmaking.Match;
+import com.ibm.sk.dto.matchmaking.Player;
+import com.ibm.sk.dto.matchmaking.PlayerStatus;
+import com.ibm.sk.dto.qualification.QualificationCandidate;
+import com.ibm.sk.dto.qualification.QualificationTable;
+import com.ibm.sk.dto.tournament.TournamentTable;
 import com.ibm.sk.ff.gui.common.events.GuiEventListener;
 import com.ibm.sk.ff.gui.common.objects.operations.InitMenuData;
+import com.mxgraph.swing.mxGraphComponent;
+import com.mxgraph.view.mxGraph;
 
 public class Menu extends JPanel {
 
@@ -51,24 +67,41 @@ public class Menu extends JPanel {
 		super(new BorderLayout());
 		
 		// TODO Remove me later on
-		Qualification qualification = new Qualification();
-		qualification.addCandidate(new Candidate(1, "Player 1", true, 34L, 45L, 27L));
-		qualification.addCandidate(new Candidate(2, "Player 2", true, 32L, 46L, 23L));
-		qualification.addCandidate(new Candidate(3, "Player 3", true, 31L, 23L, 13L));
-		qualification.addCandidate(new Candidate(4, "Player 4", true, 30L, 21L, 12L));
-		qualification.addCandidate(new Candidate(5, "Player 5", true, 29L, 19L, 13L));
-		qualification.addCandidate(new Candidate(6, "Player 6", true, 28L, 17L, 14L));
-		qualification.addCandidate(new Candidate(7, "Player 7", true, 27L, 15L, 15L));
-		qualification.addCandidate(new Candidate(8, "Player 8", true, 26L, 13L, 13L));
-		qualification.addCandidate(new Candidate(9, "Player 9", false, 25L, 11L));
-		qualification.addCandidate(new Candidate(10, "Player 10", false, 24L));
-		initMenuData.setQualification(qualification);
+		QualificationTable qualificationTable = new QualificationTable();
+		qualificationTable.addCandidate(new QualificationCandidate(1, "Player 1", true, 34L, 45L, 27L));
+		qualificationTable.addCandidate(new QualificationCandidate(2, "Player 2", true, 32L, 46L, 23L));
+		qualificationTable.addCandidate(new QualificationCandidate(3, "Player 3", true, 31L, 23L, 13L));
+		qualificationTable.addCandidate(new QualificationCandidate(4, "Player 4", true, 30L, 21L, 12L));
+		qualificationTable.addCandidate(new QualificationCandidate(5, "Player 5", true, 29L, 19L, 13L));
+		qualificationTable.addCandidate(new QualificationCandidate(6, "Player 6", true, 28L, 17L, 14L));
+		qualificationTable.addCandidate(new QualificationCandidate(7, "Player 7", true, 27L, 15L, 15L));
+		qualificationTable.addCandidate(new QualificationCandidate(8, "Player 8", true, 26L, 13L, 13L));
+		qualificationTable.addCandidate(new QualificationCandidate(9, "Player 9", false, 25L, 11L));
+		qualificationTable.addCandidate(new QualificationCandidate(10, "Player 10", false, 24L));
+		initMenuData.setQualification(qualificationTable);
+		TournamentTable tournamentTable = new TournamentTable();
+		tournamentTable.addMatch(0, new Match(new PlayerStatus(new Player(1, "aPlayer 1"), 15), new PlayerStatus(new Player(2, "aPlayer 2"), 30), true));
+		tournamentTable.addMatch(0, new Match(new PlayerStatus(new Player(3, "aPlayer 3"), 11), new PlayerStatus(new Player(4, "aPlayer 4"), 27), true));
+		tournamentTable.addMatch(0, new Match(new PlayerStatus(new Player(5, "aPlayer 5"), 42), new PlayerStatus(new Player(6, "aPlayer 6"), 12), true));
+		tournamentTable.addMatch(0, new Match(new PlayerStatus(new Player(7, "aPlayer 7"), 25), new PlayerStatus(new Player(8, "aPlayer 8"), 32), true));
+		tournamentTable.addMatch(1, new Match(new PlayerStatus(new Player(2, "bPlayer 2"), 55), new PlayerStatus(new Player(5, "bPlayer 4"), 20), true));
+		tournamentTable.addMatch(1, new Match(new PlayerStatus(new Player(5, "bPlayer 5"), 11), new PlayerStatus(new Player(8, "bPlayer 8"), 60), true));
+		tournamentTable.addMatch(2, new Match(new PlayerStatus(new Player(2, "cPlayer 2"), 32), new PlayerStatus(new Player(8, "cPlayer 8"), 23), true));
+		initMenuData.setTournament(tournamentTable);
 		
 		this.initMenuData = initMenuData;
 		this.sharedGuiListener = sharedGuiListener;
 		this.mainFrame = mainFrame;
 		
 		init();
+	}
+	
+	protected String getStyle(Player player, Player winner) {
+		return getStyle("rectangle", winner != null && player != null && player.getId() != null && winner.getId() != null && player.getId() == winner.getId());
+	}
+
+	protected String getStyle(String shape, boolean forWinner) {
+		return forWinner ? String.format("shape=%s;strokeColor=#5472a9;fillColor=#c3d9ff;fontColor=#5472a9", shape) : String.format("shape=%s;strokeColor=#878787;fillColor=#e7e7e7;fontColor=#878787", shape);
 	}
 	
 	protected void init() {
@@ -143,17 +176,33 @@ public class Menu extends JPanel {
         tabbedPane.addTab("Duel", panelDuel);
  
         // 3rd Sheet: Tournament
-        boolean selectPanelTournament;
+        JScrollPane scrollPaneQualification = null;
+        JScrollPane scrollPaneTournament = null;
+        boolean selectPanelTournament = false;
         JPanel panelTournament = new JPanel();
-        panelTournament.setLayout(new GridLayout(1, 1));
-        String title;
-        if (initMenuData.getQualification() == null) {
-            title = "Tournament";
+        panelTournament.setLayout(new BoxLayout(panelTournament, BoxLayout.PAGE_AXIS));
+        
+        JPanel panelTournamentRadioButtons = new JPanel();
+        panelTournamentRadioButtons.setLayout(new BoxLayout(panelTournamentRadioButtons, BoxLayout.LINE_AXIS));
+        JRadioButton radioQualification = new JRadioButton("Qualification");
+        JRadioButton radioTournamentSemiFinals = new JRadioButton("Tournament (Semi / Finals)");
+        ButtonGroup group = new ButtonGroup();
+        group.add(radioQualification);
+        group.add(radioTournamentSemiFinals);
+        panelTournamentRadioButtons.add(radioQualification);
+        panelTournamentRadioButtons.add(radioTournamentSemiFinals);
+        panelTournament.add(panelTournamentRadioButtons);
+        panelTournament.add(Box.createRigidArea(new Dimension(0,5)));
+       
+        if (initMenuData.getQualification() == null && initMenuData.getTournament() == null) {
             selectPanelTournament = false;
+            radioQualification.setEnabled(false);
+            radioTournamentSemiFinals.setEnabled(false);
         	panelTournament.add(menuSkullLabel);
-        } else {
-        	title = "Tournament - Qualification";
+        }
+        if (initMenuData.getQualification() != null) {
             selectPanelTournament = true;
+            radioQualification.setSelected(true);
         	JTable tableQualification = new JTable(new MenuQualificationTableModel(initMenuData.getQualification()));
         	for (int i = 0; i < tableQualification.getModel().getColumnCount(); i++) {
         		TableColumn tableColumn = tableQualification.getColumnModel().getColumn(i);
@@ -164,12 +213,97 @@ public class Menu extends JPanel {
         			tableColumn.setPreferredWidth(10);
         		}
         	}
-        	JScrollPane scrollPaneQualification = new JScrollPane(tableQualification);
+        	scrollPaneQualification = new JScrollPane(tableQualification);
         	tableQualification.setFillsViewportHeight(true);
+        	tableQualification.setBorder(BorderFactory.createEmptyBorder());
+        	tableQualification.setOpaque(false);
+        	scrollPaneQualification.setBorder(BorderFactory.createEmptyBorder());
         	panelTournament.add(scrollPaneQualification, BorderLayout.CENTER);
         }
-//    	title = "Tournament - Quarter"; // Semi, Finals
-        tabbedPane.addTab(title, panelTournament);
+        if (initMenuData.getTournament() != null) {
+        	selectPanelTournament = true;
+        	if (scrollPaneQualification != null) {
+        		scrollPaneQualification.setVisible(false);
+        	}
+            radioTournamentSemiFinals.setSelected(true);
+        	Player lastWinner = null;
+        	List<Player> winnersInPreviousRound  = new ArrayList<>();
+        	mxGraph graph = new mxGraph();
+        	graph.setCellsSelectable(false);
+        	graph.setCellsEditable(false);
+        	graph.setCellsMovable(false);
+        	graph.setCellsResizable(false);
+        	graph.setCellsBendable(false);
+        	graph.setCellsCloneable(false);
+        	graph.setCellsDeletable(false);
+        	graph.setCellsDisconnectable(false);
+        	graph.setConnectableEdges(false);
+        	graph.setCellsEditable(false);
+            graph.setAllowDanglingEdges(false);
+            graph.setAllowLoops(false);
+            graph.setCellsDeletable(false);
+            graph.setCellsCloneable(false);
+            graph.setCellsDisconnectable(false);
+            graph.setDropEnabled(false);
+            graph.setSplitEnabled(false);
+            graph.setCellsBendable(false);
+    		Object parent = graph.getDefaultParent();
+    		graph.getModel().beginUpdate();
+    		Map<String, Object> matchIcons = new HashMap<>();
+    		try
+    		{
+				int x = 20;
+				int y = 20;
+    			for (int round = 0; round < initMenuData.getTournament().getRounds(); round++) {
+        			int index = 0;
+    				for (Match match : initMenuData.getTournament().getMatches(round)) {
+    					lastWinner = match.isFinished() ? match.getWinners().get(0) : null;
+    					Player player1 = match.getPlayer(0);
+    					Player player2 = match.getPlayer(1);
+    					
+    					Object player1Icon = graph.insertVertex(parent, null, player1 == null ? "" : player1.getName(), x, y, 80, 30, getStyle(player1, lastWinner));
+    					Object player2Icon = graph.insertVertex(parent, null, player2 == null ? "" : player2.getName(), x, y + 40, 80, 30, getStyle(player2, lastWinner));
+    					Object matchIcon = graph.insertVertex(parent, null, match.printScore(), x + 60, y + 15, 40, 30, getStyle("ellipse", true));
+    					matchIcons.put(round + "_" + index, matchIcon);
+
+    					if (round > 0 && matchIcons.containsKey((round - 1) + "_" + (2*index))) {
+    						graph.insertEdge(parent, null, null, matchIcons.get((round - 1) + "_" + (2*index)), player1Icon);
+    					}
+    					if (round > 0 && matchIcons.containsKey((round - 1) + "_" + (2*index + 1))) {
+    						graph.insertEdge(parent, null, null, matchIcons.get((round - 1) + "_" + (2*index + 1)), player2Icon);
+    					}
+    					y += 100 + round*100;
+    					index++;
+    				}
+    				x += 150;
+    				y = 20 + (2*round + 1)*50;
+    				winnersInPreviousRound.clear();
+    			}
+    			int rounds = initMenuData.getTournament().getRounds();
+    			x += 50; 
+    			y = 20 + (2*(rounds - 1) - 1)*50 + 20;
+    			List<Match> lastRound = initMenuData.getTournament().getMatches(2);
+    			if (lastRound != null && !lastRound.isEmpty()) {
+    				Match lastMatch = lastRound.size() == 1 && lastRound.get(0).isFinished()? lastRound.get(0) : null;
+    				if (lastMatch != null && matchIcons.containsKey("2_0")) {
+    					Object winner = graph.insertVertex(parent, null, lastMatch.getWinners().get(0).getName(), x, y, 80, 30, getStyle("rectangle", true));
+    					graph.insertEdge(parent, null, null, matchIcons.get("2_0"), winner);
+    				}
+    			}
+    			
+    		}
+    		finally
+    		{
+    			graph.getModel().endUpdate();
+    		}
+    		mxGraphComponent graphComponent = new mxGraphComponent(graph);
+    		graphComponent.setEnabled(false);
+        	scrollPaneTournament = new JScrollPane(graphComponent);
+        	graphComponent.setBorder(BorderFactory.createEmptyBorder());
+        	scrollPaneTournament.setBorder(BorderFactory.createEmptyBorder());
+        	panelTournament.add(scrollPaneTournament, BorderLayout.CENTER);
+        }
+        tabbedPane.addTab("Tournament", panelTournament);
         if (selectPanelTournament) {
         	tabbedPane.setSelectedComponent(panelTournament);
         }
@@ -268,7 +402,7 @@ public class Menu extends JPanel {
         add(labelFooter, BorderLayout.PAGE_END);
 		
         // Setup Events
-		new MenuListener(mainFrame, sharedGuiListener, tabbedPane, firstListOfAnthills, secondListOfAnthills, thirdListOfAnthills, buttonStart);
+		new MenuListener(mainFrame, sharedGuiListener, tabbedPane, firstListOfAnthills, secondListOfAnthills, thirdListOfAnthills, buttonStart, radioQualification, radioTournamentSemiFinals, scrollPaneQualification, scrollPaneTournament);
 	}
 	
     /** Returns an ImageIcon, or null if the path was invalid. */

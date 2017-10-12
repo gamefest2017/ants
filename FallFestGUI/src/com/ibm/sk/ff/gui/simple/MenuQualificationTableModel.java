@@ -2,15 +2,15 @@ package com.ibm.sk.ff.gui.simple;
 
 import javax.swing.table.DefaultTableModel;
 
-import com.ibm.sk.dto.qualification.Candidate;
-import com.ibm.sk.dto.qualification.Qualification;
+import com.ibm.sk.dto.qualification.QualificationCandidate;
+import com.ibm.sk.dto.qualification.QualificationTable;
 
 public class MenuQualificationTableModel extends DefaultTableModel {
 
-	private Qualification qualification;
+	private QualificationTable qualification;
 
-	MenuQualificationTableModel(Qualification qualification) {
-		this.qualification = qualification == null ? new Qualification() : qualification;
+	MenuQualificationTableModel(QualificationTable qualification) {
+		this.qualification = qualification == null ? new QualificationTable() : qualification;
 	}
 
 	@Override
@@ -52,7 +52,7 @@ public class MenuQualificationTableModel extends DefaultTableModel {
 	@Override
 	public Object getValueAt(int row, int column) {
 
-		Candidate candidate = qualification.getCandidate(row);
+		QualificationCandidate candidate = qualification.getCandidate(row);
 
 		switch (column) {
 		case 0:
