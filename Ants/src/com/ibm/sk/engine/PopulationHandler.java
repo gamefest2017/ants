@@ -31,7 +31,7 @@ public class PopulationHandler {
 		return populationHandler;
 	}
 
-	public IAnt breedAnt(final Hill hill) {
+	public static IAnt breedAnt(final Hill hill) {
 		System.out.println("Welcome new worker of this world! From now on you belong to " + hill.getName()
 				+ "! But don't be affraid, you are not alone, he has other " + hill.getPopulation() + " ants.");
 		final Point homePosition = new Point(hill.getPosition());
@@ -76,7 +76,7 @@ public class PopulationHandler {
 		ant.getMyHill().getAnts().remove(ant);
 	}
 
-	public AbstractWarrior breedWarrior(final Hill hill) {
+	public static AbstractWarrior breedWarrior(final Hill hill) {
 		System.out.println("Welcome new warrior of this world! From now on you belong to " + hill.getName()
 				+ "! But don't be affraid, you are not alone, he has other " + hill.getPopulation() + " ants.");
 		final Point homePosition = new Point(hill.getPosition());

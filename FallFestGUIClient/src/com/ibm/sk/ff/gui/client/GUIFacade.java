@@ -148,8 +148,10 @@ public class GUIFacade {
 		GAntFoodObject gafo = new GAntFoodObject();
 		gafo.setAnt(ant);
 		gafo.setFood(food);
-		antFoodObjects.add(gafo);
-		notRenderedYet.put(ant, gafo);
+		if (!antFoodObjects.contains(getMapped(ant))) {
+			antFoodObjects.add(gafo);
+			notRenderedYet.put(ant, gafo);
+		}
 		return gafo;
 	}
 	

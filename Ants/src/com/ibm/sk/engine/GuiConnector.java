@@ -43,7 +43,7 @@ public class GuiConnector {
 				GAntObject gAntObject;
 				if (ant.hasFood()) {
 					gAntObject = createGAntFoodObject(ant);
-					System.out.println("Changing type in GUI old object: " + GUIObjectTypes.ANT + " with object: " + GUIObjectTypes.ANT_FOOD);
+					System.out.println("Placing AntFood to GUI: " + ant);
 				} else {
 					gAntObject = createGAntObject(ant);
 					if (ant.getMyHill().getPosition().equals(ant.getPosition())) {
