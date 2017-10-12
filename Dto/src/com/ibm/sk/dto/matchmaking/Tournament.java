@@ -2,39 +2,46 @@ package com.ibm.sk.dto.matchmaking;
 
 import java.util.ArrayList;
 import java.util.List;
-import java.util.Optional;
 import java.util.Random;
 
-import com.ibm.sk.dto.matchmaking.strategy.MatchmakingStrategy;
+import com.ibm.sk.dto.matchmaking.strategy.NoMoreMatchesException;
 
 import lombok.AccessLevel;
 import lombok.Data;
+import lombok.Getter;
 import lombok.Setter;
-import lombok.ToString;
 
 @Data
-public class Tournament {
-	private final MatchmakingStrategy strategy;
+public abstract class Tournament implements ITournament {
 	private final List<Player> players;
-	@Setter(AccessLevel.NONE) private List<Match> matches = new ArrayList<>();
 	
-	public void initialize() {
-		matches.addAll(getStrategy().initialize(getPlayers()));
-	}
+	@Setter(AccessLevel.NONE)
+	@Getter(AccessLevel.PROTECTED)
+	private List<Match> matches = new ArrayList<>();
 	
-	public void runNextMatch() {
-		Match match = getNextMatch().orElse(null);//TODO erh
+	@Override
+	public Match resolveNextMatch() throws NoMoreMatchesException {
+		Match match = getNextMatch().orElseThrow(NoMoreMatchesException::new);
 		
 		match.startMatch();
-		for (PlayerStatus player : match.getPlayers()) {
-			player.addScore(new Random().nextInt(100));
+		//TODO add actual implementation of running the game when done
+		for (PlayerStatus player : match.getPlayerStatus()) {
+			player.addScore(new Random().nextInt(1000));
 		}
 		match.endMatch();
 		
-		matches.addAll(getStrategy().update(match));
+		return match;
 	}
 	
-	public Optional<Match> getNextMatch() {
-		return matches.stream().filter(m -> !m.isFinished()).findFirst();
+	@Override
+	public ITournament fastForward() {
+		while (getNextMatch().isPresent()) {
+			try {
+				resolveNextMatch();
+			} catch (NoMoreMatchesException e) {
+				e.printStackTrace();//cannot happen
+			}
+		}
+		return this;
 	}
 }
