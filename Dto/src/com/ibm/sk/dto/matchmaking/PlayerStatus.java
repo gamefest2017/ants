@@ -1,17 +1,28 @@
 package com.ibm.sk.dto.matchmaking;
 
-import lombok.AccessLevel;
-import lombok.Data;
-import lombok.NonNull;
-import lombok.Setter;
-
-@Data
 public class PlayerStatus implements Comparable<PlayerStatus>{
 	private final Player player;
-	@Setter(AccessLevel.NONE) private Integer score = 0;
+	private Integer score = 0;
 	
-	public void addScore(@NonNull Integer score) {
-		this.score += score;
+	public PlayerStatus(Player player) {
+		this(player, 0);
+	}
+
+	public PlayerStatus(Player player, Integer score) {
+		this.player = player;
+		this.score = score;
+	}
+	
+	public void addScore(int score) {
+		this.score = this.score == null ? score : this.score + score;
+	}
+	
+	public Integer getScore() {
+		return this.score;
+	}
+
+	public Player getPlayer() {
+		return player;
 	}
 	
 	@Override

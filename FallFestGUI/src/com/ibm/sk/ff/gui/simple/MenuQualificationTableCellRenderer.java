@@ -7,17 +7,17 @@ import javax.swing.JLabel;
 import javax.swing.JTable;
 import javax.swing.table.DefaultTableCellRenderer;
 
-import com.ibm.sk.dto.qualification.Candidate;
-import com.ibm.sk.dto.qualification.Qualification;
+import com.ibm.sk.dto.qualification.QualificationCandidate;
+import com.ibm.sk.dto.qualification.QualificationTable;
 
 public class MenuQualificationTableCellRenderer extends DefaultTableCellRenderer {
 	
 	private static final long serialVersionUID = 1L;
 	
-	private Qualification qualification;
+	private QualificationTable qualification;
 
-	MenuQualificationTableCellRenderer(Qualification qualification) {
-		this.qualification = qualification == null ? new Qualification() : qualification;
+	MenuQualificationTableCellRenderer(QualificationTable qualification) {
+		this.qualification = qualification == null ? new QualificationTable() : qualification;
 	}
 	
 	@Override
@@ -32,7 +32,7 @@ public class MenuQualificationTableCellRenderer extends DefaultTableCellRenderer
          JLabel l = (JLabel) super.getTableCellRendererComponent(table, value, isSelected, hasFocus, row, col);
 
          //Get the status for the current row.
-         Candidate candidate = qualification.getCandidate(row);
+         QualificationCandidate candidate = qualification.getCandidate(row);
          if (candidate == null) {
         	 l.setBackground(Color.WHITE);
          } else {

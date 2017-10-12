@@ -7,6 +7,8 @@ import javax.swing.JButton;
 import javax.swing.JFrame;
 import javax.swing.JList;
 import javax.swing.JOptionPane;
+import javax.swing.JRadioButton;
+import javax.swing.JScrollPane;
 import javax.swing.JTabbedPane;
 import javax.swing.event.ChangeEvent;
 import javax.swing.event.ChangeListener;
@@ -25,22 +27,32 @@ public class MenuListener implements ChangeListener, ActionListener, ListSelecti
 	private GuiEventListener listener = null;
 	private JTabbedPane tabbedPane = null;
 	private JButton buttonStart = null;
+	private JRadioButton radioQualification = null;
+	private JRadioButton radioTournamentSemiFinals = null;
+	private JScrollPane scrollPaneQualification;
+	private JScrollPane scrollPaneTournament;
 	private JList<String> firstListOfAnthills = null;
 	private JList<String> secondListOfAnthills = null;
 	private JList<String> thirdListOfAnthills = null;
 
-	public MenuListener(JFrame mainContainer, GuiEventListener listener, JTabbedPane tabbedPane, JList<String> firstListOfAnthills, JList<String> secondListOfAnthills, JList<String> thirdListOfAnthills, JButton buttonStart) {
+	public MenuListener(JFrame mainContainer, GuiEventListener listener, JTabbedPane tabbedPane, JList<String> firstListOfAnthills, JList<String> secondListOfAnthills, JList<String> thirdListOfAnthills, JButton buttonStart, JRadioButton radioQualification, JRadioButton radioTournamentSemiFinals, JScrollPane scrollPaneQualification, JScrollPane scrollPaneTournament) {
 		this.tabbedPane = tabbedPane;
 		this.buttonStart = buttonStart;
 		this.firstListOfAnthills = firstListOfAnthills;
 		this.secondListOfAnthills = secondListOfAnthills;
 		this.thirdListOfAnthills = thirdListOfAnthills;
-
+		this.radioQualification = radioQualification;
+		this.radioTournamentSemiFinals = radioTournamentSemiFinals;
+		this.scrollPaneQualification = scrollPaneQualification;
+		this.scrollPaneTournament = scrollPaneTournament;
+		
 		tabbedPane.addChangeListener(this);
 		firstListOfAnthills.addListSelectionListener(this);
 		secondListOfAnthills.addListSelectionListener(this);
 		thirdListOfAnthills.addListSelectionListener(this);
 		buttonStart.addActionListener(this);
+		radioQualification.addActionListener(this);
+		radioTournamentSemiFinals.addActionListener(this);
 	}
 
 	/**
@@ -67,48 +79,58 @@ public class MenuListener implements ChangeListener, ActionListener, ListSelecti
 	 */
 	@Override
 	public void actionPerformed(ActionEvent e) {
-		switch (tabbedPane.getSelectedIndex()) {
-		case 0:
-			if (firstListOfAnthills.getSelectedIndex() == -1) {
-				JOptionPane.showMessageDialog(mainContainer,
-					    "Please, select 1 anthill.",
-					    "Can't start a single player game!",
-					    JOptionPane.WARNING_MESSAGE);
-			} else {
-				sendGuiEvent(new GuiEvent(GuiEvent.EventTypes.SINGLE_PLAY_START, ""));
-			}
-			break;
-		case 1:
-			if (secondListOfAnthills.getSelectedIndex() == -1 && thirdListOfAnthills.getSelectedIndex() == -1) {
-				JOptionPane.showMessageDialog(mainContainer,
-					    "No anthills have been selected.",
-					    "Can't start a duel!",
-					    JOptionPane.WARNING_MESSAGE);
-			} else if (secondListOfAnthills.getSelectedIndex() == -1) {
+		if (e.getSource().equals(buttonStart)) {
+			switch (tabbedPane.getSelectedIndex()) {
+			case 0:
+				if (firstListOfAnthills.getSelectedIndex() == -1) {
 					JOptionPane.showMessageDialog(mainContainer,
-						    "The player 1 has not been selected.",
+						    "Please, select 1 anthill.",
+						    "Can't start a single player game!",
+						    JOptionPane.WARNING_MESSAGE);
+				} else {
+					sendGuiEvent(new GuiEvent(GuiEvent.EventTypes.SINGLE_PLAY_START, ""));
+				}
+				break;
+			case 1:
+				if (secondListOfAnthills.getSelectedIndex() == -1 && thirdListOfAnthills.getSelectedIndex() == -1) {
+					JOptionPane.showMessageDialog(mainContainer,
+						    "No anthills have been selected.",
 						    "Can't start a duel!",
 						    JOptionPane.WARNING_MESSAGE);
-			} else if (thirdListOfAnthills.getSelectedIndex() == -1) {
-				JOptionPane.showMessageDialog(mainContainer,
-					    "The player 2 has not been selected.",
-					    "Can't start a duel!",
-					    JOptionPane.WARNING_MESSAGE);
-			} else {
-				sendGuiEvent(new GuiEvent(GuiEvent.EventTypes.DOUBLE_PLAY_START, ""));
+				} else if (secondListOfAnthills.getSelectedIndex() == -1) {
+						JOptionPane.showMessageDialog(mainContainer,
+							    "The player 1 has not been selected.",
+							    "Can't start a duel!",
+							    JOptionPane.WARNING_MESSAGE);
+				} else if (thirdListOfAnthills.getSelectedIndex() == -1) {
+					JOptionPane.showMessageDialog(mainContainer,
+						    "The player 2 has not been selected.",
+						    "Can't start a duel!",
+						    JOptionPane.WARNING_MESSAGE);
+				} else {
+					sendGuiEvent(new GuiEvent(GuiEvent.EventTypes.DOUBLE_PLAY_START, ""));
+				}
+				break;
+			case 2:
+				sendGuiEvent(new GuiEvent(GuiEvent.EventTypes.TOURNAMENT_PLAY_START, ""));
+				break;
+			case 3:
+				// About dialog, ignore, no ActionEvent is expected here
+				break;
+			default:
+				// TODO: REPLAY_SELECTED / listener.actionPerformed(new GuiEvent(GuiEvent.EventTypes.REPLAY_SELECTED, ""));
+				// TODO: REPLAYS_SELECTED / listener.actionPerformed(new GuiEvent(GuiEvent.EventTypes.REPLAY_SELECTED, combo_replays.getSelectedItem().toString()));
+				// TODO: START_REPLAY
+				break;
 			}
-			break;
-		case 2:
-			sendGuiEvent(new GuiEvent(GuiEvent.EventTypes.TOURNAMENT_PLAY_START, ""));
-			break;
-		case 3:
-			// About dialog, ignore, no ActionEvent is expected here
-			break;
-		default:
-			// TODO: REPLAY_SELECTED / listener.actionPerformed(new GuiEvent(GuiEvent.EventTypes.REPLAY_SELECTED, ""));
-			// TODO: REPLAYS_SELECTED / listener.actionPerformed(new GuiEvent(GuiEvent.EventTypes.REPLAY_SELECTED, combo_replays.getSelectedItem().toString()));
-			// TODO: START_REPLAY
-			break;
+		} else if (e.getSource().equals(radioQualification)) {
+			scrollPaneQualification.setVisible(true);
+			scrollPaneTournament.setVisible(false);
+			scrollPaneQualification.getParent().validate();
+		} else if (e.getSource().equals(radioTournamentSemiFinals)) {
+			scrollPaneQualification.setVisible(false);
+			scrollPaneTournament.setVisible(true);
+			scrollPaneQualification.getParent().validate();
 		}
 	}
 

@@ -1,9 +1,11 @@
 package com.ibm.sk.dto.matchmaking;
 
+import java.util.ArrayList;
 import java.util.Calendar;
 import java.util.Collections;
 import java.util.List;
 import java.util.Optional;
+import java.util.stream.Collector;
 import java.util.stream.Collectors;
 
 import lombok.AccessLevel;
@@ -21,7 +23,22 @@ public class Match {
 	@Setter(AccessLevel.NONE) private Optional<Calendar> startTime = Optional.empty();
 	@Setter(AccessLevel.NONE) private Optional<Calendar> endTime = Optional.empty();
 	
+	public Match(PlayerStatus playerStatus1, PlayerStatus playerStatus2) {
+		players = new ArrayList<>();
+		players.add(playerStatus1);
+		players.add(playerStatus2);
+	}
 	
+	public Match(PlayerStatus playerStatus1, PlayerStatus playerStatus2, boolean finished) {
+		players = new ArrayList<>();
+		players.add(playerStatus1);
+		players.add(playerStatus2);
+		if (finished) {
+			startMatch();
+			endMatch();
+		}
+	}
+
 	public Boolean isFinished() {
 		return endTime.isPresent();
 	}
@@ -56,10 +73,34 @@ public class Match {
 		}
 	}
 	
+	public String printScore() {
+		if (players == null || !isFinished()) {
+			return "";
+		} else {
+			return players.stream().map(playerScore -> String.valueOf(playerScore.getScore())).collect(Collectors.joining(" : "));
+		}
+	}
 	private static synchronized Calendar now() {
 		Calendar cal = Calendar.getInstance();//TODO set default timezone
 		cal.setTimeInMillis(System.currentTimeMillis());
 		return cal;
 	}
 	
+	public PlayerStatus getPlayerStatus(int index) {
+		
+		if (index < 0 || players == null || players.size() < index) {
+			return null;
+		}
+		
+		return players.get(index);
+	}
+	
+	public Player getPlayer(int index) {
+		
+		if (getPlayerStatus(index) == null) {
+			return null;
+		}
+		
+		return getPlayerStatus(index).getPlayer();
+	}
 }
