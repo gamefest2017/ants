@@ -21,7 +21,7 @@ public class WorldConstans {
 	 * number of ants in the hill at the beginning of the game.
 	 */
 	public static final int ANTS_START_POPULATION = 5;
-	public static final double POPULATION_WAR_FACTOR = 0.0;
+	public static final double POPULATION_WAR_FACTOR = 2.0 / 5.0;
 
 	/**
 	 * Number of collected foods to breed new ant

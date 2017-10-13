@@ -10,8 +10,8 @@ import static com.ibm.sk.engine.World.removeObject;
 import java.awt.Point;
 import java.util.Random;
 
+import com.ibm.sk.dto.AbstractAnt;
 import com.ibm.sk.dto.Food;
-import com.ibm.sk.dto.IAnt;
 import com.ibm.sk.engine.exceptions.InvalidWorldPositionException;
 
 public final class FoodHandler {
@@ -29,21 +29,21 @@ public final class FoodHandler {
 				row = RANDOMIZER.nextInt(X_BOUNDRY);
 				coll = RANDOMIZER.nextInt(Y_BOUNDRY);
 			} while (World.isPositionOccupied(new Point(row, coll)));
-			
+
 			final Food newFood = new Food(World.idSequence++, 1, new Point(row, coll));
-			
+
 			try {
 				placeObject(newFood);
-			} catch (InvalidWorldPositionException e) {
+			} catch (final InvalidWorldPositionException e) {
 				System.out.println("Position had not space, food was not dropped. Position was: " + newFood.getPosition());
 			}
 		}
 	}
 
-	public static void pickUpFood(final IAnt ant, final Food food) {
+	public static void pickUpFood(final AbstractAnt ant, final Food food) {
 		if (!ant.hasFood()) {
-		ant.pickUpFood(food);
-		removeObject(food);
+			ant.pickUpFood(food);
+			removeObject(food);
 		}
 	}
 }

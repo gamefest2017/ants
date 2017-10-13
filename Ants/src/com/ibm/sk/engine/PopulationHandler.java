@@ -6,6 +6,7 @@ import java.awt.Point;
 import java.util.Random;
 
 import com.ibm.sk.WorldConstans;
+import com.ibm.sk.dto.AbstractAnt;
 import com.ibm.sk.dto.AbstractWarrior;
 import com.ibm.sk.dto.Ant;
 import com.ibm.sk.dto.Food;
@@ -16,7 +17,7 @@ import com.ibm.sk.dto.enums.Direction;
 import com.ibm.sk.engine.exceptions.InvalidWorldPositionException;
 
 public class PopulationHandler {
-	
+
 	private static final Random RANDOMIZER = new Random();
 
 	private static PopulationHandler populationHandler;
@@ -31,11 +32,11 @@ public class PopulationHandler {
 		return populationHandler;
 	}
 
-	public static IAnt breedAnt(final Hill hill) {
+	public static AbstractAnt breedAnt(final Hill hill) {
 		System.out.println("Welcome new worker of this world! From now on you belong to " + hill.getName()
-				+ "! But don't be affraid, you are not alone, he has other " + hill.getPopulation() + " ants.");
+		+ "! But don't be affraid, you are not alone, he has other " + hill.getPopulation() + " ants.");
 		final Point homePosition = new Point(hill.getPosition());
-		final IAnt ant = new Ant(World.idSequence++, homePosition, hill);
+		final AbstractAnt ant = new Ant(World.idSequence++, homePosition, hill);
 		try {
 			placeObject(ant);
 		} catch (final InvalidWorldPositionException e) {
@@ -47,12 +48,14 @@ public class PopulationHandler {
 
 	public static void killAnt(final IAnt ant) {
 		System.out.println("You shall be no more in this world! Good bye forewer dear ant " + ant.getId());
-		leaveFood(ant);
+		if (ant instanceof AbstractAnt) {
+			leaveFood((AbstractAnt) ant);
+		}
 		World.removeObject(ant.getPosition());
 		ant.getMyHill().getAnts().remove(ant);
 	}
 
-	private static void leaveFood(final IAnt ant) {
+	private static void leaveFood(final AbstractAnt ant) {
 		final Food remains = ant.dropFood();
 		if (remains != null) {
 			final Point here = ant.getPosition();
@@ -72,13 +75,11 @@ public class PopulationHandler {
 				System.out.println("Dropped: " + remains);
 			}
 		}
-		World.removeObject(ant.getPosition());
-		ant.getMyHill().getAnts().remove(ant);
 	}
 
 	public static AbstractWarrior breedWarrior(final Hill hill) {
 		System.out.println("Welcome new warrior of this world! From now on you belong to " + hill.getName()
-				+ "! But don't be affraid, you are not alone, he has other " + hill.getPopulation() + " ants.");
+		+ "! But don't be affraid, you are not alone, he has other " + hill.getPopulation() + " ants.");
 		final Point homePosition = new Point(hill.getPosition());
 		final AbstractWarrior warrior = new Warrior(World.idSequence++, homePosition, hill);
 		try {
@@ -99,7 +100,7 @@ public class PopulationHandler {
 		}
 		return result;
 	}
-	
+
 	public void initHill(final Hill hill, final int population, final double populationWarFactor) {
 		for (int i = 0; i < Math.ceil(population * (1.0 - populationWarFactor)); i++) {
 			hill.getAnts().add(breedAnt(hill));
@@ -122,5 +123,5 @@ public class PopulationHandler {
 		hill.setFood(Math.max(hill.getFood() - count, 0));
 		System.out.println(
 				"The food in hill '" + hill.getName() + "' descreased by " + count + ". Food amount is now " + hill.getFood());
-	}	
+	}
 }

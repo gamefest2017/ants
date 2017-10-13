@@ -1,8 +1,8 @@
 package com.ibm.sk.engine;
 
-import static com.ibm.sk.engine.World.getWorldObjects;
 import static com.ibm.sk.WorldConstans.INITIAL_ANT_COUNT;
 import static com.ibm.sk.WorldConstans.POPULATION_WAR_FACTOR;
+import static com.ibm.sk.engine.World.getWorldObjects;
 
 import java.awt.Point;
 import java.util.ArrayList;
@@ -11,13 +11,13 @@ import java.util.Map;
 
 import com.ibm.sk.Main;
 import com.ibm.sk.WorldConstans;
-import com.ibm.sk.dto.Ant;
+import com.ibm.sk.dto.AbstractAnt;
+import com.ibm.sk.dto.AbstractWarrior;
 import com.ibm.sk.dto.Food;
 import com.ibm.sk.dto.Hill;
 import com.ibm.sk.dto.IAnt;
 import com.ibm.sk.dto.IWorldObject;
 import com.ibm.sk.dto.Vision;
-import com.ibm.sk.dto.Warrior;
 import com.ibm.sk.dto.enums.Direction;
 import com.ibm.sk.dto.enums.ObjectType;
 import com.ibm.sk.engine.exceptions.MoveException;
@@ -54,7 +54,7 @@ public final class ProcessExecutor {
 			guiConnector.placeGuiObjects(new ArrayList<>(team2.getAnts()));
 		}
 	}
-	
+
 	private static void initAnts(final Hill hill) {
 		for (int i = 0; i < Math.ceil(INITIAL_ANT_COUNT * (1.0 - POPULATION_WAR_FACTOR)); i++) {
 			hill.getAnts().add(PopulationHandler.breedAnt(hill));
@@ -108,8 +108,8 @@ public final class ProcessExecutor {
 		final Point point = new Point(ant.getPosition());
 		point.translate(direction.getPositionChange().x, direction.getPositionChange().y);
 		final IWorldObject foundObject = World.getWorldObject(point);
-		if (foundObject instanceof Ant) {
-			final Ant otherAnt = (Ant) foundObject;
+		if (foundObject instanceof AbstractAnt) {
+			final AbstractAnt otherAnt = (AbstractAnt) foundObject;
 			if (ant.isEnemy(otherAnt) && otherAnt.hasFood()) {
 				result = ObjectType.ENEMY_ANT_WITH_FOOD;
 			} else if (ant.isEnemy(otherAnt)) {
@@ -119,8 +119,8 @@ public final class ProcessExecutor {
 			} else {
 				result = ObjectType.ANT;
 			}
-		} else if (foundObject instanceof Warrior) {
-			final Warrior warrior = (Warrior) foundObject;
+		} else if (foundObject instanceof AbstractWarrior) {
+			final AbstractWarrior warrior = (AbstractWarrior) foundObject;
 			if (ant.isEnemy(warrior)) {
 				result = ObjectType.ENEMY_WARRIOR;
 			} else {
