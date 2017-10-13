@@ -13,6 +13,7 @@ import com.ibm.sk.ff.gui.common.objects.gui.GFoodObject;
 import com.ibm.sk.ff.gui.common.objects.gui.GHillObject;
 import com.ibm.sk.ff.gui.common.objects.gui.GUIObjectCrate;
 import com.ibm.sk.ff.gui.common.objects.gui.GUIObjectTypes;
+import com.ibm.sk.ff.gui.common.objects.gui.GWarriorObject;
 import com.ibm.sk.ff.gui.common.objects.operations.CloseData;
 import com.ibm.sk.ff.gui.common.objects.operations.CreateGameData;
 import com.ibm.sk.ff.gui.common.objects.operations.InitMenuData;
@@ -90,6 +91,10 @@ public class RequestHandler implements HttpHandler {
 			case ANT:
 				log("Adding new ant.");
 				this.FACADE.set(Mapper.INSTANCE.jsonToPojo(json, GAntObject[].class));
+				break;
+			case WARRIOR:
+				log("Adding new warrior.");
+				this.FACADE.set(Mapper.INSTANCE.jsonToPojo(json, GWarriorObject[].class));
 				break;
 			case ANT_FOOD:
 				log("Adding new antfood.");

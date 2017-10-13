@@ -18,19 +18,22 @@ import com.ibm.sk.ff.gui.common.objects.gui.GAntObject;
 import com.ibm.sk.ff.gui.common.objects.gui.GHillObject;
 import com.ibm.sk.ff.gui.common.objects.gui.GUIObject;
 import com.ibm.sk.ff.gui.common.objects.gui.GUIObjectTypes;
+import com.ibm.sk.ff.gui.common.objects.gui.GWarriorObject;
 import com.ibm.sk.ff.gui.common.objects.operations.InitMenuData;
 import com.ibm.sk.ff.gui.config.Config;
 
 public class SimpleCanvas extends JComponent {
 	private static final long serialVersionUID = 1L;
 
+
 	private final Color[] COLORS = {Color.BLACK, Color.RED};
 
 	private final boolean DEV_MODE = Boolean.parseBoolean(Config.DEV_MODE.toString());
-	
+
 	private static long SLEEP_INTERVAL = 10; //TODO - the transition interval should be set correctly!
 
 	private static Image[] IMAGES_ANT = null;
+	private static Image[] IMAGES_WARRIOR = null;
 	private static Image IMAGES_FOOD = null;
 	private static Image IMAGES_HILL = null;
 	private static Image[] IMAGES_ANT_FOOD = null;
@@ -40,6 +43,8 @@ public class SimpleCanvas extends JComponent {
 	static {
 		try {
 			IMAGES_ANT = new Image[] {ImageIO.read(new File("res/ant_left.png")), ImageIO.read(new File("res/ant_right.png"))};
+			IMAGES_WARRIOR = new Image[] { ImageIO.read(new File("res/warrior_left_2.png")),
+					ImageIO.read(new File("res/warrior_right_2.png")) };
 			IMAGES_FOOD = ImageIO.read(new File("res/food.png"));
 			IMAGES_HILL = ImageIO.read(new File("res/hill.png"));
 			IMAGES_ANT_FOOD = new Image [] {ImageIO.read(new File("res/antWithCookie_left.png")), ImageIO.read(new File("res/antWithCookie_right.png"))};
@@ -49,44 +54,45 @@ public class SimpleCanvas extends JComponent {
 	}
 
 	private final Map<GUIObject, SimpleGUIComponent> OBJECTS = new HashMap<>();
-	
+
 	private final int WIDTH, HEIGHT;
-	
-	private String [] teams;
-	
-	private JFrame parentFrame;
-	
-	public SimpleCanvas(int width, int height, String[] teams, JFrame parent) {
+
+	private final String [] teams;
+
+	private final JFrame parentFrame;
+
+	public SimpleCanvas(final int width, final int height, final String[] teams, final JFrame parent) {
 		this.WIDTH = width;
 		this.HEIGHT = height;
-		
+
 		this.teams = teams;
 		this.parentFrame = parent;
-		
+
 		addKeyListener(new KeyListener() {
 			@Override
-			public void keyTyped(KeyEvent e) {
+			public void keyTyped(final KeyEvent e) {
 				System.out.println("asdfasdf");
 				if (e.getKeyCode() == KeyEvent.VK_ESCAPE || e.getKeyCode() == KeyEvent.VK_SPACE) {
-					parentFrame.setVisible(false);
-					parentFrame.dispose();
+					SimpleCanvas.this.parentFrame.setVisible(false);
+					SimpleCanvas.this.parentFrame.dispose();
 				}
 			}
 			@Override
-			public void keyPressed(KeyEvent e) {}
+			public void keyPressed(final KeyEvent e) {}
 			@Override
-			public void keyReleased(KeyEvent e) {}
+			public void keyReleased(final KeyEvent e) {}
 		});
 	}
-	
-	public void paint(Graphics g) {
-		if (DEV_MODE) {
+
+	@Override
+	public void paint(final Graphics g) {
+		if (this.DEV_MODE) {
 			paintGrid(g);
 		}
-		
-		finishedRedraw = true;
-			
-		for (SimpleGUIComponent it : OBJECTS.values().stream().toArray(SimpleGUIComponent[]::new)) {
+
+		this.finishedRedraw = true;
+
+		for (final SimpleGUIComponent it : this.OBJECTS.values().stream().toArray(SimpleGUIComponent[]::new)) {
 			if (!it.paint(g)) {
 				this.finishedRedraw = false;
 			}
@@ -95,11 +101,11 @@ public class SimpleCanvas extends JComponent {
 
 	private void paintGrid(final Graphics g) {
 		g.setColor(Color.GRAY);
-		for (int i = 0; i < WIDTH; i++) {
-			g.drawLine(i * MAGNIFICATION_X(), 0, i * MAGNIFICATION_X(), HEIGHT * MAGNIFICATION_Y());
+		for (int i = 0; i < this.WIDTH; i++) {
+			g.drawLine(i * MAGNIFICATION_X(), 0, i * MAGNIFICATION_X(), this.HEIGHT * MAGNIFICATION_Y());
 		}
-		for (int i = 0; i < HEIGHT; i++) {
-			g.drawLine(0, i * MAGNIFICATION_Y(), WIDTH * MAGNIFICATION_X(), i * MAGNIFICATION_Y());
+		for (int i = 0; i < this.HEIGHT; i++) {
+			g.drawLine(0, i * MAGNIFICATION_Y(), this.WIDTH * MAGNIFICATION_X(), i * MAGNIFICATION_Y());
 		}
 	}
 
@@ -113,27 +119,30 @@ public class SimpleCanvas extends JComponent {
 			}
 		} while (!this.finishedRedraw);
 	}
-	
-	public void set(GUIObject[] hills) {
-		for (GUIObject it : hills) {
+
+	public void set(final GUIObject[] objects) {
+		for (final GUIObject it : objects) {
 			SimpleGUIComponent toAdd = null;
-			if (OBJECTS.containsKey(it)) {
-				toAdd = OBJECTS.remove(it);
+			if (this.OBJECTS.containsKey(it)) {
+				toAdd = this.OBJECTS.remove(it);
 				toAdd.moveToLocation(it.getLocation().getX(), it.getLocation().getY());
 			} else {
 				toAdd = new SimpleGUIComponent(MAGNIFICATION_X(), MAGNIFICATION_Y(), getImage(it.getType()), null, getTeamColor(it));
 				toAdd.setLocation(it.getLocation().getX(), it.getLocation().getY());
 			}
-			OBJECTS.put(it, toAdd);
+			this.OBJECTS.put(it, toAdd);
 		}
 
 		performRepaint();
 	}
-	
-	private Image[] getImage(GUIObjectTypes type) {
+
+	private Image[] getImage(final GUIObjectTypes type) {
 		Image [] ret = null;
 		switch (type) {
 		case ANT: ret = IMAGES_ANT; break;
+		case WARRIOR:
+			ret = IMAGES_WARRIOR;
+			break;
 		case ANT_FOOD: ret = IMAGES_ANT_FOOD; break;
 		case FOOD: ret = new Image[] {IMAGES_FOOD}; break;
 		case HILL: ret = new Image[] {IMAGES_HILL};	break;
@@ -145,6 +154,14 @@ public class SimpleCanvas extends JComponent {
 		Color ret = null;
 		if (go instanceof GAntObject) {
 			final GAntObject swp = (GAntObject)go;
+			for (int i = 0; i < this.teams.length; i++) {
+				if (this.teams[i].equals(swp.getTeam())) {
+					ret = this.COLORS[i];
+				}
+			}
+		}
+		if (go instanceof GWarriorObject) {
+			final GWarriorObject swp = (GWarriorObject) go;
 			for (int i = 0; i < this.teams.length; i++) {
 				if (this.teams[i].equals(swp.getTeam())) {
 					ret = this.COLORS[i];
@@ -169,14 +186,14 @@ public class SimpleCanvas extends JComponent {
 		}
 		return ret;
 	}
-	
-	public void remove(GUIObject object) {
+
+	public void remove(final GUIObject object) {
 		remove (new GUIObject[] {object});
 	}
-	
-	public void remove(GUIObject[] object) {
+
+	public void remove(final GUIObject[] object) {
 		boolean changed = false;
-		for (GUIObject it : object) {
+		for (final GUIObject it : object) {
 			if (this.OBJECTS.containsKey(it)) {
 				this.OBJECTS.remove(it);
 				changed = true;
@@ -186,31 +203,31 @@ public class SimpleCanvas extends JComponent {
 			performRepaint();
 		}
 	}
-	
-	public void reset(InitMenuData data) {
-		OBJECTS.clear();
+
+	public void reset(final InitMenuData data) {
+		this.OBJECTS.clear();
 
 		performRepaint();
 	}
-	
-	public boolean contains(GUIObject go) {  
-		return OBJECTS.containsKey(go.getId());
+
+	public boolean contains(final GUIObject go) {
+		return this.OBJECTS.containsKey(go.getId());
 	}
-	
+
 	private int magnificationX = -1;
 	private int MAGNIFICATION_X() {
-		if (magnificationX == -1) {
-			magnificationX = getWidth() / WIDTH;
+		if (this.magnificationX == -1) {
+			this.magnificationX = getWidth() / this.WIDTH;
 		}
-		return magnificationX;
+		return this.magnificationX;
 	}
-	
+
 	private int magnificationY = -1;
 	private int MAGNIFICATION_Y() {
-		if (magnificationY == -1) {
-			magnificationY = getHeight() / HEIGHT;
+		if (this.magnificationY == -1) {
+			this.magnificationY = getHeight() / this.HEIGHT;
 		}
-		return magnificationY;
+		return this.magnificationY;
 	}
 
 }

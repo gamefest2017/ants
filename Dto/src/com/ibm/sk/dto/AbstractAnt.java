@@ -34,25 +34,21 @@ public abstract class AbstractAnt extends WorldObject implements IAnt {
 	@Override
 	public abstract Direction move(final Vision vision);
 
-	@Override
 	public void pickUpFood(final Food food) {
 		System.out.println("Picked: " + food);
 		this.food = food;
 	}
 
-	@Override
 	public Food dropFood() {
 		final Food retValue = this.food;
 		this.food = null;
 		return retValue;
 	}
 
-	@Override
 	public boolean hasFood() {
 		return this.food != null;
 	}
 	
-	@Override
 	public Food getFood() {
 		return this.food;
 	}
