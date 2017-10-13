@@ -87,13 +87,13 @@ public final class World {
 
 	public static void createWorldBorder() {
 		try {
-			for (int i = 0; i <= WorldConstans.X_BOUNDRY; i++) {
+			for (int i = 0; i < WorldConstans.X_BOUNDRY; i++) {
 				placeObject(new WorldBorder(new Point(i, 0)));
-				placeObject(new WorldBorder(new Point(i, WorldConstans.Y_BOUNDRY)));
+				placeObject(new WorldBorder(new Point(i, WorldConstans.Y_BOUNDRY - 1)));
 			}
-			for (int i = 1; i < WorldConstans.Y_BOUNDRY; i++) {
+			for (int i = 1; i < WorldConstans.Y_BOUNDRY - 1; i++) {
 				placeObject(new WorldBorder(new Point(0, i)));
-				placeObject(new WorldBorder(new Point(WorldConstans.X_BOUNDRY, i)));
+				placeObject(new WorldBorder(new Point(WorldConstans.X_BOUNDRY - 1, i)));
 			}
 		} catch (final InvalidWorldPositionException e) {
 			System.out.println("Invalid position.");
@@ -116,8 +116,8 @@ public final class World {
 
 	public static Hill createHill(final HillOrder order, final String name) {
 		final long hillId = idSequence++;
-		final Hill hill = new Hill(name,
-				new Point(order.getOrder() * WorldConstans.X_BOUNDRY + order.getXOffset(), WorldConstans.Y_BOUNDRY / 2));
+		final Hill hill = new Hill(name, new Point(order.getOrder() * WorldConstans.X_BOUNDRY + order.getXOffset(),
+				WorldConstans.Y_BOUNDRY / 2));
 		hill.setId(hillId);
 
 		return hill;
