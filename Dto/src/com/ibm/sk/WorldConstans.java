@@ -12,16 +12,12 @@ public class WorldConstans {
 	/**
 	 * the amount of ants in one anthill at the beginning of the world.
 	 */
-	public static final int INITIAL_ANT_COUNT = 5;
+	public static final int INITIAL_ANT_COUNT = 20;
 	/**
 	 * frequency of food adding.
 	 */
 	public static final int FOOD_REFILL_FREQUENCY = 5;
-	/**
-	 * number of ants in the hill at the beginning of the game.
-	 */
-	public static final int ANTS_START_POPULATION = 5;
-	public static final double POPULATION_WAR_FACTOR = 2.0 / 5.0;
+	public static final double POPULATION_WAR_FACTOR = 4.0 / 5.0;
 
 	/**
 	 * Number of collected foods to breed new ant

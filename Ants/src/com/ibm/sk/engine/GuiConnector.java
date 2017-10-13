@@ -139,10 +139,26 @@ public class GuiConnector {
 		}
 	}
 
+	public void removeGuiObjects(final List<IWorldObject> list) {
+		final List<GUIObject> ants = new ArrayList<>();
+		for (final IWorldObject object : list) {
+			if (object instanceof AbstractAnt) {
+				ants.add(createGAntObject((AbstractAnt) object));
+			}
+			if (object instanceof AbstractWarrior) {
+				ants.add(createGWarriorObject((AbstractWarrior) object));
+			}
+		}
+		if (ants.size() > 0) {
+			this.FACADE.remove(ants.toArray(new GUIObject[ants.size()]));
+		}
+	}
+
 	public void showScore(final String teamName, final int points) {
 		final ScoreData data = new ScoreData();
 		data.setMessage(teamName);
 		data.setScore(points);
 		this.FACADE.showScore(data);
 	}
+
 }

@@ -12,11 +12,9 @@ import com.ibm.sk.ff.gui.common.mapper.Mapper;
 import com.ibm.sk.ff.gui.common.objects.gui.GAntFoodObject;
 import com.ibm.sk.ff.gui.common.objects.gui.GAntObject;
 import com.ibm.sk.ff.gui.common.objects.gui.GFoodObject;
-import com.ibm.sk.ff.gui.common.objects.gui.GHillObject;
 import com.ibm.sk.ff.gui.common.objects.gui.GUIObject;
 import com.ibm.sk.ff.gui.common.objects.gui.GUIObjectCrate;
 import com.ibm.sk.ff.gui.common.objects.gui.GUIObjectTypes;
-import com.ibm.sk.ff.gui.common.objects.gui.GWarriorObject;
 import com.ibm.sk.ff.gui.common.objects.operations.CloseData;
 import com.ibm.sk.ff.gui.common.objects.operations.CreateGameData;
 import com.ibm.sk.ff.gui.common.objects.operations.InitMenuData;
@@ -60,28 +58,7 @@ public class GUIFacade {
 			final GUIObject [] objects = map(o);
 
 			final GUIObjectCrate crate = new GUIObjectCrate();
-			for (final GUIObject guiObject : objects) {
-				if (guiObject instanceof GHillObject) {
-					final GHillObject hill = (GHillObject) guiObject;
-					crate.getHills().add(hill);
-				}
-				if (guiObject instanceof GAntObject) {
-					final GAntObject ant = (GAntObject) guiObject;
-					crate.getAnts().add(ant);
-				}
-				if (guiObject instanceof GWarriorObject) {
-					final GWarriorObject warrior = (GWarriorObject) guiObject;
-					crate.getWarriors().add(warrior);
-				}
-				if (guiObject instanceof GFoodObject) {
-					final GFoodObject food = (GFoodObject) guiObject;
-					crate.getFoods().add(food);
-				}
-				if (guiObject instanceof GAntFoodObject) {
-					final GAntFoodObject antFood = (GAntFoodObject) guiObject;
-					crate.getAntFoods().add(antFood);
-				}
-			}
+			crate.sortOut(objects);
 			this.CLIENT.postMessage(GUIOperations.SET.toString(), Mapper.INSTANCE.pojoToJson(crate));
 		}
 
@@ -191,10 +168,11 @@ public class GUIFacade {
 		remove(new GUIObject [] {data});
 	}
 
-	public void remove(final GUIObject[] data) {
-		if (data.length > 0) {
-			this.CLIENT.postMessage(GUIOperations.REMOVE.toString() + "/" + data[0].getType().toString(), Mapper.INSTANCE.pojoToJson(data));
-		}
+	public void remove(final GUIObject[] objects) {
+		final GUIObjectCrate crate = new GUIObjectCrate();
+		final GUIObject[] mapped = map(objects);
+		crate.sortOut(mapped);
+		this.CLIENT.postMessage(GUIOperations.REMOVE.toString() + "/", Mapper.INSTANCE.pojoToJson(crate));
 	}
 
 	public void showScore(final ScoreData data) {
