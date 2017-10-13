@@ -1,10 +1,9 @@
 package com.ibm.sk;
 
-
 public class WorldConstans {
 
-	public static final int X_BOUNDRY = 40;
-	public static final int Y_BOUNDRY = 20;
+	public static final int X_BOUNDRY = 10;
+	public static final int Y_BOUNDRY = 10;
 	/**
 	 * number of TURNS to evaluate game.
 	 */

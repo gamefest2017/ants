@@ -10,6 +10,7 @@ import com.ibm.sk.dto.IAnt;
 import com.ibm.sk.dto.IWorldObject;
 import com.ibm.sk.dto.enums.HillOrder;
 import com.ibm.sk.engine.exceptions.InvalidWorldPositionException;
+import com.ibm.sk.models.WorldBorder;
 
 public final class World {
 	protected static long idSequence = 0l;
@@ -70,6 +71,35 @@ public final class World {
 		System.out.println("No object on that position, nothing was removed.");
 	}
 
+	public static boolean isPositionOccupiedByBorder(final Point position) {
+		boolean isOccupied = false;
+
+		for (IWorldObject worldObject : worldObjects) {
+			if (worldObject instanceof WorldBorder && worldObject.getPosition().equals(position)) {
+				isOccupied = true;
+				System.out.println("Position is occupied: " + position);
+				break;
+			}
+		}
+
+		return isOccupied;
+	}
+
+	public static void createWorldBorder() {
+		try {
+			for (int i = 0; i <= WorldConstans.X_BOUNDRY; i++) {
+				placeObject(new WorldBorder(new Point(i, 0)));
+				placeObject(new WorldBorder(new Point(i, WorldConstans.Y_BOUNDRY)));
+			}
+			for (int i = 1; i < WorldConstans.Y_BOUNDRY; i++) {
+				placeObject(new WorldBorder(new Point(0, i)));
+				placeObject(new WorldBorder(new Point(WorldConstans.X_BOUNDRY, i)));
+			}
+		} catch (final InvalidWorldPositionException e) {
+			System.out.println("Invalid position.");
+		}
+	}
+
 	public static boolean isPositionOccupied(final Point position) {
 		boolean isOccupied = false;
 
@@ -87,11 +117,9 @@ public final class World {
 	public static Hill createHill(final HillOrder order, final String name) {
 		final long hillId = idSequence++;
 		final Hill hill = new Hill(name,
-				new Point(order.getOrder() * (WorldConstans.X_BOUNDRY - 1), WorldConstans.Y_BOUNDRY / 2));
+				new Point(order.getOrder() * WorldConstans.X_BOUNDRY + order.getXOffset(), WorldConstans.Y_BOUNDRY / 2));
 		hill.setId(hillId);
 
 		return hill;
 	}
-
-
 }

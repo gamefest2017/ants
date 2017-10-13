@@ -25,6 +25,7 @@ import com.ibm.sk.dto.enums.Direction;
 import com.ibm.sk.dto.enums.ObjectType;
 import com.ibm.sk.engine.exceptions.MoveException;
 import com.ibm.sk.ff.gui.common.objects.operations.CreateGameData;
+import com.ibm.sk.models.WorldBorder;
 
 public final class ProcessExecutor {
 
@@ -156,6 +157,8 @@ public final class ProcessExecutor {
 			}
 		} else if (foundObject instanceof Food) {
 			result = ObjectType.FOOD;
+		} else if (foundObject instanceof WorldBorder) {
+			result = ObjectType.BORDER;
 		}
 		return result;
 	}

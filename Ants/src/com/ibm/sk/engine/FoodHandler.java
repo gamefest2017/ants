@@ -26,8 +26,8 @@ public final class FoodHandler {
 			int row;
 			int coll;
 			do {
-				row = RANDOMIZER.nextInt(X_BOUNDRY);
-				coll = RANDOMIZER.nextInt(Y_BOUNDRY);
+				row = RANDOMIZER.nextInt(X_BOUNDRY - 1);
+				coll = RANDOMIZER.nextInt(Y_BOUNDRY - 1);
 			} while (World.isPositionOccupied(new Point(row, coll)));
 
 			final Food newFood = new Food(World.idSequence++, 1, new Point(row, coll));
