@@ -2,11 +2,14 @@ package com.ibm.sk.engine;
 
 import static com.ibm.sk.WorldConstans.INITIAL_ANT_COUNT;
 import static com.ibm.sk.WorldConstans.POPULATION_WAR_FACTOR;
+import static com.ibm.sk.engine.World.getDeadObjects;
 import static com.ibm.sk.engine.World.getWorldObjects;
 
 import java.awt.Point;
 import java.util.ArrayList;
+import java.util.Collections;
 import java.util.EnumMap;
+import java.util.Iterator;
 import java.util.Map;
 
 import com.ibm.sk.Main;
@@ -30,22 +33,40 @@ public final class ProcessExecutor {
 
 	private static final GuiConnector guiConnector = new GuiConnector();
 
-	public static void execute(final Hill hill) {
-
-		for (final IAnt ant : hill.getAnts()) {
-			singleStep(ant);
+	public static void execute(final Hill firstHill, final Hill secondHill) {
+		final Iterator<IAnt> first = firstHill.getAnts().iterator();
+		final Iterator<IAnt> second = secondHill == null ? Collections.emptyIterator()
+				: secondHill.getAnts().iterator();
+		while (first.hasNext() || second.hasNext()) {
+			IAnt ant = null;
+			if (first.hasNext()) {
+				ant = first.next();
+				singleStep(ant);
+				guiConnector.removeGuiObjects(getDeadObjects());
+				getDeadObjects().clear();
+			}
+			if (second.hasNext()) {
+				ant = second.next();
+				singleStep(ant);
+				guiConnector.removeGuiObjects(getDeadObjects());
+				getDeadObjects().clear();
+			}
 		}
 		guiConnector.placeGuiObjects(getWorldObjects());
-		guiConnector.showScore(hill.getName(), hill.getFood());
+		guiConnector.showScore(firstHill.getName(), firstHill.getFood());
+		if (secondHill != null) {
+			guiConnector.showScore(secondHill.getName(), secondHill.getFood());
+		}
 	}
+
 
 	public static void initGame(final Hill team1, final Hill team2) {
 		final CreateGameData gameData = new CreateGameData();
 		gameData.setWidth(WorldConstans.X_BOUNDRY);
 		gameData.setHeight(WorldConstans.Y_BOUNDRY);
 		gameData.setTeams(new String[] { team1.getName(), team2 != null ? team2.getName() : "" });
-		initAnts(team1);
 		guiConnector.initGame(gameData);
+		initAnts(team1);
 		guiConnector.placeGuiObject(team1);
 		guiConnector.placeGuiObjects(new ArrayList<>(team1.getAnts()));
 		if (team2 != null) {

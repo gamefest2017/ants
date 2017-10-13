@@ -45,6 +45,7 @@ public class Facade implements GuiEventListener {
 		this.gui.set(hills);
 	}
 
+
 	public void set(final GAntFoodObject[] antfood) {
 		this.gui.set(antfood);
 	}
@@ -104,4 +105,7 @@ public class Facade implements GuiEventListener {
 		this.gui.set(crate.dump());
 	}
 
+	public void remove(final GUIObjectCrate crate) {
+		this.gui.remove(crate.dump());
+	}
 }

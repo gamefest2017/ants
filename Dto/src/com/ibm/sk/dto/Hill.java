@@ -12,7 +12,7 @@ public class Hill extends WorldObject {
 	private String name;
 	private final List<IAnt> ants;
 
-	public Hill(final int population, final double populationWarFactor, final String name, final Point position) {
+	public Hill(final String name, final Point position) {
 		this.name = name;
 		this.position = position;
 		this.ants = new CopyOnWriteArrayList<>();

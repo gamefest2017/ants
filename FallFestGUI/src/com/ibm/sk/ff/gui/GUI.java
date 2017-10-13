@@ -20,6 +20,8 @@ public interface GUI {
 
 	public void set(GUIObject[] objects);
 
+	public void remove(GUIObject[] objects);
+
 	public void set(GAntObject[] ants);
 	public void set(GAntFoodObject[] antfood);
 	public void set(GFoodObject[] foods);

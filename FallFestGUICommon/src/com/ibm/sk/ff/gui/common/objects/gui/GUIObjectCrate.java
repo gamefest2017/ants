@@ -42,4 +42,29 @@ public class GUIObjectCrate {
 		return this.warriors;
 	}
 
+	public void sortOut(final GUIObject[] objects) {
+		for (final GUIObject guiObject : objects) {
+			if (guiObject instanceof GHillObject) {
+				final GHillObject hill = (GHillObject) guiObject;
+				getHills().add(hill);
+			}
+			if (guiObject instanceof GAntObject) {
+				final GAntObject ant = (GAntObject) guiObject;
+				getAnts().add(ant);
+			}
+			if (guiObject instanceof GWarriorObject) {
+				final GWarriorObject warrior = (GWarriorObject) guiObject;
+				getWarriors().add(warrior);
+			}
+			if (guiObject instanceof GFoodObject) {
+				final GFoodObject food = (GFoodObject) guiObject;
+				getFoods().add(food);
+			}
+			if (guiObject instanceof GAntFoodObject) {
+				final GAntFoodObject antFood = (GAntFoodObject) guiObject;
+				getAntFoods().add(antFood);
+			}
+		}
+	}
+
 }

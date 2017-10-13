@@ -17,17 +17,31 @@ public class Main {
 		System.out.println("Game starting...");
 		System.out.println("World size: " + WorldConstans.X_BOUNDRY + " x " + WorldConstans.Y_BOUNDRY);
 		System.out.println("Turns: " + TURNS);
-		final Hill hill = createHill(HillOrder.FIRST, "King of ants");
-		ProcessExecutor.initGame(hill, null);
+		final String firstHillName = args.length > 1 ? args[1] : "King of ants";
+		final Hill firstHill = createHill(HillOrder.FIRST, firstHillName);
+		Hill secondHill = null;
+		if (args.length > 2 || true) { // TODO remove true from condition and
+										// replace constant with argument on the
+										// next line.
+			final String secondHillName = "Queen of pants"; // args[2];
+			secondHill = createHill(HillOrder.SECOND, secondHillName);
+		}
+		ProcessExecutor.initGame(firstHill, secondHill);
 		final long startTime = System.currentTimeMillis();
 		for (turn = 0; turn < TURNS; turn++) {
-			ProcessExecutor.execute(hill);
+			ProcessExecutor.execute(firstHill, secondHill);
 			FoodHandler.dropFood();
 		}
 		final long endTime = System.currentTimeMillis();
-		System.out.println(hill.getName() + " earned score: " + hill.getFood());
-		for (final IAnt ant : hill.getAnts()) {
+		System.out.println(firstHill.getName() + " earned score: " + firstHill.getFood());
+		for (final IAnt ant : firstHill.getAnts()) {
 			System.out.println(ant);
+		}
+		if (secondHill != null) {
+			System.out.println(secondHill.getName() + " earned score: " + secondHill.getFood());
+			for (final IAnt ant : secondHill.getAnts()) {
+				System.out.println(ant);
+			}
 		}
 		System.out.println("Game duration: " + turn + " turns, in " + (endTime - startTime) + " ms");
 
