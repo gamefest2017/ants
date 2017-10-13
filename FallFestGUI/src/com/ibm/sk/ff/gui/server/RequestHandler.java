@@ -13,6 +13,7 @@ import com.ibm.sk.ff.gui.common.objects.gui.GFoodObject;
 import com.ibm.sk.ff.gui.common.objects.gui.GHillObject;
 import com.ibm.sk.ff.gui.common.objects.gui.GUIObjectCrate;
 import com.ibm.sk.ff.gui.common.objects.gui.GUIObjectTypes;
+import com.ibm.sk.ff.gui.common.objects.gui.GWarriorObject;
 import com.ibm.sk.ff.gui.common.objects.operations.CloseData;
 import com.ibm.sk.ff.gui.common.objects.operations.CreateGameData;
 import com.ibm.sk.ff.gui.common.objects.operations.InitMenuData;
@@ -91,6 +92,10 @@ public class RequestHandler implements HttpHandler {
 				log("Adding new ant.");
 				this.FACADE.set(Mapper.INSTANCE.jsonToPojo(json, GAntObject[].class));
 				break;
+			case WARRIOR:
+				log("Adding new warrior.");
+				this.FACADE.set(Mapper.INSTANCE.jsonToPojo(json, GWarriorObject[].class));
+				break;
 			case ANT_FOOD:
 				log("Adding new antfood.");
 				this.FACADE.set(Mapper.INSTANCE.jsonToPojo(json, GAntFoodObject[].class));
@@ -108,11 +113,27 @@ public class RequestHandler implements HttpHandler {
 	}
 
 	private void callRemove(final String url, final String json) {
-		switch (GUIObjectTypes.forValue(url)) {
-		case ANT: log("Removing ant."); this.FACADE.remove(Mapper.INSTANCE.jsonToPojo(json, GAntObject[].class)); break;
-		case ANT_FOOD: log("Removing antfood."); this.FACADE.remove(Mapper.INSTANCE.jsonToPojo(json, GAntFoodObject[].class)); break;
-		case FOOD: log("Removing food."); this.FACADE.remove(Mapper.INSTANCE.jsonToPojo(json, GFoodObject[].class)); break;
-		case HILL: log("Removing hil			StringBuilder sb = new StringBuilder();l."); this.FACADE.remove(Mapper.INSTANCE.jsonToPojo(json, GHillObject[].class)); break;
+		if (url == null) {
+			this.FACADE.remove(Mapper.INSTANCE.jsonToPojo(json, GUIObjectCrate.class));
+		} else {
+			switch (GUIObjectTypes.forValue(url)) {
+			case ANT:
+				log("Removing ant.");
+				this.FACADE.remove(Mapper.INSTANCE.jsonToPojo(json, GAntObject[].class));
+				break;
+			case ANT_FOOD:
+				log("Removing antfood.");
+				this.FACADE.remove(Mapper.INSTANCE.jsonToPojo(json, GAntFoodObject[].class));
+				break;
+			case FOOD:
+				log("Removing food.");
+				this.FACADE.remove(Mapper.INSTANCE.jsonToPojo(json, GFoodObject[].class));
+				break;
+			case HILL:
+				log("Removing hil			StringBuilder sb = new StringBuilder();l.");
+				this.FACADE.remove(Mapper.INSTANCE.jsonToPojo(json, GHillObject[].class));
+				break;
+			}
 		}
 	}
 

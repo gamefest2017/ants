@@ -36,8 +36,8 @@ public final class MovementHandler {
 		final Point position = new Point();
 		position.setLocation(newXPos, newYPos);
 
-		if (ant.getMyHill().getPosition().equals(position)) {
-			moveHome(ant.getMyHill(), ant);
+		if (ant instanceof AbstractAnt && ant.getMyHill().getPosition().equals(position)) {
+			moveHome(ant.getMyHill(), (AbstractAnt) ant);
 		}
 
 		final Object worldObject = World.getWorldObject(position);
@@ -47,7 +47,7 @@ public final class MovementHandler {
 					+ direction.name() + "[" + position.x + ", " + position.y + "]" + ", out of my way!");
 			ant.setPosition(position);
 		} else if (worldObject instanceof Food && ant instanceof AbstractAnt) {
-			FoodHandler.pickUpFood(ant, (Food) worldObject);
+			FoodHandler.pickUpFood((AbstractAnt) ant, (Food) worldObject);
 			ant.setPosition(position);
 		} else if (worldObject instanceof IAnt && ant instanceof AbstractWarrior && ant.isEnemy((IAnt) worldObject)) {
 			final AbstractWarrior warrior = (AbstractWarrior) ant;
@@ -60,7 +60,7 @@ public final class MovementHandler {
 		return ant;
 	}
 
-	private void moveHome(final Hill hill, final IAnt ant) {
+	private void moveHome(final Hill hill, final AbstractAnt ant) {
 		final Food droppedFood = ant.dropFood();
 		if (droppedFood != null && droppedFood.getAmount() > 0) {
 			populationHandler.incrementFood(hill, droppedFood.getAmount());

@@ -5,9 +5,9 @@ import java.util.ArrayList;
 import java.util.List;
 
 import com.ibm.sk.dto.AbstractAnt;
+import com.ibm.sk.dto.AbstractWarrior;
 import com.ibm.sk.dto.Food;
 import com.ibm.sk.dto.Hill;
-import com.ibm.sk.dto.IAnt;
 import com.ibm.sk.dto.IWorldObject;
 import com.ibm.sk.dto.WorldObject;
 import com.ibm.sk.ff.gui.client.GUIFacade;
@@ -15,7 +15,7 @@ import com.ibm.sk.ff.gui.common.objects.gui.GAntObject;
 import com.ibm.sk.ff.gui.common.objects.gui.GFoodObject;
 import com.ibm.sk.ff.gui.common.objects.gui.GHillObject;
 import com.ibm.sk.ff.gui.common.objects.gui.GUIObject;
-import com.ibm.sk.ff.gui.common.objects.gui.GUIObjectTypes;
+import com.ibm.sk.ff.gui.common.objects.gui.GWarriorObject;
 import com.ibm.sk.ff.gui.common.objects.operations.CreateGameData;
 import com.ibm.sk.ff.gui.common.objects.operations.ScoreData;
 
@@ -28,16 +28,19 @@ public class GuiConnector {
 
 	public void placeGuiObjects(final List<IWorldObject> worldObjects) {
 		final List<GUIObject> guiObjects = new ArrayList<>();
-		final List<GUIObject> guiFoodObjects = new ArrayList<>();
-		final List<GUIObject> guiAntObjects = new ArrayList<>();
 		final List<GAntObject> guiAntObjectsToSplit = new ArrayList<>();
-		
+
 		for (final IWorldObject worldObject : worldObjects) {
 			if (worldObject instanceof Food) {
 				final Food food = (Food) worldObject;
 				final GFoodObject gFoodObject = createGFoodObject(food);
 				System.out.println("Placing to GUI: " + food);
-				guiFoodObjects.add(gFoodObject);
+				guiObjects.add(gFoodObject);
+			} else if (worldObject instanceof AbstractWarrior) {
+				final AbstractWarrior warrior = (AbstractWarrior) worldObject;
+				final GWarriorObject gWarriorObject = createGWarriorObject(warrior);
+				System.out.println("Placing to GUI: " + warrior);
+				guiObjects.add(gWarriorObject);
 			} else if (worldObject instanceof AbstractAnt) {
 				final AbstractAnt ant = (AbstractAnt) worldObject;
 				GAntObject gAntObject;
@@ -52,30 +55,36 @@ public class GuiConnector {
 					}
 					System.out.println("Placing to GUI: " + ant);
 				}
-				guiAntObjects.add(gAntObject);
+				guiObjects.add(gAntObject);
 			}
 		}
-		
-		guiObjects.addAll(guiFoodObjects);
-		guiObjects.addAll(guiAntObjects);
-		
+
 		this.FACADE.set(guiObjects.toArray(new GUIObject[guiObjects.size()]));
-		for (GAntObject gAntObject : guiAntObjectsToSplit) {
-			FACADE.separate(gAntObject);
+		for (final GAntObject gAntObject : guiAntObjectsToSplit) {
+			this.FACADE.separate(gAntObject);
 		}
 	}
 
-	private GAntObject createGAntFoodObject(final IAnt ant) {
-		GAntObject gAntObject = createGAntObject(ant);
-		FACADE.join(gAntObject, createGFoodObject(ant.getFood()));
+	private GAntObject createGAntFoodObject(final AbstractAnt ant) {
+		final GAntObject gAntObject = createGAntObject(ant);
+		this.FACADE.join(gAntObject, createGFoodObject(ant.getFood()));
 		return gAntObject;
 	}
 
-	private GAntObject createGAntObject(final IAnt ant) {
+	private GAntObject createGAntObject(final AbstractAnt ant) {
 		final GAntObject result = new GAntObject();
 		result.setId(ant.getId());
 		result.setTeam(ant.getMyHillName());
 		final Point position = ant.getPosition();
+		result.setLocation(position.x, position.y);
+		return result;
+	}
+
+	private GWarriorObject createGWarriorObject(final AbstractWarrior warrior) {
+		final GWarriorObject result = new GWarriorObject();
+		result.setId(warrior.getId());
+		result.setTeam(warrior.getMyHillName());
+		final Point position = warrior.getPosition();
 		result.setLocation(position.x, position.y);
 		return result;
 	}
@@ -119,14 +128,29 @@ public class GuiConnector {
 
 	public void removeGuiObject(final WorldObject worldObject) {
 		if (worldObject instanceof Food) {
-//			final GFoodObject gFoodObject = createGFoodObject((Food) worldObject);
-//			this.FACADE.remove(gFoodObject);
-//			System.out.println("Removed from GUI object: " + worldObject);
+			//			final GFoodObject gFoodObject = createGFoodObject((Food) worldObject);
+			//			this.FACADE.remove(gFoodObject);
+			//			System.out.println("Removed from GUI object: " + worldObject);
 		} else if (worldObject instanceof AbstractAnt) {
 			final AbstractAnt ant = (AbstractAnt) worldObject;
 			final GAntObject gAntObject = createGAntObject(ant);
 			System.out.println("Removing from GUI: " + ant);
 			this.FACADE.remove(gAntObject);
+		}
+	}
+
+	public void removeGuiObjects(final List<IWorldObject> list) {
+		final List<GUIObject> ants = new ArrayList<>();
+		for (final IWorldObject object : list) {
+			if (object instanceof AbstractAnt) {
+				ants.add(createGAntObject((AbstractAnt) object));
+			}
+			if (object instanceof AbstractWarrior) {
+				ants.add(createGWarriorObject((AbstractWarrior) object));
+			}
+		}
+		if (ants.size() > 0) {
+			this.FACADE.remove(ants.toArray(new GUIObject[ants.size()]));
 		}
 	}
 
@@ -136,4 +160,5 @@ public class GuiConnector {
 		data.setScore(points);
 		this.FACADE.showScore(data);
 	}
+
 }

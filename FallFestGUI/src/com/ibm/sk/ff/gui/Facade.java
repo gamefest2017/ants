@@ -11,6 +11,7 @@ import com.ibm.sk.ff.gui.common.objects.gui.GAntObject;
 import com.ibm.sk.ff.gui.common.objects.gui.GFoodObject;
 import com.ibm.sk.ff.gui.common.objects.gui.GHillObject;
 import com.ibm.sk.ff.gui.common.objects.gui.GUIObjectCrate;
+import com.ibm.sk.ff.gui.common.objects.gui.GWarriorObject;
 import com.ibm.sk.ff.gui.common.objects.operations.CloseData;
 import com.ibm.sk.ff.gui.common.objects.operations.CreateGameData;
 import com.ibm.sk.ff.gui.common.objects.operations.InitMenuData;
@@ -32,6 +33,10 @@ public class Facade implements GuiEventListener {
 		this.gui.set(ants);
 	}
 
+	public void set(final GWarriorObject[] warriors) {
+		this.gui.set(warriors);
+	}
+
 	public void set(final GFoodObject[] foods) {
 		this.gui.set(foods);
 	}
@@ -39,6 +44,7 @@ public class Facade implements GuiEventListener {
 	public void set(final GHillObject[] hills) {
 		this.gui.set(hills);
 	}
+
 
 	public void set(final GAntFoodObject[] antfood) {
 		this.gui.set(antfood);
@@ -99,4 +105,7 @@ public class Facade implements GuiEventListener {
 		this.gui.set(crate.dump());
 	}
 
+	public void remove(final GUIObjectCrate crate) {
+		this.gui.remove(crate.dump());
+	}
 }

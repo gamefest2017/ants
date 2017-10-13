@@ -2,22 +2,25 @@ package com.ibm.sk.engine;
 
 import static com.ibm.sk.WorldConstans.INITIAL_ANT_COUNT;
 import static com.ibm.sk.WorldConstans.POPULATION_WAR_FACTOR;
+import static com.ibm.sk.engine.World.getDeadObjects;
 import static com.ibm.sk.engine.World.getWorldObjects;
 
 import java.awt.Point;
 import java.util.ArrayList;
+import java.util.Collections;
 import java.util.EnumMap;
+import java.util.Iterator;
 import java.util.Map;
 
 import com.ibm.sk.Main;
 import com.ibm.sk.WorldConstans;
-import com.ibm.sk.dto.Ant;
+import com.ibm.sk.dto.AbstractAnt;
+import com.ibm.sk.dto.AbstractWarrior;
 import com.ibm.sk.dto.Food;
 import com.ibm.sk.dto.Hill;
 import com.ibm.sk.dto.IAnt;
 import com.ibm.sk.dto.IWorldObject;
 import com.ibm.sk.dto.Vision;
-import com.ibm.sk.dto.Warrior;
 import com.ibm.sk.dto.enums.Direction;
 import com.ibm.sk.dto.enums.ObjectType;
 import com.ibm.sk.engine.exceptions.MoveException;
@@ -31,22 +34,40 @@ public final class ProcessExecutor {
 
 	private static final GuiConnector guiConnector = new GuiConnector();
 
-	public static void execute(final Hill hill) {
-
-		for (final IAnt ant : hill.getAnts()) {
-			singleStep(ant);
+	public static void execute(final Hill firstHill, final Hill secondHill) {
+		final Iterator<IAnt> first = firstHill.getAnts().iterator();
+		final Iterator<IAnt> second = secondHill == null ? Collections.emptyIterator()
+				: secondHill.getAnts().iterator();
+		while (first.hasNext() || second.hasNext()) {
+			IAnt ant = null;
+			if (first.hasNext()) {
+				ant = first.next();
+				singleStep(ant);
+				guiConnector.removeGuiObjects(getDeadObjects());
+				getDeadObjects().clear();
+			}
+			if (second.hasNext()) {
+				ant = second.next();
+				singleStep(ant);
+				guiConnector.removeGuiObjects(getDeadObjects());
+				getDeadObjects().clear();
+			}
 		}
 		guiConnector.placeGuiObjects(getWorldObjects());
-		guiConnector.showScore(hill.getName(), hill.getFood());
+		guiConnector.showScore(firstHill.getName(), firstHill.getFood());
+		if (secondHill != null) {
+			guiConnector.showScore(secondHill.getName(), secondHill.getFood());
+		}
 	}
+
 
 	public static void initGame(final Hill team1, final Hill team2) {
 		final CreateGameData gameData = new CreateGameData();
 		gameData.setWidth(WorldConstans.X_BOUNDRY);
 		gameData.setHeight(WorldConstans.Y_BOUNDRY);
 		gameData.setTeams(new String[] { team1.getName(), team2 != null ? team2.getName() : "" });
-		initAnts(team1);
 		guiConnector.initGame(gameData);
+		initAnts(team1);
 		guiConnector.placeGuiObject(team1);
 		guiConnector.placeGuiObjects(new ArrayList<>(team1.getAnts()));
 		if (team2 != null) {
@@ -109,8 +130,8 @@ public final class ProcessExecutor {
 		final Point point = new Point(ant.getPosition());
 		point.translate(direction.getPositionChange().x, direction.getPositionChange().y);
 		final IWorldObject foundObject = World.getWorldObject(point);
-		if (foundObject instanceof Ant) {
-			final Ant otherAnt = (Ant) foundObject;
+		if (foundObject instanceof AbstractAnt) {
+			final AbstractAnt otherAnt = (AbstractAnt) foundObject;
 			if (ant.isEnemy(otherAnt) && otherAnt.hasFood()) {
 				result = ObjectType.ENEMY_ANT_WITH_FOOD;
 			} else if (ant.isEnemy(otherAnt)) {
@@ -120,8 +141,8 @@ public final class ProcessExecutor {
 			} else {
 				result = ObjectType.ANT;
 			}
-		} else if (foundObject instanceof Warrior) {
-			final Warrior warrior = (Warrior) foundObject;
+		} else if (foundObject instanceof AbstractWarrior) {
+			final AbstractWarrior warrior = (AbstractWarrior) foundObject;
 			if (ant.isEnemy(warrior)) {
 				result = ObjectType.ENEMY_WARRIOR;
 			} else {

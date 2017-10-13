@@ -37,22 +37,6 @@ public abstract class AbstractWarrior extends WorldObject implements IAnt {
 	public abstract Direction move(final Vision vision);
 
 	@Override
-	public void pickUpFood(final Food food) {
-		System.out.println("Warriors hunger only for war!");
-	}
-
-	@Override
-	public Food dropFood() {
-		System.out.println("I bring no food - I bring victory!");
-		return null;
-	}
-
-	@Override
-	public boolean hasFood() {
-		return false;
-	}
-
-	@Override
 	public String toString() {
 		return "Warrior " + this.id + " from " + this.getMyHillName() + " on: [" + this.position.x + ", "
 				+ this.position.y + "] with " + this.kills.size() + " victories.";
@@ -61,11 +45,6 @@ public abstract class AbstractWarrior extends WorldObject implements IAnt {
 	public void killed(final IAnt enemy) {
 		System.out.println("Warrior " + this.id + " defeated " + enemy.toString());
 		this.kills.add(Long.valueOf(enemy.getId()));
-	}
-
-	@Override
-	public Food getFood() {
-		return null;
 	}
 
 }
