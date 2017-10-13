@@ -33,8 +33,10 @@ public class Ant extends AbstractAnt {
 			}
 
 			if (Direction.NO_MOVE.equals(returnValue)) {
-				System.out.println("Where to go?");
-				returnValue = Direction.random();
+				do {
+					System.out.println("Where to go?");
+					returnValue = Direction.random();
+				} while (ObjectType.BORDER.equals(vision.look(returnValue)));
 			}
 		} else {
 			returnValue = findWayHome();

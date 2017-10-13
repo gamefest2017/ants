@@ -39,8 +39,10 @@ public class Warrior extends AbstractWarrior {
 		}
 
 		if (Direction.NO_MOVE.equals(result)) {
-			System.out.println("Where to go?");
-			result = Direction.random();
+			do {
+				System.out.println("Where to go?");
+				result = Direction.random();
+			} while (ObjectType.BORDER.equals(vision.look(result)));
 		}
 		// Add your implementation here
 
