@@ -35,7 +35,10 @@ public class MenuListener implements ChangeListener, ActionListener, ListSelecti
 	private JList<String> secondListOfAnthills = null;
 	private JList<String> thirdListOfAnthills = null;
 
-	public MenuListener(JFrame mainContainer, GuiEventListener listener, JTabbedPane tabbedPane, JList<String> firstListOfAnthills, JList<String> secondListOfAnthills, JList<String> thirdListOfAnthills, JButton buttonStart, JRadioButton radioQualification, JRadioButton radioTournamentSemiFinals, JScrollPane scrollPaneQualification, JScrollPane scrollPaneTournament) {
+	public MenuListener(JFrame mainContainer, GuiEventListener listener, JTabbedPane tabbedPane,
+			JList<String> firstListOfAnthills, JList<String> secondListOfAnthills, JList<String> thirdListOfAnthills,
+			JButton buttonStart, JRadioButton radioQualification, JRadioButton radioTournamentSemiFinals,
+			JScrollPane scrollPaneQualification, JScrollPane scrollPaneTournament) {
 		this.tabbedPane = tabbedPane;
 		this.buttonStart = buttonStart;
 		this.firstListOfAnthills = firstListOfAnthills;
@@ -45,7 +48,8 @@ public class MenuListener implements ChangeListener, ActionListener, ListSelecti
 		this.radioTournamentSemiFinals = radioTournamentSemiFinals;
 		this.scrollPaneQualification = scrollPaneQualification;
 		this.scrollPaneTournament = scrollPaneTournament;
-		
+		this.listener = listener;
+
 		tabbedPane.addChangeListener(this);
 		firstListOfAnthills.addListSelectionListener(this);
 		secondListOfAnthills.addListSelectionListener(this);
@@ -56,7 +60,8 @@ public class MenuListener implements ChangeListener, ActionListener, ListSelecti
 	}
 
 	/**
-	 * {@link ChangeEvent} of the {@link #tabbedPane} (Menu: Single Player / Duel / Tournament / About)
+	 * {@link ChangeEvent} of the {@link #tabbedPane} (Menu: Single Player /
+	 * Duel / Tournament / About)
 	 */
 	@Override
 	public void stateChanged(ChangeEvent e) {
@@ -75,7 +80,8 @@ public class MenuListener implements ChangeListener, ActionListener, ListSelecti
 	}
 
 	/**
-	 * {@link ActionEvent} of the {@link #buttonStart} (Menu: Single Player / Duel / Tournament / About)
+	 * {@link ActionEvent} of the {@link #buttonStart} (Menu: Single Player /
+	 * Duel / Tournament / About)
 	 */
 	@Override
 	public void actionPerformed(ActionEvent e) {
@@ -83,32 +89,27 @@ public class MenuListener implements ChangeListener, ActionListener, ListSelecti
 			switch (tabbedPane.getSelectedIndex()) {
 			case 0:
 				if (firstListOfAnthills.getSelectedIndex() == -1) {
-					JOptionPane.showMessageDialog(mainContainer,
-						    "Please, select 1 anthill.",
-						    "Can't start a single player game!",
-						    JOptionPane.WARNING_MESSAGE);
+					JOptionPane.showMessageDialog(mainContainer, "Please, select 1 anthill.",
+							"Can't start a single player game!", JOptionPane.WARNING_MESSAGE);
 				} else {
-					sendGuiEvent(new GuiEvent(GuiEvent.EventTypes.SINGLE_PLAY_START, ""));
+					sendGuiEvent(new GuiEvent(GuiEvent.EventTypes.SINGLE_PLAY_START,
+							firstListOfAnthills.getSelectedValue()));
 				}
 				break;
 			case 1:
 				if (secondListOfAnthills.getSelectedIndex() == -1 && thirdListOfAnthills.getSelectedIndex() == -1) {
-					JOptionPane.showMessageDialog(mainContainer,
-						    "No anthills have been selected.",
-						    "Can't start a duel!",
-						    JOptionPane.WARNING_MESSAGE);
+					JOptionPane.showMessageDialog(mainContainer, "No anthills have been selected.",
+							"Can't start a duel!", JOptionPane.WARNING_MESSAGE);
 				} else if (secondListOfAnthills.getSelectedIndex() == -1) {
-						JOptionPane.showMessageDialog(mainContainer,
-							    "The player 1 has not been selected.",
-							    "Can't start a duel!",
-							    JOptionPane.WARNING_MESSAGE);
+					JOptionPane.showMessageDialog(mainContainer, "The player 1 has not been selected.",
+							"Can't start a duel!", JOptionPane.WARNING_MESSAGE);
 				} else if (thirdListOfAnthills.getSelectedIndex() == -1) {
-					JOptionPane.showMessageDialog(mainContainer,
-						    "The player 2 has not been selected.",
-						    "Can't start a duel!",
-						    JOptionPane.WARNING_MESSAGE);
+					JOptionPane.showMessageDialog(mainContainer, "The player 2 has not been selected.",
+							"Can't start a duel!", JOptionPane.WARNING_MESSAGE);
 				} else {
-					sendGuiEvent(new GuiEvent(GuiEvent.EventTypes.DOUBLE_PLAY_START, ""));
+					sendGuiEvent(
+							new GuiEvent(GuiEvent.EventTypes.DOUBLE_PLAY_START, secondListOfAnthills.getSelectedValue()
+									+ GuiEvent.HLL_NAMES_SEPARATOR + thirdListOfAnthills.getSelectedValue()));
 				}
 				break;
 			case 2:
@@ -118,8 +119,11 @@ public class MenuListener implements ChangeListener, ActionListener, ListSelecti
 				// About dialog, ignore, no ActionEvent is expected here
 				break;
 			default:
-				// TODO: REPLAY_SELECTED / listener.actionPerformed(new GuiEvent(GuiEvent.EventTypes.REPLAY_SELECTED, ""));
-				// TODO: REPLAYS_SELECTED / listener.actionPerformed(new GuiEvent(GuiEvent.EventTypes.REPLAY_SELECTED, combo_replays.getSelectedItem().toString()));
+				// TODO: REPLAY_SELECTED / listener.actionPerformed(new
+				// GuiEvent(GuiEvent.EventTypes.REPLAY_SELECTED, ""));
+				// TODO: REPLAYS_SELECTED / listener.actionPerformed(new
+				// GuiEvent(GuiEvent.EventTypes.REPLAY_SELECTED,
+				// combo_replays.getSelectedItem().toString()));
 				// TODO: START_REPLAY
 				break;
 			}
@@ -135,21 +139,26 @@ public class MenuListener implements ChangeListener, ActionListener, ListSelecti
 	}
 
 	/**
-	 * {@link ListSelectionEvent} of the {@link #firstListOfAnthills} or {@link #secondListOfAnthills} or {@link #thirdListOfAnthills} in the menu "Single Player" / "Duel".
+	 * {@link ListSelectionEvent} of the {@link #firstListOfAnthills} or
+	 * {@link #secondListOfAnthills} or {@link #thirdListOfAnthills} in the menu
+	 * "Single Player" / "Duel".
 	 */
 	@Override
 	public void valueChanged(ListSelectionEvent e) {
 		if (e.getSource().equals(firstListOfAnthills)) {
 			if (!e.getValueIsAdjusting()) {
-				sendGuiEvent(new GuiEvent(GuiEvent.EventTypes.PLAYER_1_SELECTED, firstListOfAnthills.getSelectedValue()));
+				sendGuiEvent(
+						new GuiEvent(GuiEvent.EventTypes.PLAYER_1_SELECTED, firstListOfAnthills.getSelectedValue()));
 			}
 		} else if (e.getSource().equals(secondListOfAnthills)) {
 			if (!e.getValueIsAdjusting()) {
-				sendGuiEvent(new GuiEvent(GuiEvent.EventTypes.PLAYER_1_SELECTED, secondListOfAnthills.getSelectedValue()));
+				sendGuiEvent(
+						new GuiEvent(GuiEvent.EventTypes.PLAYER_1_SELECTED, secondListOfAnthills.getSelectedValue()));
 			}
 		} else if (e.getSource().equals(thirdListOfAnthills)) {
 			if (!e.getValueIsAdjusting()) {
-				sendGuiEvent(new GuiEvent(GuiEvent.EventTypes.PLAYER_2_SELECTED, thirdListOfAnthills.getSelectedValue()));
+				sendGuiEvent(
+						new GuiEvent(GuiEvent.EventTypes.PLAYER_2_SELECTED, thirdListOfAnthills.getSelectedValue()));
 			}
 		}
 	}
