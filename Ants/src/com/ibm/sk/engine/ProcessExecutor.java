@@ -43,17 +43,15 @@ public final class ProcessExecutor {
 			if (first.hasNext()) {
 				ant = first.next();
 				singleStep(ant);
-				guiConnector.removeGuiObjects(getDeadObjects());
-				getDeadObjects().clear();
 			}
 			if (second.hasNext()) {
 				ant = second.next();
 				singleStep(ant);
-				guiConnector.removeGuiObjects(getDeadObjects());
-				getDeadObjects().clear();
 			}
 		}
 		guiConnector.placeGuiObjects(getWorldObjects());
+		guiConnector.removeGuiObjects(getDeadObjects());
+		getDeadObjects().clear();
 		guiConnector.showScore(firstHill.getName(), firstHill.getFood());
 		if (secondHill != null) {
 			guiConnector.showScore(secondHill.getName(), secondHill.getFood());

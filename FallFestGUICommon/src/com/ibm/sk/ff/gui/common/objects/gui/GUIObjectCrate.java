@@ -8,7 +8,8 @@ public class GUIObjectCrate {
 	private final List<GFoodObject> foods = new ArrayList<>();
 	private final List<GAntObject> ants = new ArrayList<>();
 	private final List<GAntFoodObject> antFoods = new ArrayList<>();
-	private final List<GWarriorObject> warriors = new ArrayList<>();;
+	private final List<GWarriorObject> warriors = new ArrayList<>();
+	private final List<GBorderObject> borders = new ArrayList<>();
 
 	public List<GAntFoodObject> getAntFoods() {
 		return this.antFoods;
@@ -28,8 +29,9 @@ public class GUIObjectCrate {
 
 	public GUIObject[] dump() {
 		final int totalSize = getHills().size() + getFoods().size() + getAnts().size() + getWarriors().size()
-				+ getAntFoods().size();
+				+ getAntFoods().size() + getBorders().size();
 		final List<GUIObject> objects = new ArrayList<>(totalSize);
+		objects.addAll(getBorders());
 		objects.addAll(getHills());
 		objects.addAll(getFoods());
 		objects.addAll(getAnts());
@@ -48,6 +50,10 @@ public class GUIObjectCrate {
 				final GHillObject hill = (GHillObject) guiObject;
 				getHills().add(hill);
 			}
+			if (guiObject instanceof GBorderObject) {
+				final GBorderObject border = (GBorderObject) guiObject;
+				getBorders().add(border);
+			}
 			if (guiObject instanceof GAntObject) {
 				final GAntObject ant = (GAntObject) guiObject;
 				getAnts().add(ant);
@@ -65,6 +71,10 @@ public class GUIObjectCrate {
 				getAntFoods().add(antFood);
 			}
 		}
+	}
+
+	private List<GBorderObject> getBorders() {
+		return this.borders;
 	}
 
 }

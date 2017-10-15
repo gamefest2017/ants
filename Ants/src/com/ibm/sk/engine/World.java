@@ -74,7 +74,7 @@ public final class World {
 	public static boolean isPositionOccupiedByBorder(final Point position) {
 		boolean isOccupied = false;
 
-		for (IWorldObject worldObject : worldObjects) {
+		for (final IWorldObject worldObject : worldObjects) {
 			if (worldObject instanceof WorldBorder && worldObject.getPosition().equals(position)) {
 				isOccupied = true;
 				System.out.println("Position is occupied: " + position);
@@ -88,12 +88,12 @@ public final class World {
 	public static void createWorldBorder() {
 		try {
 			for (int i = 0; i < WorldConstans.X_BOUNDRY; i++) {
-				placeObject(new WorldBorder(new Point(i, 0)));
-				placeObject(new WorldBorder(new Point(i, WorldConstans.Y_BOUNDRY - 1)));
+				placeObject(new WorldBorder(World.idSequence++, new Point(i, 0)));
+				placeObject(new WorldBorder(World.idSequence++, new Point(i, WorldConstans.Y_BOUNDRY - 1)));
 			}
 			for (int i = 1; i < WorldConstans.Y_BOUNDRY - 1; i++) {
-				placeObject(new WorldBorder(new Point(0, i)));
-				placeObject(new WorldBorder(new Point(WorldConstans.X_BOUNDRY - 1, i)));
+				placeObject(new WorldBorder(World.idSequence++, new Point(0, i)));
+				placeObject(new WorldBorder(World.idSequence++, new Point(WorldConstans.X_BOUNDRY - 1, i)));
 			}
 		} catch (final InvalidWorldPositionException e) {
 			System.out.println("Invalid position.");

@@ -11,7 +11,7 @@ public enum GUIObjectTypes {
 	ANT("ant"),
 	FOOD("food"),
 	ANT_FOOD("antfood"),
-	HILL("hill"), WARRIOR("warrior"),
+	HILL("hill"), WARRIOR("warrior"), BORDER("border"),
 	;
 
 	private static Map<String, GUIObjectTypes> VALUES = new HashMap<>();

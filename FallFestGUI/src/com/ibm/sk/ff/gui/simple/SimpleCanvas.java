@@ -37,6 +37,7 @@ public class SimpleCanvas extends JComponent {
 	private static Image IMAGES_FOOD = null;
 	private static Image IMAGES_HILL = null;
 	private static Image[] IMAGES_ANT_FOOD = null;
+	private static Image IMAGES_BORDER = null;
 
 	private boolean finishedRedraw = true;
 
@@ -46,6 +47,7 @@ public class SimpleCanvas extends JComponent {
 			IMAGES_WARRIOR = new Image[] { ImageIO.read(new File("res/warrior_left_2.png")),
 					ImageIO.read(new File("res/warrior_right_2.png")) };
 			IMAGES_FOOD = ImageIO.read(new File("res/food.png"));
+			IMAGES_BORDER = ImageIO.read(new File("res/water.jpg"));
 			IMAGES_HILL = ImageIO.read(new File("res/hill.png"));
 			IMAGES_ANT_FOOD = new Image [] {ImageIO.read(new File("res/antWithCookie_left.png")), ImageIO.read(new File("res/antWithCookie_right.png"))};
 		} catch (final Exception e) {
@@ -145,6 +147,9 @@ public class SimpleCanvas extends JComponent {
 			break;
 		case ANT_FOOD: ret = IMAGES_ANT_FOOD; break;
 		case FOOD: ret = new Image[] {IMAGES_FOOD}; break;
+		case BORDER:
+			ret = new Image[] { IMAGES_BORDER };
+			break;
 		case HILL: ret = new Image[] {IMAGES_HILL};	break;
 		}
 		return ret;
