@@ -8,7 +8,7 @@ public enum Config {
 	
 	HOSTNAME("gui.server.hostname", "localhost"),
 	PORT("gui.server.port", "60065"),
-	GUI_MOVE_INTERVAL("gui.move.interval", "500"),
+	GUI_MIN_RETURN_INTERVAL("gui.min.return.interval", "500"),
 	DEV_MODE("devmode", "false"),
 	;
 	

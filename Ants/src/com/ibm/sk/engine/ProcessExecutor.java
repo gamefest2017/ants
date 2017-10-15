@@ -24,20 +24,24 @@ import com.ibm.sk.dto.Vision;
 import com.ibm.sk.dto.enums.Direction;
 import com.ibm.sk.dto.enums.ObjectType;
 import com.ibm.sk.engine.exceptions.MoveException;
+import com.ibm.sk.ff.gui.client.GUIFacade;
 import com.ibm.sk.ff.gui.common.objects.operations.CreateGameData;
 import com.ibm.sk.models.WorldBorder;
 
 public final class ProcessExecutor {
 
-	private ProcessExecutor() {
-	}
+	private static GuiConnector guiConnector;
 
-	private static final GuiConnector guiConnector = new GuiConnector();
+	public ProcessExecutor(final GUIFacade FACADE) {
+		guiConnector = new GuiConnector(FACADE);
+	}
 
 	public static void execute(final Hill firstHill, final Hill secondHill) {
 		final Iterator<IAnt> first = firstHill.getAnts().iterator();
 		final Iterator<IAnt> second = secondHill == null ? Collections.emptyIterator()
 				: secondHill.getAnts().iterator();
+		guiConnector.placeGuiObjects(World.getAllFood());
+		
 		while (first.hasNext() || second.hasNext()) {
 			IAnt ant = null;
 			if (first.hasNext()) {
@@ -49,7 +53,7 @@ public final class ProcessExecutor {
 				singleStep(ant);
 			}
 		}
-		guiConnector.placeGuiObjects(getWorldObjects());
+		guiConnector.placeGuiObjects(World.getWorldObjectsToMove());
 		guiConnector.removeGuiObjects(getDeadObjects());
 		getDeadObjects().clear();
 		guiConnector.showScore(firstHill.getName(), firstHill.getFood());
@@ -58,8 +62,7 @@ public final class ProcessExecutor {
 		}
 	}
 
-
-	public static void initGame(final Hill team1, final Hill team2) {
+	public void initGame(final Hill team1, final Hill team2) {
 		final CreateGameData gameData = new CreateGameData();
 		gameData.setWidth(WorldConstans.X_BOUNDRY);
 		gameData.setHeight(WorldConstans.Y_BOUNDRY);

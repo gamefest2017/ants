@@ -22,10 +22,19 @@ import com.ibm.sk.ff.gui.common.objects.operations.ScoreData;
 import com.ibm.sk.models.WorldBorder;
 
 public class GuiConnector {
-	private final GUIFacade FACADE = new GUIFacade();
+
+	private final GUIFacade FACADE;
+
+	public GuiConnector(final GUIFacade FACADE) {
+		this.FACADE = FACADE;
+	}
 
 	public void initGame(final CreateGameData data) {
 		this.FACADE.createGame(data);
+	}
+
+	public GUIFacade getFacade() {
+		return FACADE;
 	}
 
 	public void placeGuiObjects(final List<IWorldObject> worldObjects) {
@@ -131,7 +140,6 @@ public class GuiConnector {
 		}
 	}
 
-
 	private GHillObject createGHillObject(final Hill hill) {
 		final GHillObject result = new GHillObject();
 		result.setId(hill.getId());
@@ -143,9 +151,10 @@ public class GuiConnector {
 
 	public void removeGuiObject(final WorldObject worldObject) {
 		if (worldObject instanceof Food) {
-			//			final GFoodObject gFoodObject = createGFoodObject((Food) worldObject);
-			//			this.FACADE.remove(gFoodObject);
-			//			System.out.println("Removed from GUI object: " + worldObject);
+			// final GFoodObject gFoodObject = createGFoodObject((Food)
+			// worldObject);
+			// this.FACADE.remove(gFoodObject);
+			// System.out.println("Removed from GUI object: " + worldObject);
 		} else if (worldObject instanceof AbstractAnt) {
 			final AbstractAnt ant = (AbstractAnt) worldObject;
 			final GAntObject gAntObject = createGAntObject(ant);

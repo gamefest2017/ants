@@ -2,8 +2,13 @@ package com.ibm.sk;
 
 public class WorldConstans {
 
+<<<<<<< HEAD
 	public static final int X_BOUNDRY = 40;
 	public static final int Y_BOUNDRY = 20;
+=======
+	public static final int X_BOUNDRY = 12;
+	public static final int Y_BOUNDRY = 10;
+>>>>>>> refs/remotes/origin/master
 	/**
 	 * number of TURNS to evaluate game.
 	 */
@@ -11,7 +16,7 @@ public class WorldConstans {
 	/**
 	 * the amount of ants in one anthill at the beginning of the world.
 	 */
-	public static final int INITIAL_ANT_COUNT = 20;
+	public static final int INITIAL_ANT_COUNT = 5;
 	/**
 	 * frequency of food adding.
 	 */

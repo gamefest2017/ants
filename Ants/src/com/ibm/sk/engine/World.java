@@ -5,6 +5,7 @@ import java.util.ArrayList;
 import java.util.List;
 
 import com.ibm.sk.WorldConstans;
+import com.ibm.sk.dto.Food;
 import com.ibm.sk.dto.Hill;
 import com.ibm.sk.dto.IAnt;
 import com.ibm.sk.dto.IWorldObject;
@@ -16,6 +17,7 @@ public final class World {
 	protected static long idSequence = 0l;
 	private static List<IWorldObject> worldObjects = new ArrayList<>();
 	private static List<IWorldObject> deadObjects = new ArrayList<>();
+	private static List<Hill> hills = new ArrayList<>();
 
 	private World() {
 	}
@@ -113,13 +115,53 @@ public final class World {
 
 		return isOccupied;
 	}
+	
+	public static boolean isHillPosition(final Point position) {
+		boolean isHillPosition = false;
+
+		for (final IWorldObject worldObject : hills) {
+			if (worldObject.getPosition().equals(position)) {
+				isHillPosition = true;
+				System.out.println("Found hill on given position: " + position);
+				break;
+			}
+		}
+
+		return isHillPosition;
+	}
 
 	public static Hill createHill(final HillOrder order, final String name) {
 		final long hillId = idSequence++;
 		final Hill hill = new Hill(name, new Point(order.getOrder() * WorldConstans.X_BOUNDRY + order.getXOffset(),
 				WorldConstans.Y_BOUNDRY / 2));
 		hill.setId(hillId);
+		
+		hills.add(hill);
 
 		return hill;
+	}
+	
+	public static List<IWorldObject> getAllFood() {
+		List<IWorldObject> result = new ArrayList<>();
+		
+		for (final IWorldObject worldObject : worldObjects) {
+			if (worldObject instanceof Food) {
+				result.add(worldObject);
+			}
+		}
+		
+		return result;
+	}
+	
+	public static List<IWorldObject> getWorldObjectsToMove() {
+		List<IWorldObject> result = new ArrayList<>();
+		
+		for (final IWorldObject worldObject : worldObjects) {
+			if (worldObject instanceof IAnt) {
+				result.add(worldObject);
+			}
+		}
+		
+		return result;
 	}
 }

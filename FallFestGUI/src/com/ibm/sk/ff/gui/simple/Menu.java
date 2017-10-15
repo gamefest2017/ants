@@ -50,22 +50,25 @@ import com.mxgraph.view.mxGraph;
 public class Menu extends JPanel {
 
 	private static final long serialVersionUID = 6974035742626961138L;
-	
+
 	// Constructor parameters
 	private InitMenuData initMenuData = null; // TODO: use its data
 	private GuiEventListener sharedGuiListener = null;
 	private JFrame mainFrame = null;
-	
+
 	/**
 	 * Constructor of the main GUI page.
 	 * 
-	 * @param initMenuData - input information about players, recorded games, etc.
-	 * @param sharedGuiListener - API for communication between GUI components
-	 * @param mainContainer - the container of the main window
+	 * @param initMenuData
+	 *            - input information about players, recorded games, etc.
+	 * @param sharedGuiListener
+	 *            - API for communication between GUI components
+	 * @param mainContainer
+	 *            - the container of the main window
 	 */
 	public Menu(InitMenuData initMenuData, GuiEventListener sharedGuiListener, JFrame mainFrame) {
 		super(new BorderLayout());
-		
+
 		// TODO Remove me later on
 		QualificationTable qualificationTable = new QualificationTable();
 		qualificationTable.addCandidate(new QualificationCandidate(1, "Player 1", true, 34L, 45L, 27L));
@@ -80,368 +83,373 @@ public class Menu extends JPanel {
 		qualificationTable.addCandidate(new QualificationCandidate(10, "Player 10", false, 24L));
 		initMenuData.setQualification(qualificationTable);
 		TournamentTable tournamentTable = new TournamentTable();
-		tournamentTable.addMatch(0, new Match(new PlayerStatus(new Player(1, "aPlayer 1"), 15), new PlayerStatus(new Player(2, "aPlayer 2"), 30), true));
-		tournamentTable.addMatch(0, new Match(new PlayerStatus(new Player(3, "aPlayer 3"), 11), new PlayerStatus(new Player(4, "aPlayer 4"), 27), true));
-		tournamentTable.addMatch(0, new Match(new PlayerStatus(new Player(5, "aPlayer 5"), 42), new PlayerStatus(new Player(6, "aPlayer 6"), 12), true));
-		tournamentTable.addMatch(0, new Match(new PlayerStatus(new Player(7, "aPlayer 7"), 25), new PlayerStatus(new Player(8, "aPlayer 8"), 32), true));
-		tournamentTable.addMatch(1, new Match(new PlayerStatus(new Player(2, "bPlayer 2"), 55), new PlayerStatus(new Player(5, "bPlayer 4"), 20), true));
-		tournamentTable.addMatch(1, new Match(new PlayerStatus(new Player(5, "bPlayer 5"), 11), new PlayerStatus(new Player(8, "bPlayer 8"), 60), true));
-		tournamentTable.addMatch(2, new Match(new PlayerStatus(new Player(2, "cPlayer 2"), 32), new PlayerStatus(new Player(8, "cPlayer 8"), 23), true));
+		tournamentTable.addMatch(0, new Match(new PlayerStatus(new Player(1, "aPlayer 1"), 15),
+				new PlayerStatus(new Player(2, "aPlayer 2"), 30), true));
+		tournamentTable.addMatch(0, new Match(new PlayerStatus(new Player(3, "aPlayer 3"), 11),
+				new PlayerStatus(new Player(4, "aPlayer 4"), 27), true));
+		tournamentTable.addMatch(0, new Match(new PlayerStatus(new Player(5, "aPlayer 5"), 42),
+				new PlayerStatus(new Player(6, "aPlayer 6"), 12), true));
+		tournamentTable.addMatch(0, new Match(new PlayerStatus(new Player(7, "aPlayer 7"), 25),
+				new PlayerStatus(new Player(8, "aPlayer 8"), 32), true));
+		tournamentTable.addMatch(1, new Match(new PlayerStatus(new Player(2, "bPlayer 2"), 55),
+				new PlayerStatus(new Player(5, "bPlayer 4"), 20), true));
+		tournamentTable.addMatch(1, new Match(new PlayerStatus(new Player(5, "bPlayer 5"), 11),
+				new PlayerStatus(new Player(8, "bPlayer 8"), 60), true));
+		tournamentTable.addMatch(2, new Match(new PlayerStatus(new Player(2, "cPlayer 2"), 32),
+				new PlayerStatus(new Player(8, "cPlayer 8"), 23), true));
 		initMenuData.setTournament(tournamentTable);
-		
+
 		this.initMenuData = initMenuData;
 		this.sharedGuiListener = sharedGuiListener;
 		this.mainFrame = mainFrame;
-		
+
 		init();
 	}
-	
+
 	protected String getStyle(Player player, Player winner) {
-		return getStyle("rectangle", winner != null && player != null && player.getId() != null && winner.getId() != null && player.getId() == winner.getId());
+		return getStyle("rectangle", winner != null && player != null && player.getId() != null
+				&& winner.getId() != null && player.getId() == winner.getId());
 	}
 
 	protected String getStyle(String shape, boolean forWinner) {
-		return forWinner ? String.format("shape=%s;strokeColor=#5472a9;fillColor=#c3d9ff;fontColor=#5472a9", shape) : String.format("shape=%s;strokeColor=#878787;fillColor=#e7e7e7;fontColor=#878787", shape);
+		return forWinner ? String.format("shape=%s;strokeColor=#5472a9;fillColor=#c3d9ff;fontColor=#5472a9", shape)
+				: String.format("shape=%s;strokeColor=#878787;fillColor=#e7e7e7;fontColor=#878787", shape);
 	}
-	
+
 	protected void init() {
 		setLayout(new BorderLayout());
-		
+
 		// Components MenuListener will need
 		final JButton buttonStart;
 		final JTabbedPane tabbedPane;
 		final JList<String> firstListOfAnthills;
 		final JList<String> secondListOfAnthills;
 		final JList<String> thirdListOfAnthills;
-		
 
 		// Title
-        JLabel labelTitle = new JLabel("ANTHILL", JLabel.CENTER);
-        labelTitle.setOpaque(true);
-        labelTitle.setFont(new Font(labelTitle.getFont().getName(), labelTitle.getFont().getStyle(), 80));
-        labelTitle.setBorder(new LineBorder(Color.GRAY));
-        labelTitle.setBackground(Color.BLACK);
-        labelTitle.setForeground(Color.WHITE);
-		
+		JLabel labelTitle = new JLabel("ANTHILL", JLabel.CENTER);
+		labelTitle.setOpaque(true);
+		labelTitle.setFont(new Font(labelTitle.getFont().getName(), labelTitle.getFont().getStyle(), 80));
+		labelTitle.setBorder(new LineBorder(Color.GRAY));
+		labelTitle.setBackground(Color.BLACK);
+		labelTitle.setForeground(Color.WHITE);
+
 		// Images
 		ImageIcon menuAntImage1 = new ImageIcon("res/menu_ant1.png");
-        JLabel menuAntLabel1 = new JLabel("", menuAntImage1, JLabel.LEFT);
-        ImageIcon menuAntImage2 = new ImageIcon("res/menu_ant2.png");
-        JLabel menuAntLabel2 = new JLabel("", menuAntImage2, JLabel.RIGHT);
+		JLabel menuAntLabel1 = new JLabel("", menuAntImage1, JLabel.LEFT);
+		ImageIcon menuAntImage2 = new ImageIcon("res/menu_ant2.png");
+		JLabel menuAntLabel2 = new JLabel("", menuAntImage2, JLabel.RIGHT);
 		ImageIcon menuSkullImage = new ImageIcon("res/menu_skull.png");
-        JLabel menuSkullLabel = new JLabel("", menuSkullImage, JLabel.CENTER);
+		JLabel menuSkullLabel = new JLabel("", menuSkullImage, JLabel.CENTER);
 		ImageIcon menuStartButton1 = new ImageIcon("res/menu_start_button_normal.png");
 		ImageIcon menuStartButton2 = new ImageIcon("res/menu_start_button_hover.png");
 		ImageIcon menuStartButton3 = new ImageIcon("res/menu_start_button_selected.png");
 		ImageIcon menuCredits = new ImageIcon("res/menu_credits.gif");
-        
-		// 1st list of anthills
-        DefaultListModel<String> listOfAnthillNames = new DefaultListModel<>(); 
-        listOfAnthillNames.addElement("Dummy Anthill");
-        listOfAnthillNames.addElement("Loosers");
-        listOfAnthillNames.addElement("Chuck Norris");
-        listOfAnthillNames.addElement("Peter Sagan");
-        listOfAnthillNames.addElement("Killers");
-        listOfAnthillNames.addElement("IBM SK");
-        listOfAnthillNames.addElement("Slovakia");
-        listOfAnthillNames.addElement("Winners");
-        firstListOfAnthills = new JList<>(listOfAnthillNames);
-        firstListOfAnthills.setSelectionMode(ListSelectionModel.SINGLE_SELECTION);
-        JScrollPane firstListOfAnthillsScrollable = new JScrollPane(firstListOfAnthills);
 
-        // 2nd list of anthills
-        secondListOfAnthills = new JList<>(listOfAnthillNames);
-        secondListOfAnthills.setSelectionMode(ListSelectionModel.SINGLE_SELECTION);
-        JScrollPane secondListOfAnthillsScrollable = new JScrollPane(secondListOfAnthills);
+		// 1st list of anthills
+		DefaultListModel<String> listOfAnthillNames = new DefaultListModel<>();
+		listOfAnthillNames.addElement("Dummy Anthill");
+		listOfAnthillNames.addElement("Loosers");
+		listOfAnthillNames.addElement("Chuck Norris");
+		listOfAnthillNames.addElement("Peter Sagan");
+		listOfAnthillNames.addElement("Killers");
+		listOfAnthillNames.addElement("IBM SK");
+		listOfAnthillNames.addElement("Slovakia");
+		listOfAnthillNames.addElement("Winners");
+		firstListOfAnthills = new JList<>(listOfAnthillNames);
+		firstListOfAnthills.setSelectionMode(ListSelectionModel.SINGLE_SELECTION);
+		JScrollPane firstListOfAnthillsScrollable = new JScrollPane(firstListOfAnthills);
+
+		// 2nd list of anthills
+		secondListOfAnthills = new JList<>(listOfAnthillNames);
+		secondListOfAnthills.setSelectionMode(ListSelectionModel.SINGLE_SELECTION);
+		JScrollPane secondListOfAnthillsScrollable = new JScrollPane(secondListOfAnthills);
 
 		// 3rd list of anthills
-        thirdListOfAnthills = new JList<>(listOfAnthillNames);
-        thirdListOfAnthills.setSelectionMode(ListSelectionModel.SINGLE_SELECTION);
-        JScrollPane thirdListOfAnthillsScrollable = new JScrollPane(thirdListOfAnthills);
-		 
+		thirdListOfAnthills = new JList<>(listOfAnthillNames);
+		thirdListOfAnthills.setSelectionMode(ListSelectionModel.SINGLE_SELECTION);
+		JScrollPane thirdListOfAnthillsScrollable = new JScrollPane(thirdListOfAnthills);
+
 		// Sheets
 		tabbedPane = new JTabbedPane(JTabbedPane.TOP);
-		
+
 		// 1st Sheet: Single Player
-        JPanel panelSinglePlayer = new JPanel(false);
-        panelSinglePlayer.setLayout(new GridLayout(1, 1));
-        panelSinglePlayer.add(firstListOfAnthillsScrollable);
-        tabbedPane.addTab("Single Player", panelSinglePlayer);
- 
-        // 2nd Sheet: Duel
-        JPanel panelDuel = new JPanel(false);
-        panelDuel.setLayout(new GridLayout(1, 2));
-        panelDuel.add(secondListOfAnthillsScrollable);
-        panelDuel.add(thirdListOfAnthillsScrollable);
-        tabbedPane.addTab("Duel", panelDuel);
- 
-        // 3rd Sheet: Tournament
-        JScrollPane scrollPaneQualification = null;
-        JScrollPane scrollPaneTournament = null;
-        boolean selectPanelTournament = false;
-        JPanel panelTournament = new JPanel();
-        panelTournament.setLayout(new BoxLayout(panelTournament, BoxLayout.PAGE_AXIS));
-        
-        JPanel panelTournamentRadioButtons = new JPanel();
-        panelTournamentRadioButtons.setLayout(new BoxLayout(panelTournamentRadioButtons, BoxLayout.LINE_AXIS));
-        JRadioButton radioQualification = new JRadioButton("Qualification");
-        JRadioButton radioTournamentSemiFinals = new JRadioButton("Tournament (Semi / Finals)");
-        ButtonGroup group = new ButtonGroup();
-        group.add(radioQualification);
-        group.add(radioTournamentSemiFinals);
-        panelTournamentRadioButtons.add(radioQualification);
-        panelTournamentRadioButtons.add(radioTournamentSemiFinals);
-        panelTournament.add(panelTournamentRadioButtons);
-        panelTournament.add(Box.createRigidArea(new Dimension(0,5)));
-       
-        if (initMenuData.getQualification() == null && initMenuData.getTournament() == null) {
-            selectPanelTournament = false;
-            radioQualification.setEnabled(false);
-            radioTournamentSemiFinals.setEnabled(false);
-        	panelTournament.add(menuSkullLabel);
-        }
-        if (initMenuData.getQualification() != null) {
-            selectPanelTournament = true;
-            radioQualification.setSelected(true);
-        	JTable tableQualification = new JTable(new MenuQualificationTableModel(initMenuData.getQualification()));
-        	for (int i = 0; i < tableQualification.getModel().getColumnCount(); i++) {
-        		TableColumn tableColumn = tableQualification.getColumnModel().getColumn(i);
-        		tableColumn.setCellRenderer(new MenuQualificationTableCellRenderer(initMenuData.getQualification()));
-        		if (i == 1) {
-        			tableColumn.setPreferredWidth(300);
-        		} else {
-        			tableColumn.setPreferredWidth(10);
-        		}
-        	}
-        	scrollPaneQualification = new JScrollPane(tableQualification);
-        	tableQualification.setFillsViewportHeight(true);
-        	tableQualification.setBorder(BorderFactory.createEmptyBorder());
-        	tableQualification.setOpaque(false);
-        	scrollPaneQualification.setBorder(BorderFactory.createEmptyBorder());
-        	panelTournament.add(scrollPaneQualification, BorderLayout.CENTER);
-        }
-        if (initMenuData.getTournament() != null) {
-        	selectPanelTournament = true;
-        	if (scrollPaneQualification != null) {
-        		scrollPaneQualification.setVisible(false);
-        	}
-            radioTournamentSemiFinals.setSelected(true);
-        	Player lastWinner = null;
-        	List<Player> winnersInPreviousRound  = new ArrayList<>();
-        	mxGraph graph = new mxGraph();
-        	graph.setCellsSelectable(false);
-        	graph.setCellsEditable(false);
-        	graph.setCellsMovable(false);
-        	graph.setCellsResizable(false);
-        	graph.setCellsBendable(false);
-        	graph.setCellsCloneable(false);
-        	graph.setCellsDeletable(false);
-        	graph.setCellsDisconnectable(false);
-        	graph.setConnectableEdges(false);
-        	graph.setCellsEditable(false);
-            graph.setAllowDanglingEdges(false);
-            graph.setAllowLoops(false);
-            graph.setCellsDeletable(false);
-            graph.setCellsCloneable(false);
-            graph.setCellsDisconnectable(false);
-            graph.setDropEnabled(false);
-            graph.setSplitEnabled(false);
-            graph.setCellsBendable(false);
-    		Object parent = graph.getDefaultParent();
-    		graph.getModel().beginUpdate();
-    		Map<String, Object> matchIcons = new HashMap<>();
-    		try
-    		{
+		JPanel panelSinglePlayer = new JPanel(false);
+		panelSinglePlayer.setLayout(new GridLayout(1, 1));
+		panelSinglePlayer.add(firstListOfAnthillsScrollable);
+		tabbedPane.addTab("Single Player", panelSinglePlayer);
+
+		// 2nd Sheet: Duel
+		JPanel panelDuel = new JPanel(false);
+		panelDuel.setLayout(new GridLayout(1, 2));
+		panelDuel.add(secondListOfAnthillsScrollable);
+		panelDuel.add(thirdListOfAnthillsScrollable);
+		tabbedPane.addTab("Duel", panelDuel);
+
+		// 3rd Sheet: Tournament
+		JScrollPane scrollPaneQualification = null;
+		JScrollPane scrollPaneTournament = null;
+		boolean selectPanelTournament = false;
+		JPanel panelTournament = new JPanel();
+		panelTournament.setLayout(new BoxLayout(panelTournament, BoxLayout.PAGE_AXIS));
+
+		JPanel panelTournamentRadioButtons = new JPanel();
+		panelTournamentRadioButtons.setLayout(new BoxLayout(panelTournamentRadioButtons, BoxLayout.LINE_AXIS));
+		JRadioButton radioQualification = new JRadioButton("Qualification");
+		JRadioButton radioTournamentSemiFinals = new JRadioButton("Tournament (Semi / Finals)");
+		ButtonGroup group = new ButtonGroup();
+		group.add(radioQualification);
+		group.add(radioTournamentSemiFinals);
+		panelTournamentRadioButtons.add(radioQualification);
+		panelTournamentRadioButtons.add(radioTournamentSemiFinals);
+		panelTournament.add(panelTournamentRadioButtons);
+		panelTournament.add(Box.createRigidArea(new Dimension(0, 5)));
+
+		if (initMenuData.getQualification() == null && initMenuData.getTournament() == null) {
+			selectPanelTournament = false;
+			radioQualification.setEnabled(false);
+			radioTournamentSemiFinals.setEnabled(false);
+			panelTournament.add(menuSkullLabel);
+		}
+		if (initMenuData.getQualification() != null) {
+			selectPanelTournament = true;
+			radioQualification.setSelected(true);
+			JTable tableQualification = new JTable(new MenuQualificationTableModel(initMenuData.getQualification()));
+			for (int i = 0; i < tableQualification.getModel().getColumnCount(); i++) {
+				TableColumn tableColumn = tableQualification.getColumnModel().getColumn(i);
+				tableColumn.setCellRenderer(new MenuQualificationTableCellRenderer(initMenuData.getQualification()));
+				if (i == 1) {
+					tableColumn.setPreferredWidth(300);
+				} else {
+					tableColumn.setPreferredWidth(10);
+				}
+			}
+			scrollPaneQualification = new JScrollPane(tableQualification);
+			tableQualification.setFillsViewportHeight(true);
+			tableQualification.setBorder(BorderFactory.createEmptyBorder());
+			tableQualification.setOpaque(false);
+			scrollPaneQualification.setBorder(BorderFactory.createEmptyBorder());
+			panelTournament.add(scrollPaneQualification, BorderLayout.CENTER);
+		}
+		if (initMenuData.getTournament() != null) {
+			selectPanelTournament = true;
+			if (scrollPaneQualification != null) {
+				scrollPaneQualification.setVisible(false);
+			}
+			radioTournamentSemiFinals.setSelected(true);
+			Player lastWinner = null;
+			List<Player> winnersInPreviousRound = new ArrayList<>();
+			mxGraph graph = new mxGraph();
+			graph.setCellsSelectable(false);
+			graph.setCellsEditable(false);
+			graph.setCellsMovable(false);
+			graph.setCellsResizable(false);
+			graph.setCellsBendable(false);
+			graph.setCellsCloneable(false);
+			graph.setCellsDeletable(false);
+			graph.setCellsDisconnectable(false);
+			graph.setConnectableEdges(false);
+			graph.setCellsEditable(false);
+			graph.setAllowDanglingEdges(false);
+			graph.setAllowLoops(false);
+			graph.setCellsDeletable(false);
+			graph.setCellsCloneable(false);
+			graph.setCellsDisconnectable(false);
+			graph.setDropEnabled(false);
+			graph.setSplitEnabled(false);
+			graph.setCellsBendable(false);
+			Object parent = graph.getDefaultParent();
+			graph.getModel().beginUpdate();
+			Map<String, Object> matchIcons = new HashMap<>();
+			try {
 				int x = 20;
 				int y = 20;
-    			for (int round = 0; round < initMenuData.getTournament().getRounds(); round++) {
-        			int index = 0;
-    				for (Match match : initMenuData.getTournament().getMatches(round)) {
-    					lastWinner = match.isFinished() ? match.getWinners().get(0) : null;
-    					Player player1 = match.getPlayer(0);
-    					Player player2 = match.getPlayer(1);
-    					
-    					Object player1Icon = graph.insertVertex(parent, null, player1 == null ? "" : player1.getName(), x, y, 80, 30, getStyle(player1, lastWinner));
-    					Object player2Icon = graph.insertVertex(parent, null, player2 == null ? "" : player2.getName(), x, y + 40, 80, 30, getStyle(player2, lastWinner));
-    					Object matchIcon = graph.insertVertex(parent, null, match.printScore(), x + 60, y + 15, 40, 30, getStyle("ellipse", true));
-    					matchIcons.put(round + "_" + index, matchIcon);
+				for (int round = 0; round < initMenuData.getTournament().getRounds(); round++) {
+					int index = 0;
+					for (Match match : initMenuData.getTournament().getMatches(round)) {
+						lastWinner = match.isFinished() ? match.getWinners().get(0) : null;
+						Player player1 = match.getPlayer(0);
+						Player player2 = match.getPlayer(1);
 
-    					if (round > 0 && matchIcons.containsKey((round - 1) + "_" + (2*index))) {
-    						graph.insertEdge(parent, null, null, matchIcons.get((round - 1) + "_" + (2*index)), player1Icon);
-    					}
-    					if (round > 0 && matchIcons.containsKey((round - 1) + "_" + (2*index + 1))) {
-    						graph.insertEdge(parent, null, null, matchIcons.get((round - 1) + "_" + (2*index + 1)), player2Icon);
-    					}
-    					y += 100 + round*100;
-    					index++;
-    				}
-    				x += 150;
-    				y = 20 + (2*round + 1)*50;
-    				winnersInPreviousRound.clear();
-    			}
-    			int rounds = initMenuData.getTournament().getRounds();
-    			x += 50; 
-    			y = 20 + (2*(rounds - 1) - 1)*50 + 20;
-    			List<Match> lastRound = initMenuData.getTournament().getMatches(2);
-    			if (lastRound != null && !lastRound.isEmpty()) {
-    				Match lastMatch = lastRound.size() == 1 && lastRound.get(0).isFinished()? lastRound.get(0) : null;
-    				if (lastMatch != null && matchIcons.containsKey("2_0")) {
-    					Object winner = graph.insertVertex(parent, null, lastMatch.getWinners().get(0).getName(), x, y, 80, 30, getStyle("rectangle", true));
-    					graph.insertEdge(parent, null, null, matchIcons.get("2_0"), winner);
-    				}
-    			}
-    			
-    		}
-    		finally
-    		{
-    			graph.getModel().endUpdate();
-    		}
-    		mxGraphComponent graphComponent = new mxGraphComponent(graph);
-    		graphComponent.setEnabled(false);
-        	scrollPaneTournament = new JScrollPane(graphComponent);
-        	graphComponent.setBorder(BorderFactory.createEmptyBorder());
-        	scrollPaneTournament.setBorder(BorderFactory.createEmptyBorder());
-        	panelTournament.add(scrollPaneTournament, BorderLayout.CENTER);
-        }
-        tabbedPane.addTab("Tournament", panelTournament);
-        if (selectPanelTournament) {
-        	tabbedPane.setSelectedComponent(panelTournament);
-        }
- 
-        // 4th Sheet: About
-        JPanel panelAbout = new JPanel(false);
-        panelAbout.setLayout(new GridBagLayout());
-        GridBagConstraints c = new GridBagConstraints();
-        
-        JTextPane textPane = new JTextPane();
-        StyledDocument doc = textPane.getStyledDocument();
-        SimpleAttributeSet center = new SimpleAttributeSet();
-        StyleConstants.setAlignment(center, StyleConstants.ALIGN_CENTER);
-        doc.setParagraphAttributes(0, doc.getLength(), center, false);
-        textPane.setText(
-        		"\n" +
-        		"Gabriel Scerbak\n" +
-        		"Gabriel Szabo\n" +
-        		"Lenka Hudecova\n" +
-        		"Omar Josue Hernandez Valdes\n" +
-        		"Peter Prazenica\n" +
-        		"Robert Hahn\n" +
-        		"Robert Sevcik\n" +
-        		"Tibor Schvartz\n" +
-        		"\n" +
-        	    "� Copyright IBM Slovakia 2017\n"
-        	);
-        textPane.setEditable(false);
-        textPane.setFont(new Font("Serif", Font.ITALIC, 16));
-        textPane.setOpaque(false);
-        JLabel labelCredits = new JLabel(menuCredits);
-        c.fill = GridBagConstraints.NONE;
-        c.gridx = 0;
-        c.gridy = 0;
-        c.gridwidth = 1;
-        c.gridheight = 1;
-        c.weightx = 1;
-        c.weighty = 0;
-        c.insets = new Insets(40, 0, 20, 0);
-        c.anchor = GridBagConstraints.CENTER;
-        panelAbout.add(labelCredits, c);
-        c.fill = GridBagConstraints.BOTH;
-        c.gridx = 0;
-        c.gridy = 1;
-        c.gridwidth = 10;
-        c.gridheight = 5;
-        c.weightx = 1;
-        c.weighty = 1;
-        c.insets = new Insets(0, 0, 0, 0);
-        c.anchor = GridBagConstraints.CENTER;
-        panelAbout.add(textPane, c);
-        tabbedPane.addTab("About", panelAbout);
+						Object player1Icon = graph.insertVertex(parent, null, player1 == null ? "" : player1.getName(),
+								x, y, 80, 30, getStyle(player1, lastWinner));
+						Object player2Icon = graph.insertVertex(parent, null, player2 == null ? "" : player2.getName(),
+								x, y + 40, 80, 30, getStyle(player2, lastWinner));
+						Object matchIcon = graph.insertVertex(parent, null, match.printScore(), x + 60, y + 15, 40, 30,
+								getStyle("ellipse", true));
+						matchIcons.put(round + "_" + index, matchIcon);
+
+						if (round > 0 && matchIcons.containsKey((round - 1) + "_" + (2 * index))) {
+							graph.insertEdge(parent, null, null, matchIcons.get((round - 1) + "_" + (2 * index)),
+									player1Icon);
+						}
+						if (round > 0 && matchIcons.containsKey((round - 1) + "_" + (2 * index + 1))) {
+							graph.insertEdge(parent, null, null, matchIcons.get((round - 1) + "_" + (2 * index + 1)),
+									player2Icon);
+						}
+						y += 100 + round * 100;
+						index++;
+					}
+					x += 150;
+					y = 20 + (2 * round + 1) * 50;
+					winnersInPreviousRound.clear();
+				}
+				int rounds = initMenuData.getTournament().getRounds();
+				x += 50;
+				y = 20 + (2 * (rounds - 1) - 1) * 50 + 20;
+				List<Match> lastRound = initMenuData.getTournament().getMatches(2);
+				if (lastRound != null && !lastRound.isEmpty()) {
+					Match lastMatch = lastRound.size() == 1 && lastRound.get(0).isFinished() ? lastRound.get(0) : null;
+					if (lastMatch != null && matchIcons.containsKey("2_0")) {
+						Object winner = graph.insertVertex(parent, null, lastMatch.getWinners().get(0).getName(), x, y,
+								80, 30, getStyle("rectangle", true));
+						graph.insertEdge(parent, null, null, matchIcons.get("2_0"), winner);
+					}
+				}
+
+			} finally {
+				graph.getModel().endUpdate();
+			}
+			mxGraphComponent graphComponent = new mxGraphComponent(graph);
+			graphComponent.setEnabled(false);
+			scrollPaneTournament = new JScrollPane(graphComponent);
+			graphComponent.setBorder(BorderFactory.createEmptyBorder());
+			scrollPaneTournament.setBorder(BorderFactory.createEmptyBorder());
+			panelTournament.add(scrollPaneTournament, BorderLayout.CENTER);
+		}
+		tabbedPane.addTab("Tournament", panelTournament);
+		if (selectPanelTournament) {
+			tabbedPane.setSelectedComponent(panelTournament);
+		}
+
+		// 4th Sheet: About
+		JPanel panelAbout = new JPanel(false);
+		panelAbout.setLayout(new GridBagLayout());
+		GridBagConstraints c = new GridBagConstraints();
+
+		JTextPane textPane = new JTextPane();
+		StyledDocument doc = textPane.getStyledDocument();
+		SimpleAttributeSet center = new SimpleAttributeSet();
+		StyleConstants.setAlignment(center, StyleConstants.ALIGN_CENTER);
+		doc.setParagraphAttributes(0, doc.getLength(), center, false);
+		textPane.setText("\n" + "Gabriel Scerbak\n" + "Gabriel Szabo\n" + "Lenka Hudecova\n"
+				+ "Omar Josue Hernandez Valdes\n" + "Peter Prazenica\n" + "Robert Hahn\n" + "Robert Sevcik\n"
+				+ "Tibor Schvartz\n" + "\n" + "� Copyright IBM Slovakia 2017\n");
+		textPane.setEditable(false);
+		textPane.setFont(new Font("Serif", Font.ITALIC, 16));
+		textPane.setOpaque(false);
+		JLabel labelCredits = new JLabel(menuCredits);
+		c.fill = GridBagConstraints.NONE;
+		c.gridx = 0;
+		c.gridy = 0;
+		c.gridwidth = 1;
+		c.gridheight = 1;
+		c.weightx = 1;
+		c.weighty = 0;
+		c.insets = new Insets(40, 0, 20, 0);
+		c.anchor = GridBagConstraints.CENTER;
+		panelAbout.add(labelCredits, c);
+		c.fill = GridBagConstraints.BOTH;
+		c.gridx = 0;
+		c.gridy = 1;
+		c.gridwidth = 10;
+		c.gridheight = 5;
+		c.weightx = 1;
+		c.weighty = 1;
+		c.insets = new Insets(0, 0, 0, 0);
+		c.anchor = GridBagConstraints.CENTER;
+		panelAbout.add(textPane, c);
+		tabbedPane.addTab("About", panelAbout);
 
 		// Title
-        JLabel labelFooter = new JLabel("IBM Slovakia / Fall Fest 2017", JLabel.CENTER);
-        labelFooter.setOpaque(true);
-        labelFooter.setFont(new Font(labelTitle.getFont().getName(), labelTitle.getFont().getStyle(), 40));
-        labelFooter.setBorder(new LineBorder(Color.GRAY));
-        labelFooter.setBackground(Color.BLACK);
-        labelFooter.setForeground(Color.WHITE);
+		JLabel labelFooter = new JLabel("IBM Slovakia / Fall Fest 2017", JLabel.CENTER);
+		labelFooter.setOpaque(true);
+		labelFooter.setFont(new Font(labelTitle.getFont().getName(), labelTitle.getFont().getStyle(), 40));
+		labelFooter.setBorder(new LineBorder(Color.GRAY));
+		labelFooter.setBackground(Color.BLACK);
+		labelFooter.setForeground(Color.WHITE);
 
-        add(labelTitle, BorderLayout.PAGE_START);
-        add(menuAntLabel1, BorderLayout.LINE_START);
-        JPanel panelCenter = new JPanel(false);
-        panelCenter.setLayout(new GridBagLayout());
-        c.fill = GridBagConstraints.BOTH;
-        c.gridx = 0;
-        c.gridy = 1;
-        c.gridwidth = 10;
-        c.gridheight = 5;
-        c.weightx = 1;
-        c.weighty = 1;
-        c.insets = new Insets(50, 0, 0, 0);
-        c.anchor = GridBagConstraints.PAGE_END;
-        panelCenter.add(tabbedPane, c);
-        c.fill = GridBagConstraints.NONE;
-        c.gridx = 0;
-        c.gridy = 12;
-        c.gridwidth = 1;
-        c.gridheight = 1;
-        c.weightx = 1;
-        c.weighty = 0;
-        c.insets = new Insets(50, 0, 30, 0);
-        c.anchor = GridBagConstraints.CENTER;
-        buttonStart = new JButton(menuStartButton1);
-        buttonStart.setContentAreaFilled(false);
-        buttonStart.setBorderPainted(false);
-        buttonStart.setFocusPainted(false);
-        buttonStart.setOpaque(true);
-        buttonStart.setRolloverEnabled(true);
-        buttonStart.setRolloverIcon(menuStartButton2);
-        buttonStart.setPressedIcon(menuStartButton3);
-        panelCenter.add(buttonStart, c);
-        add(panelCenter, BorderLayout.CENTER);
-        add(menuAntLabel2, BorderLayout.LINE_END);
-        add(labelFooter, BorderLayout.PAGE_END);
-		
-        // Setup Events
-		new MenuListener(mainFrame, sharedGuiListener, tabbedPane, firstListOfAnthills, secondListOfAnthills, thirdListOfAnthills, buttonStart, radioQualification, radioTournamentSemiFinals, scrollPaneQualification, scrollPaneTournament);
+		add(labelTitle, BorderLayout.PAGE_START);
+		add(menuAntLabel1, BorderLayout.LINE_START);
+		JPanel panelCenter = new JPanel(false);
+		panelCenter.setLayout(new GridBagLayout());
+		c.fill = GridBagConstraints.BOTH;
+		c.gridx = 0;
+		c.gridy = 1;
+		c.gridwidth = 10;
+		c.gridheight = 5;
+		c.weightx = 1;
+		c.weighty = 1;
+		c.insets = new Insets(50, 0, 0, 0);
+		c.anchor = GridBagConstraints.PAGE_END;
+		panelCenter.add(tabbedPane, c);
+		c.fill = GridBagConstraints.NONE;
+		c.gridx = 0;
+		c.gridy = 12;
+		c.gridwidth = 1;
+		c.gridheight = 1;
+		c.weightx = 1;
+		c.weighty = 0;
+		c.insets = new Insets(50, 0, 30, 0);
+		c.anchor = GridBagConstraints.CENTER;
+		buttonStart = new JButton(menuStartButton1);
+		buttonStart.setContentAreaFilled(false);
+		buttonStart.setBorderPainted(false);
+		buttonStart.setFocusPainted(false);
+		buttonStart.setOpaque(true);
+		buttonStart.setRolloverEnabled(true);
+		buttonStart.setRolloverIcon(menuStartButton2);
+		buttonStart.setPressedIcon(menuStartButton3);
+		panelCenter.add(buttonStart, c);
+		add(panelCenter, BorderLayout.CENTER);
+		add(menuAntLabel2, BorderLayout.LINE_END);
+		add(labelFooter, BorderLayout.PAGE_END);
+
+		// Setup Events
+		new MenuListener(mainFrame, sharedGuiListener, tabbedPane, firstListOfAnthills, secondListOfAnthills,
+				thirdListOfAnthills, buttonStart, radioQualification, radioTournamentSemiFinals,
+				scrollPaneQualification, scrollPaneTournament);
 	}
-	
-    /** Returns an ImageIcon, or null if the path was invalid. */
-    protected static ImageIcon createImageIcon(String path) {
-        java.net.URL imgURL = Menu.class.getResource(path);
-        if (imgURL != null) {
-            return new ImageIcon(imgURL);
-        } else {
-            System.err.println("Couldn't find file: " + path);
-            return null;
-        }
-    }
-    
+
+	/** Returns an ImageIcon, or null if the path was invalid. */
+	protected static ImageIcon createImageIcon(String path) {
+		java.net.URL imgURL = Menu.class.getResource(path);
+		if (imgURL != null) {
+			return new ImageIcon(imgURL);
+		} else {
+			System.err.println("Couldn't find file: " + path);
+			return null;
+		}
+	}
+
 	/**
-     * Create the GUI and show it.  For thread safety,
-     * this method should be invoked from the
-     * event-dispatching thread.
-     */
-    private static void createAndShowGUI() {
-        //Create and set up the window.
-        JFrame frame = new JFrame("IBM Slovakia / Fall Fest 2017 / Anthill");
-        frame.setExtendedState(frame.getExtendedState()|JFrame.MAXIMIZED_BOTH);
-        frame.setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
- 
-        //Set up the content pane.
-        frame.add(new Menu(new InitMenuData(), null, frame), BorderLayout.CENTER);
- 
-        //Display the window.
-        frame.pack();
-        frame.setVisible(true);
-    }
-	
-    public static void main(String[] args) {
-        //Schedule a job for the event-dispatching thread:
-        //creating and showing this application's GUI.
-        javax.swing.SwingUtilities.invokeLater(new Runnable() {
-            public void run() {
-                createAndShowGUI();
-            }
-        });
-    }
+	 * Create the GUI and show it. For thread safety, this method should be
+	 * invoked from the event-dispatching thread.
+	 */
+	private static void createAndShowGUI() {
+		// Create and set up the window.
+		JFrame frame = new JFrame("IBM Slovakia / Fall Fest 2017 / Anthill");
+		frame.setExtendedState(frame.getExtendedState() | JFrame.MAXIMIZED_BOTH);
+		frame.setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
+
+		// Set up the content pane.
+		// frame.add(new Menu(new InitMenuData(), new GameMenuHandler(), frame),
+		// BorderLayout.CENTER);
+		frame.add(new Menu(new InitMenuData(), null, frame), BorderLayout.CENTER);
+
+		// Display the window.
+		frame.pack();
+		frame.setVisible(true);
+	}
+
+	public static void main(String[] args) {
+		// Schedule a job for the event-dispatching thread:
+		// creating and showing this application's GUI.
+		javax.swing.SwingUtilities.invokeLater(new Runnable() {
+			@Override
+			public void run() {
+				createAndShowGUI();
+			}
+		});
+	}
 }
