@@ -1,14 +1,20 @@
 package com.ibm.sk.ff.gui.simple;
 
 import java.awt.BorderLayout;
+import java.awt.Dimension;
+import java.awt.FlowLayout;
 import java.awt.Frame;
+import java.awt.event.ActionEvent;
+import java.awt.event.ActionListener;
 import java.awt.image.BufferedImage;
 import java.io.File;
 
 import javax.imageio.ImageIO;
 import javax.swing.ImageIcon;
+import javax.swing.JCheckBox;
 import javax.swing.JFrame;
 import javax.swing.JLabel;
+import javax.swing.JPanel;
 
 import com.ibm.sk.ff.gui.GUI;
 import com.ibm.sk.ff.gui.common.events.GuiEventListener;
@@ -29,6 +35,7 @@ public class SimpleGUI implements GUI {
 
 	private SimpleCanvas canvas = null;
 	private ScoreboardSmall scoreboard = null;
+	private JCheckBox fastForward = null;
 
 	private GuiEventListener listener = null;
 
@@ -67,12 +74,26 @@ public class SimpleGUI implements GUI {
 		final JLabel label = new JLabel(new ImageIcon(loadBackgroundImage()));
 		this.frame.setContentPane(label);
 
+		this.canvas = new SimpleCanvas(data.getWidth(), data.getHeight(), data.getTeams(), this.frame);		
+		
+		JPanel panelNorth = new JPanel();
+		panelNorth.setLayout(new FlowLayout());
 		this.scoreboard = new ScoreboardSmall(data);
-		this.canvas = new SimpleCanvas(data.getWidth(), data.getHeight(), data.getTeams(), this.frame);
+		this.scoreboard.setPreferredSize(new Dimension(500, 25));
+		this.fastForward = new JCheckBox("Fast forward");
+		this.fastForward.addActionListener(new ActionListener() {
+			@Override
+			public void actionPerformed(ActionEvent e) {
+				canvas.setFastForward(fastForward.isSelected());
+			}
+		});
+		panelNorth.add(this.scoreboard);
+		panelNorth.add(this.fastForward);
+		
 
 		this.frame.setLayout(new BorderLayout());
 		this.frame.add(this.canvas, BorderLayout.CENTER);
-		this.frame.add(this.scoreboard, BorderLayout.NORTH);
+		this.frame.add(panelNorth, BorderLayout.NORTH);
 
 		this.frame.setExtendedState(Frame.MAXIMIZED_BOTH);
 		this.frame.setUndecorated(true);

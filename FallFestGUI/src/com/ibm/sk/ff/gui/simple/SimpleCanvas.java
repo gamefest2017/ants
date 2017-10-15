@@ -29,8 +29,8 @@ public class SimpleCanvas extends JComponent {
 	private final Color[] COLORS = {Color.BLACK, Color.RED};
 
 	private final boolean DEV_MODE = Boolean.parseBoolean(Config.DEV_MODE.toString());
-
-	private static long SLEEP_INTERVAL = 10; //TODO - the transition interval should be set correctly!
+	
+	private static long MIN_RETURN_INTERVAL = Long.parseLong(Config.GUI_MIN_RETURN_INTERVAL.toString());
 
 	private static Image[] IMAGES_ANT = null;
 	private static Image[] IMAGES_WARRIOR = null;
@@ -39,12 +39,13 @@ public class SimpleCanvas extends JComponent {
 	private static Image[] IMAGES_ANT_FOOD = null;
 
 	private boolean finishedRedraw = true;
+	
+	private boolean fastForward = false;
 
 	static {
 		try {
 			IMAGES_ANT = new Image[] {ImageIO.read(new File("res/ant_left.png")), ImageIO.read(new File("res/ant_right.png"))};
-			IMAGES_WARRIOR = new Image[] { ImageIO.read(new File("res/warrior_left_2.png")),
-					ImageIO.read(new File("res/warrior_right_2.png")) };
+			IMAGES_WARRIOR = new Image[] { ImageIO.read(new File("res/warrior_left_2.png")), ImageIO.read(new File("res/warrior_right_2.png")) };
 			IMAGES_FOOD = ImageIO.read(new File("res/food.png"));
 			IMAGES_HILL = ImageIO.read(new File("res/hill.png"));
 			IMAGES_ANT_FOOD = new Image [] {ImageIO.read(new File("res/antWithCookie_left.png")), ImageIO.read(new File("res/antWithCookie_right.png"))};
@@ -85,7 +86,7 @@ public class SimpleCanvas extends JComponent {
 	}
 
 	@Override
-	public void paint(final Graphics g) {
+	public void paintComponent(final Graphics g) {
 		if (this.DEV_MODE) {
 			paintGrid(g);
 		}
@@ -112,12 +113,7 @@ public class SimpleCanvas extends JComponent {
 	private void performRepaint() {
 		do {
 			paintImmediately(0, 0, getWidth(), getHeight());
-			try {
-				Thread.sleep(SLEEP_INTERVAL);
-			} catch (final Exception e) {
-				e.printStackTrace();
-			}
-		} while (!this.finishedRedraw);
+		} while (!finishedRedraw);
 	}
 
 	public void set(final GUIObject[] objects) {
@@ -125,7 +121,11 @@ public class SimpleCanvas extends JComponent {
 			SimpleGUIComponent toAdd = null;
 			if (this.OBJECTS.containsKey(it)) {
 				toAdd = this.OBJECTS.remove(it);
-				toAdd.moveToLocation(it.getLocation().getX(), it.getLocation().getY());
+				if (fastForward) {
+					toAdd.setLocation(it.getLocation().getX(), it.getLocation().getY());
+				} else {
+					toAdd.moveToLocation(it.getLocation().getX(), it.getLocation().getY());
+				}
 			} else {
 				toAdd = new SimpleGUIComponent(MAGNIFICATION_X(), MAGNIFICATION_Y(), getImage(it.getType()), null, getTeamColor(it));
 				toAdd.setLocation(it.getLocation().getX(), it.getLocation().getY());
@@ -133,7 +133,14 @@ public class SimpleCanvas extends JComponent {
 			this.OBJECTS.put(it, toAdd);
 		}
 
+		long before = System.currentTimeMillis(), after;
+		
 		performRepaint();
+		
+		after = System.currentTimeMillis();
+		if (after - before < MIN_RETURN_INTERVAL) {
+			try {Thread.sleep(MIN_RETURN_INTERVAL - (after - before));} catch (Exception e) {}
+		}
 	}
 
 	private Image[] getImage(final GUIObjectTypes type) {
@@ -212,6 +219,10 @@ public class SimpleCanvas extends JComponent {
 
 	public boolean contains(final GUIObject go) {
 		return this.OBJECTS.containsKey(go.getId());
+	}
+	
+	public void setFastForward(boolean fastForward) {
+		this.fastForward = fastForward;
 	}
 
 	private int magnificationX = -1;
