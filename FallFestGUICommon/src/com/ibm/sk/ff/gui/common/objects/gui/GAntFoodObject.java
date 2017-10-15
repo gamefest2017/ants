@@ -2,7 +2,7 @@ package com.ibm.sk.ff.gui.common.objects.gui;
 
 public class GAntFoodObject extends GUIObject {
 	
-	private long id = System.currentTimeMillis();
+	private long id = System.nanoTime();
 	
 	private GUIObjectTypes type = GUIObjectTypes.ANT_FOOD;
 	

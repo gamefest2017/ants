@@ -25,12 +25,14 @@ public final class FoodHandler {
 		if (getTurn() % FOOD_REFILL_FREQUENCY == 0) {
 			int row;
 			int coll;
+			Point position = new Point(0, 0);
 			do {
 				row = RANDOMIZER.nextInt(X_BOUNDRY - 1);
 				coll = RANDOMIZER.nextInt(Y_BOUNDRY - 1);
-			} while (World.isPositionOccupied(new Point(row, coll)));
+				position.setLocation(row, coll);
+			} while (World.isPositionOccupied(position) || World.isHillPosition(position));
 
-			final Food newFood = new Food(World.idSequence++, 1, new Point(row, coll));
+			final Food newFood = new Food(World.idSequence++, 1, position);
 
 			try {
 				placeObject(newFood);

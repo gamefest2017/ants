@@ -40,6 +40,8 @@ public final class ProcessExecutor {
 		final Iterator<IAnt> first = firstHill.getAnts().iterator();
 		final Iterator<IAnt> second = secondHill == null ? Collections.emptyIterator()
 				: secondHill.getAnts().iterator();
+		guiConnector.placeGuiObjects(World.getAllFood());
+		
 		while (first.hasNext() || second.hasNext()) {
 			IAnt ant = null;
 			if (first.hasNext()) {
@@ -55,7 +57,7 @@ public final class ProcessExecutor {
 				getDeadObjects().clear();
 			}
 		}
-		guiConnector.placeGuiObjects(getWorldObjects());
+		guiConnector.placeGuiObjects(World.getWorldObjectsToMove());
 		guiConnector.showScore(firstHill.getName(), firstHill.getFood());
 		if (secondHill != null) {
 			guiConnector.showScore(secondHill.getName(), secondHill.getFood());
