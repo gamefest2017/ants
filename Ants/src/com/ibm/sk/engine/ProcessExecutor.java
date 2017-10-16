@@ -39,7 +39,7 @@ public final class ProcessExecutor {
 		final Iterator<IAnt> first = firstHill.getAnts().iterator();
 		final Iterator<IAnt> second = secondHill == null ? Collections.emptyIterator()
 				: secondHill.getAnts().iterator();
-		guiConnector.placeGuiObjects(World.getAllFood());
+		guiConnector.placeGuiObjects(World.getStaticObjects());
 
 		while (first.hasNext() || second.hasNext()) {
 			IAnt ant = null;

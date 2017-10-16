@@ -73,7 +73,7 @@ public class GUIObjectCrate {
 		}
 	}
 
-	private List<GBorderObject> getBorders() {
+	public List<GBorderObject> getBorders() {
 		return this.borders;
 	}
 
