@@ -6,7 +6,8 @@ import com.ibm.sk.dto.WorldObject;
 
 public class WorldBorder extends WorldObject {
 
-	public WorldBorder(final Point position) {
+	public WorldBorder(final long id, final Point position) {
+		this.id = id;
 		this.position = position;
 	}
 

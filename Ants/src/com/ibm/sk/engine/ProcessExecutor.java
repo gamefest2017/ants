@@ -3,7 +3,6 @@ package com.ibm.sk.engine;
 import static com.ibm.sk.WorldConstans.INITIAL_ANT_COUNT;
 import static com.ibm.sk.WorldConstans.POPULATION_WAR_FACTOR;
 import static com.ibm.sk.engine.World.getDeadObjects;
-import static com.ibm.sk.engine.World.getWorldObjects;
 
 import java.awt.Point;
 import java.util.ArrayList;
@@ -12,7 +11,6 @@ import java.util.EnumMap;
 import java.util.Iterator;
 import java.util.Map;
 
-import com.ibm.sk.Main;
 import com.ibm.sk.WorldConstans;
 import com.ibm.sk.dto.AbstractAnt;
 import com.ibm.sk.dto.AbstractWarrior;
@@ -36,28 +34,27 @@ public final class ProcessExecutor {
 		guiConnector = new GuiConnector(FACADE);
 	}
 
-	public static void execute(final Hill firstHill, final Hill secondHill) {
+	public static void execute(final Hill firstHill, final Hill secondHill, final int turn) {
+		System.out.println("Turn: " + turn);
 		final Iterator<IAnt> first = firstHill.getAnts().iterator();
 		final Iterator<IAnt> second = secondHill == null ? Collections.emptyIterator()
 				: secondHill.getAnts().iterator();
-		guiConnector.placeGuiObjects(World.getAllFood());
-		
+		guiConnector.placeGuiObjects(World.getStaticObjects());
+
 		while (first.hasNext() || second.hasNext()) {
 			IAnt ant = null;
 			if (first.hasNext()) {
 				ant = first.next();
 				singleStep(ant);
-				guiConnector.removeGuiObjects(getDeadObjects());
-				getDeadObjects().clear();
 			}
 			if (second.hasNext()) {
 				ant = second.next();
 				singleStep(ant);
-				guiConnector.removeGuiObjects(getDeadObjects());
-				getDeadObjects().clear();
 			}
 		}
 		guiConnector.placeGuiObjects(World.getWorldObjectsToMove());
+		guiConnector.removeGuiObjects(getDeadObjects());
+		getDeadObjects().clear();
 		guiConnector.showScore(firstHill.getName(), firstHill.getFood());
 		if (secondHill != null) {
 			guiConnector.showScore(secondHill.getName(), secondHill.getFood());
@@ -90,7 +87,7 @@ public final class ProcessExecutor {
 	}
 
 	private static void singleStep(final IAnt ant) {
-		System.out.println("Turn:" + Main.getTurn() + "Ant " + ant.getId() + " said:");
+		System.out.println("Ant " + ant.getId() + " said:");
 		final Vision vision = new Vision(createVisionGrid(ant));
 		final Direction direction = ant.move(vision);
 		final MovementHandler movementHandler = MovementHandler.getInstance();

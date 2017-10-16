@@ -16,20 +16,20 @@ import com.ibm.sk.ff.gui.common.events.GuiEventListener;
 public class GameMenuHandler implements GuiEventListener {
 
 	private static int turn;
-	private ProcessExecutor executor;
+	private final ProcessExecutor executor;
 
 	public GameMenuHandler(final ProcessExecutor executor) {
 		this.executor = executor;
 	}
 
 	@Override
-	public void actionPerformed(GuiEvent event) {
+	public void actionPerformed(final GuiEvent event) {
 		if (GuiEvent.EventTypes.SINGLE_PLAY_START.name().equals(event.getType().name())) {
 			startSinglePlayer(event.getData());
 		} else if (GuiEvent.EventTypes.DOUBLE_PLAY_START.name().equals(event.getType().name())) {
 			final String hillNames = event.getData();
 			final int separatorPos = hillNames.indexOf(GuiEvent.HLL_NAMES_SEPARATOR);
-			startDoublePlayer(hillNames.substring(0, separatorPos), hillNames.substring(separatorPos + 1));
+			startDoublePlayer(hillNames.substring(0, separatorPos) + "1", hillNames.substring(separatorPos + 1) + "2");
 		}
 	}
 
@@ -40,11 +40,11 @@ public class GameMenuHandler implements GuiEventListener {
 
 		World.createWorldBorder();
 		final Hill hill = createHill(HillOrder.FIRST, hillName);
-		executor.initGame(hill, null);
+		this.executor.initGame(hill, null);
 		final long startTime = System.currentTimeMillis();
 		for (turn = 0; turn < TURNS; turn++) {
-			ProcessExecutor.execute(hill, null);
-			FoodHandler.dropFood();
+			ProcessExecutor.execute(hill, null, turn);
+			FoodHandler.dropFood(turn);
 		}
 		final long endTime = System.currentTimeMillis();
 		System.out.println(hill.getName() + " earned score: " + hill.getFood());
@@ -55,19 +55,19 @@ public class GameMenuHandler implements GuiEventListener {
 	}
 
 	public void startDoublePlayer(final String firstHillName, final String secondHillName) {
-		System.out.println("Single player game starting...");
+		System.out.println("Duel starting...");
 		System.out.println("World size: " + WorldConstans.X_BOUNDRY + " x " + WorldConstans.Y_BOUNDRY);
 		System.out.println("Turns: " + TURNS);
 
 		World.createWorldBorder();
 		final Hill firstHill = createHill(HillOrder.FIRST, firstHillName);
 		final Hill secondHill = createHill(HillOrder.SECOND, secondHillName);
-		executor.initGame(firstHill, secondHill);
+		this.executor.initGame(firstHill, secondHill);
 
 		final long startTime = System.currentTimeMillis();
 		for (turn = 0; turn < TURNS; turn++) {
-			ProcessExecutor.execute(firstHill, secondHill);
-			FoodHandler.dropFood();
+			ProcessExecutor.execute(firstHill, secondHill, turn);
+			FoodHandler.dropFood(turn);
 		}
 		final long endTime = System.currentTimeMillis();
 		printScore(firstHill);

@@ -14,7 +14,7 @@ import com.ibm.sk.engine.exceptions.InvalidWorldPositionException;
 import com.ibm.sk.models.WorldBorder;
 
 public final class World {
-	protected static long idSequence = 0l;
+	protected static long idSequence = 0L;
 	private static List<IWorldObject> worldObjects = new ArrayList<>();
 	private static List<IWorldObject> deadObjects = new ArrayList<>();
 	private static List<Hill> hills = new ArrayList<>();
@@ -76,7 +76,7 @@ public final class World {
 	public static boolean isPositionOccupiedByBorder(final Point position) {
 		boolean isOccupied = false;
 
-		for (IWorldObject worldObject : worldObjects) {
+		for (final IWorldObject worldObject : worldObjects) {
 			if (worldObject instanceof WorldBorder && worldObject.getPosition().equals(position)) {
 				isOccupied = true;
 				System.out.println("Position is occupied: " + position);
@@ -90,12 +90,12 @@ public final class World {
 	public static void createWorldBorder() {
 		try {
 			for (int i = 0; i < WorldConstans.X_BOUNDRY; i++) {
-				placeObject(new WorldBorder(new Point(i, 0)));
-				placeObject(new WorldBorder(new Point(i, WorldConstans.Y_BOUNDRY - 1)));
+				placeObject(new WorldBorder(World.idSequence++, new Point(i, 0)));
+				placeObject(new WorldBorder(World.idSequence++, new Point(i, WorldConstans.Y_BOUNDRY - 1)));
 			}
 			for (int i = 1; i < WorldConstans.Y_BOUNDRY - 1; i++) {
-				placeObject(new WorldBorder(new Point(0, i)));
-				placeObject(new WorldBorder(new Point(WorldConstans.X_BOUNDRY - 1, i)));
+				placeObject(new WorldBorder(World.idSequence++, new Point(0, i)));
+				placeObject(new WorldBorder(World.idSequence++, new Point(WorldConstans.X_BOUNDRY - 1, i)));
 			}
 		} catch (final InvalidWorldPositionException e) {
 			System.out.println("Invalid position.");
@@ -115,7 +115,7 @@ public final class World {
 
 		return isOccupied;
 	}
-	
+
 	public static boolean isHillPosition(final Point position) {
 		boolean isHillPosition = false;
 
@@ -135,33 +135,33 @@ public final class World {
 		final Hill hill = new Hill(name, new Point(order.getOrder() * WorldConstans.X_BOUNDRY + order.getXOffset(),
 				WorldConstans.Y_BOUNDRY / 2));
 		hill.setId(hillId);
-		
+
 		hills.add(hill);
 
 		return hill;
 	}
-	
-	public static List<IWorldObject> getAllFood() {
-		List<IWorldObject> result = new ArrayList<>();
-		
+
+	public static List<IWorldObject> getStaticObjects() {
+		final List<IWorldObject> result = new ArrayList<>();
+
 		for (final IWorldObject worldObject : worldObjects) {
-			if (worldObject instanceof Food) {
+			if (worldObject instanceof Food || worldObject instanceof WorldBorder) {
 				result.add(worldObject);
 			}
 		}
-		
+
 		return result;
 	}
-	
+
 	public static List<IWorldObject> getWorldObjectsToMove() {
-		List<IWorldObject> result = new ArrayList<>();
-		
+		final List<IWorldObject> result = new ArrayList<>();
+
 		for (final IWorldObject worldObject : worldObjects) {
 			if (worldObject instanceof IAnt) {
 				result.add(worldObject);
 			}
 		}
-		
+
 		return result;
 	}
 }

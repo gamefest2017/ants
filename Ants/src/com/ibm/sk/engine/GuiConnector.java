@@ -12,12 +12,14 @@ import com.ibm.sk.dto.IWorldObject;
 import com.ibm.sk.dto.WorldObject;
 import com.ibm.sk.ff.gui.client.GUIFacade;
 import com.ibm.sk.ff.gui.common.objects.gui.GAntObject;
+import com.ibm.sk.ff.gui.common.objects.gui.GBorderObject;
 import com.ibm.sk.ff.gui.common.objects.gui.GFoodObject;
 import com.ibm.sk.ff.gui.common.objects.gui.GHillObject;
 import com.ibm.sk.ff.gui.common.objects.gui.GUIObject;
 import com.ibm.sk.ff.gui.common.objects.gui.GWarriorObject;
 import com.ibm.sk.ff.gui.common.objects.operations.CreateGameData;
 import com.ibm.sk.ff.gui.common.objects.operations.ScoreData;
+import com.ibm.sk.models.WorldBorder;
 
 public class GuiConnector {
 
@@ -40,7 +42,12 @@ public class GuiConnector {
 		final List<GAntObject> guiAntObjectsToSplit = new ArrayList<>();
 
 		for (final IWorldObject worldObject : worldObjects) {
-			if (worldObject instanceof Food) {
+			if (worldObject instanceof WorldBorder) {
+				final WorldBorder border = (WorldBorder) worldObject;
+				final GBorderObject gBorderObject = createGBorderObject(border);
+				System.out.println("Placing to GUI: " + border);
+				guiObjects.add(gBorderObject);
+			} else if (worldObject instanceof Food) {
 				final Food food = (Food) worldObject;
 				final GFoodObject gFoodObject = createGFoodObject(food);
 				System.out.println("Placing to GUI: " + food);
@@ -72,6 +79,14 @@ public class GuiConnector {
 		for (final GAntObject gAntObject : guiAntObjectsToSplit) {
 			this.FACADE.separate(gAntObject);
 		}
+	}
+
+	private GBorderObject createGBorderObject(final WorldBorder border) {
+		final GBorderObject result = new GBorderObject();
+		result.setId(border.getId());
+		final Point position = border.getPosition();
+		result.setLocation(position.x, position.y);
+		return result;
 	}
 
 	private GAntObject createGAntFoodObject(final AbstractAnt ant) {

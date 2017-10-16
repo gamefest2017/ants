@@ -1,6 +1,5 @@
 package com.ibm.sk.engine;
 
-import static com.ibm.sk.Main.getTurn;
 import static com.ibm.sk.WorldConstans.FOOD_REFILL_FREQUENCY;
 import static com.ibm.sk.WorldConstans.X_BOUNDRY;
 import static com.ibm.sk.WorldConstans.Y_BOUNDRY;
@@ -21,11 +20,11 @@ public final class FoodHandler {
 
 	private static final Random RANDOMIZER = new Random();
 
-	public static void dropFood() {
-		if (getTurn() % FOOD_REFILL_FREQUENCY == 0) {
+	public static void dropFood(final int turn) {
+		if (turn % FOOD_REFILL_FREQUENCY == 0) {
 			int row;
 			int coll;
-			Point position = new Point(0, 0);
+			final Point position = new Point(0, 0);
 			do {
 				row = RANDOMIZER.nextInt(X_BOUNDRY - 1);
 				coll = RANDOMIZER.nextInt(Y_BOUNDRY - 1);
