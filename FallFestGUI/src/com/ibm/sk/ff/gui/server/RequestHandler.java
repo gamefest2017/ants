@@ -53,6 +53,7 @@ public class RequestHandler implements HttpHandler {
 			handle(operation, swp.length > 1 ? swp[1] : null, json);
 
 			paramHttpExchange.sendResponseHeaders(200, 0);
+			paramHttpExchange.close();
 		}
 	}
 

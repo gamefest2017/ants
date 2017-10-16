@@ -18,5 +18,6 @@
 	<classpathentry kind="lib" path="/FallFestGUILib/httpClient/httpmime-4.5.3.jar"/>
 	<classpathentry kind="lib" path="/FallFestGUILib/httpClient/jna-4.1.0.jar"/>
 	<classpathentry kind="lib" path="/FallFestGUILib/httpClient/jna-platform-4.1.0.jar"/>
+	<classpathentry combineaccessrules="false" kind="src" path="/Dto"/>
 	<classpathentry kind="output" path="bin"/>
 </classpath>

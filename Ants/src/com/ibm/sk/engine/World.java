@@ -141,11 +141,11 @@ public final class World {
 		return hill;
 	}
 
-	public static List<IWorldObject> getStaticObjects() {
+	public static List<IWorldObject> getAllFoods() {
 		final List<IWorldObject> result = new ArrayList<>();
 
 		for (final IWorldObject worldObject : worldObjects) {
-			if (worldObject instanceof Food || worldObject instanceof WorldBorder) {
+			if (worldObject instanceof Food) {
 				result.add(worldObject);
 			}
 		}
