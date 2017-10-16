@@ -39,7 +39,7 @@ public final class ProcessExecutor {
 		final Iterator<IAnt> first = firstHill.getAnts().iterator();
 		final Iterator<IAnt> second = secondHill == null ? Collections.emptyIterator()
 				: secondHill.getAnts().iterator();
-		guiConnector.placeGuiObjects(World.getStaticObjects());
+		guiConnector.placeGuiObjects(World.getAllFoods());
 
 		while (first.hasNext() || second.hasNext()) {
 			IAnt ant = null;
@@ -67,6 +67,7 @@ public final class ProcessExecutor {
 		gameData.setHeight(WorldConstans.Y_BOUNDRY);
 		gameData.setTeams(new String[] { team1.getName(), team2 != null ? team2.getName() : "" });
 		guiConnector.initGame(gameData);
+		guiConnector.placeGuiObjects(World.getWorldObjects());
 		initAnts(team1);
 		guiConnector.placeGuiObject(team1);
 		guiConnector.placeGuiObjects(new ArrayList<>(team1.getAnts()));
