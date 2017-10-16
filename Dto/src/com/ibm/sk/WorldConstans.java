@@ -11,7 +11,7 @@ public class WorldConstans {
 	/**
 	 * the amount of ants in one anthill at the beginning of the world.
 	 */
-	public static final int INITIAL_ANT_COUNT = 5;
+	public static final int INITIAL_ANT_COUNT = 10;
 	/**
 	 * frequency of food adding.
 	 */

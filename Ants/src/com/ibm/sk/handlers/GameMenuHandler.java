@@ -43,8 +43,8 @@ public class GameMenuHandler implements GuiEventListener {
 		this.executor.initGame(hill, null);
 		final long startTime = System.currentTimeMillis();
 		for (turn = 0; turn < TURNS; turn++) {
-			ProcessExecutor.execute(hill, null);
-			FoodHandler.dropFood();
+			ProcessExecutor.execute(hill, null, turn);
+			FoodHandler.dropFood(turn);
 		}
 		final long endTime = System.currentTimeMillis();
 		System.out.println(hill.getName() + " earned score: " + hill.getFood());
@@ -66,8 +66,8 @@ public class GameMenuHandler implements GuiEventListener {
 
 		final long startTime = System.currentTimeMillis();
 		for (turn = 0; turn < TURNS; turn++) {
-			ProcessExecutor.execute(firstHill, secondHill);
-			FoodHandler.dropFood();
+			ProcessExecutor.execute(firstHill, secondHill, turn);
+			FoodHandler.dropFood(turn);
 		}
 		final long endTime = System.currentTimeMillis();
 		printScore(firstHill);

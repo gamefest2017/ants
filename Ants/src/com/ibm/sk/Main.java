@@ -5,8 +5,6 @@ import com.ibm.sk.handlers.GameMenuHandler;
 
 public class Main extends AbstractMain {
 
-	private static int turn;
-
 	public static void main(final String args[]) {
 
 		final GameMenuHandler menuHandler = new GameMenuHandler(new ProcessExecutor(FACADE));
@@ -19,7 +17,4 @@ public class Main extends AbstractMain {
 		}
 	}
 
-	public static int getTurn() {
-		return turn;
-	}
 }

@@ -14,7 +14,7 @@ import com.ibm.sk.engine.exceptions.InvalidWorldPositionException;
 import com.ibm.sk.models.WorldBorder;
 
 public final class World {
-	protected static long idSequence = 0l;
+	protected static long idSequence = 0L;
 	private static List<IWorldObject> worldObjects = new ArrayList<>();
 	private static List<IWorldObject> deadObjects = new ArrayList<>();
 	private static List<Hill> hills = new ArrayList<>();
@@ -115,7 +115,7 @@ public final class World {
 
 		return isOccupied;
 	}
-	
+
 	public static boolean isHillPosition(final Point position) {
 		boolean isHillPosition = false;
 
@@ -135,33 +135,33 @@ public final class World {
 		final Hill hill = new Hill(name, new Point(order.getOrder() * WorldConstans.X_BOUNDRY + order.getXOffset(),
 				WorldConstans.Y_BOUNDRY / 2));
 		hill.setId(hillId);
-		
+
 		hills.add(hill);
 
 		return hill;
 	}
-	
+
 	public static List<IWorldObject> getAllFood() {
-		List<IWorldObject> result = new ArrayList<>();
-		
+		final List<IWorldObject> result = new ArrayList<>();
+
 		for (final IWorldObject worldObject : worldObjects) {
 			if (worldObject instanceof Food) {
 				result.add(worldObject);
 			}
 		}
-		
+
 		return result;
 	}
-	
+
 	public static List<IWorldObject> getWorldObjectsToMove() {
-		List<IWorldObject> result = new ArrayList<>();
-		
+		final List<IWorldObject> result = new ArrayList<>();
+
 		for (final IWorldObject worldObject : worldObjects) {
 			if (worldObject instanceof IAnt) {
 				result.add(worldObject);
 			}
 		}
-		
+
 		return result;
 	}
 }
