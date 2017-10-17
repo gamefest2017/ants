@@ -34,7 +34,7 @@ public class GuiConnector {
 	}
 
 	public GUIFacade getFacade() {
-		return FACADE;
+		return this.FACADE;
 	}
 
 	public void placeGuiObjects(final List<IWorldObject> worldObjects) {
@@ -167,7 +167,13 @@ public class GuiConnector {
 		final List<GUIObject> ants = new ArrayList<>();
 		for (final IWorldObject object : list) {
 			if (object instanceof AbstractAnt) {
-				ants.add(createGAntObject((AbstractAnt) object));
+				final AbstractAnt ant = (AbstractAnt) object;
+				final GAntObject gAntObject = createGAntObject(ant);
+				if (ant.hasFood()) {
+					final GUIObject[] food = this.FACADE.separate(gAntObject);
+					this.FACADE.set(food);
+				}
+				ants.add(gAntObject);
 			}
 			if (object instanceof AbstractWarrior) {
 				ants.add(createGWarriorObject((AbstractWarrior) object));
