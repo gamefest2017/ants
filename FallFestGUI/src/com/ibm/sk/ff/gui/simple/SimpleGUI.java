@@ -100,6 +100,8 @@ public class SimpleGUI implements GUI {
 		this.frame.pack();
 		this.frame.setLocationRelativeTo(null);
 		this.frame.setVisible(true);
+		
+		try { Thread.sleep(1000); } catch (Exception e) { e.printStackTrace(); }
 	}
 
 	private BufferedImage loadBackgroundImage() {
