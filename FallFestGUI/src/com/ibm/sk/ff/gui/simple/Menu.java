@@ -69,36 +69,6 @@ public class Menu extends JPanel {
 	public Menu(InitMenuData initMenuData, GuiEventListener sharedGuiListener, JFrame mainFrame) {
 		super(new BorderLayout());
 
-		// TODO Remove me later on
-		QualificationTable qualificationTable = new QualificationTable();
-		qualificationTable.addCandidate(new QualificationCandidate(1, "Player 1", true, 34L, 45L, 27L));
-		qualificationTable.addCandidate(new QualificationCandidate(2, "Player 2", true, 32L, 46L, 23L));
-		qualificationTable.addCandidate(new QualificationCandidate(3, "Player 3", true, 31L, 23L, 13L));
-		qualificationTable.addCandidate(new QualificationCandidate(4, "Player 4", true, 30L, 21L, 12L));
-		qualificationTable.addCandidate(new QualificationCandidate(5, "Player 5", true, 29L, 19L, 13L));
-		qualificationTable.addCandidate(new QualificationCandidate(6, "Player 6", true, 28L, 17L, 14L));
-		qualificationTable.addCandidate(new QualificationCandidate(7, "Player 7", true, 27L, 15L, 15L));
-		qualificationTable.addCandidate(new QualificationCandidate(8, "Player 8", true, 26L, 13L, 13L));
-		qualificationTable.addCandidate(new QualificationCandidate(9, "Player 9", false, 25L, 11L));
-		qualificationTable.addCandidate(new QualificationCandidate(10, "Player 10", false, 24L));
-		initMenuData.setQualification(qualificationTable);
-		TournamentTable tournamentTable = new TournamentTable();
-		tournamentTable.addMatch(0, new Match(new PlayerStatus(new Player(1, "aPlayer 1"), 15),
-				new PlayerStatus(new Player(2, "aPlayer 2"), 30), true));
-		tournamentTable.addMatch(0, new Match(new PlayerStatus(new Player(3, "aPlayer 3"), 11),
-				new PlayerStatus(new Player(4, "aPlayer 4"), 27), true));
-		tournamentTable.addMatch(0, new Match(new PlayerStatus(new Player(5, "aPlayer 5"), 42),
-				new PlayerStatus(new Player(6, "aPlayer 6"), 12), true));
-		tournamentTable.addMatch(0, new Match(new PlayerStatus(new Player(7, "aPlayer 7"), 25),
-				new PlayerStatus(new Player(8, "aPlayer 8"), 32), true));
-		tournamentTable.addMatch(1, new Match(new PlayerStatus(new Player(2, "bPlayer 2"), 55),
-				new PlayerStatus(new Player(5, "bPlayer 4"), 20), true));
-		tournamentTable.addMatch(1, new Match(new PlayerStatus(new Player(5, "bPlayer 5"), 11),
-				new PlayerStatus(new Player(8, "bPlayer 8"), 60), true));
-		tournamentTable.addMatch(2, new Match(new PlayerStatus(new Player(2, "cPlayer 2"), 32),
-				new PlayerStatus(new Player(8, "cPlayer 8"), 23), true));
-		initMenuData.setTournament(tournamentTable);
-
 		this.initMenuData = initMenuData;
 		this.sharedGuiListener = sharedGuiListener;
 		this.mainFrame = mainFrame;
@@ -125,6 +95,7 @@ public class Menu extends JPanel {
 		final JList<String> firstListOfAnthills;
 		final JList<String> secondListOfAnthills;
 		final JList<String> thirdListOfAnthills;
+		final JList<String> replays;
 
 		// Title
 		JLabel labelTitle = new JLabel("ANTHILL", JLabel.CENTER);
@@ -148,14 +119,7 @@ public class Menu extends JPanel {
 
 		// 1st list of anthills
 		DefaultListModel<String> listOfAnthillNames = new DefaultListModel<>();
-		listOfAnthillNames.addElement("Dummy Anthill");
-		listOfAnthillNames.addElement("Loosers");
-		listOfAnthillNames.addElement("Chuck Norris");
-		listOfAnthillNames.addElement("Peter Sagan");
-		listOfAnthillNames.addElement("Killers");
-		listOfAnthillNames.addElement("IBM SK");
-		listOfAnthillNames.addElement("Slovakia");
-		listOfAnthillNames.addElement("Winners");
+		addPlayers(listOfAnthillNames);
 		firstListOfAnthills = new JList<>(listOfAnthillNames);
 		firstListOfAnthills.setSelectionMode(ListSelectionModel.SINGLE_SELECTION);
 		JScrollPane firstListOfAnthillsScrollable = new JScrollPane(firstListOfAnthills);
@@ -169,6 +133,13 @@ public class Menu extends JPanel {
 		thirdListOfAnthills = new JList<>(listOfAnthillNames);
 		thirdListOfAnthills.setSelectionMode(ListSelectionModel.SINGLE_SELECTION);
 		JScrollPane thirdListOfAnthillsScrollable = new JScrollPane(thirdListOfAnthills);
+
+		// Replays
+		DefaultListModel<String> listSavedGames = new DefaultListModel<>();
+		addReplays(listSavedGames);
+		replays = new JList<>(listSavedGames);
+		replays.setSelectionMode(ListSelectionModel.SINGLE_SELECTION);
+		JScrollPane replaysScrollable = new JScrollPane(replays);
 
 		// Sheets
 		tabbedPane = new JTabbedPane(JTabbedPane.TOP);
@@ -240,24 +211,6 @@ public class Menu extends JPanel {
 			Player lastWinner = null;
 			List<Player> winnersInPreviousRound = new ArrayList<>();
 			mxGraph graph = new mxGraph();
-			graph.setCellsSelectable(false);
-			graph.setCellsEditable(false);
-			graph.setCellsMovable(false);
-			graph.setCellsResizable(false);
-			graph.setCellsBendable(false);
-			graph.setCellsCloneable(false);
-			graph.setCellsDeletable(false);
-			graph.setCellsDisconnectable(false);
-			graph.setConnectableEdges(false);
-			graph.setCellsEditable(false);
-			graph.setAllowDanglingEdges(false);
-			graph.setAllowLoops(false);
-			graph.setCellsDeletable(false);
-			graph.setCellsCloneable(false);
-			graph.setCellsDisconnectable(false);
-			graph.setDropEnabled(false);
-			graph.setSplitEnabled(false);
-			graph.setCellsBendable(false);
 			Object parent = graph.getDefaultParent();
 			graph.getModel().beginUpdate();
 			Map<String, Object> matchIcons = new HashMap<>();
@@ -322,7 +275,13 @@ public class Menu extends JPanel {
 			tabbedPane.setSelectedComponent(panelTournament);
 		}
 
-		// 4th Sheet: About
+		// 4th Sheet: Replays
+		JPanel panelReplays = new JPanel(false);
+		panelReplays.setLayout(new GridLayout(1, 1));
+		panelReplays.add(replaysScrollable);
+		tabbedPane.addTab("Replays", panelReplays);
+
+		// 5th Sheet: About
 		JPanel panelAbout = new JPanel(false);
 		panelAbout.setLayout(new GridBagLayout());
 		GridBagConstraints c = new GridBagConstraints();
@@ -407,7 +366,7 @@ public class Menu extends JPanel {
 
 		// Setup Events
 		new MenuListener(mainFrame, sharedGuiListener, tabbedPane, firstListOfAnthills, secondListOfAnthills,
-				thirdListOfAnthills, buttonStart, radioQualification, radioTournamentSemiFinals,
+				thirdListOfAnthills, replays, buttonStart, radioQualification, radioTournamentSemiFinals,
 				scrollPaneQualification, scrollPaneTournament);
 	}
 
@@ -420,6 +379,103 @@ public class Menu extends JPanel {
 			System.err.println("Couldn't find file: " + path);
 			return null;
 		}
+	}
+	
+	/**
+	 * Adds all known competitors to the provided list.
+	 * @see InitMenuData#getCompetitors()
+	 * @param list - the list we would like to initialize
+	 */
+	protected void addPlayers(DefaultListModel<String> list) {
+		if (initMenuData != null && initMenuData.competitors != null && initMenuData.competitors.length > 0) {
+			for (String competitor : initMenuData.competitors) {
+				list.addElement(competitor);
+			}
+		}
+	}
+	
+	/**
+	 * Adds all known replays to the provided list.
+	 * @see InitMenuData#getReplays()
+	 * @param list - the list we would like to initialize
+	 */
+	protected void addReplays(DefaultListModel<String> list) {
+		if (initMenuData != null && initMenuData.replays != null && initMenuData.replays.length > 0) {
+			for (String replay : initMenuData.replays) {
+				list.addElement(replay);
+			}
+		}
+	}
+
+	/**
+	 * Initializes GUI lists (the list of players in Single Mode / Duel / Tournament, the list of saved games) with dummy data.
+	 * 
+	 * @param initMenuData - the input parameter for {@link Menu}
+	 */
+	private static void initDummyData(InitMenuData initMenuData) {
+
+		// Dummy list of players
+		initMenuData.competitors = new String[] {
+				"Dummy Anthill", 
+				"Loosers", 
+				"Chuck Norris", 
+				"Peter Sagan", 
+				"Killers", 
+				"IBM SK", 
+				"Slovakia", 
+				"Winners"};
+		
+		// Dummy list of replays
+		initMenuData.replays = new String[] {
+				"[2017-10-01 10:00:05, Duel] Chuck Norris - Superman",
+				"[2017-10-01 12:10:45, Duel] Batman - Superman",
+				"[2017-10-01 17:20:11, Duel] Chuck Norris - Lady Gaga",
+				"[2017-10-01 19:10:44, Duel] Lady Gaga - Justin Bieber",
+				"[2017-10-02 10:00:05, Single Player] Chuck Norris",
+				"[2017-10-02 12:10:45, Single Player] Superman",
+				"[2017-10-02 17:20:11, Single Player] Lady Gaga",
+				"[2017-10-02 19:10:44, Single Player] Justin Bieber",
+				"[2017-10-03 10:00:05, Qualification] Chuck Norris",
+				"[2017-10-03 12:10:45, Qualification] Superman",
+				"[2017-10-03 17:20:11, Qualification] Lady Gaga",
+				"[2017-10-03 19:10:44, Qualification] Justin Bieber",
+				"[2017-10-03 20:00:05, Tournament] Chuck Norris - Superman",
+				"[2017-10-03 22:10:45, Tournament] Batman - Superman",
+				"[2017-10-03 23:20:11, Tournament] Chuck Norris - Lady Gaga",
+				"[2017-10-03 23:30:44, Tournament] Lady Gaga - Justin Bieber"
+		};
+		
+		// Dummy qualification results
+		QualificationTable qualificationTable = new QualificationTable();
+		qualificationTable.addCandidate(new QualificationCandidate(1, "Player 1", true, 34L, 45L, 27L));
+		qualificationTable.addCandidate(new QualificationCandidate(2, "Player 2", true, 32L, 46L, 23L));
+		qualificationTable.addCandidate(new QualificationCandidate(3, "Player 3", true, 31L, 23L, 13L));
+		qualificationTable.addCandidate(new QualificationCandidate(4, "Player 4", true, 30L, 21L, 12L));
+		qualificationTable.addCandidate(new QualificationCandidate(5, "Player 5", true, 29L, 19L, 13L));
+		qualificationTable.addCandidate(new QualificationCandidate(6, "Player 6", true, 28L, 17L, 14L));
+		qualificationTable.addCandidate(new QualificationCandidate(7, "Player 7", true, 27L, 15L, 15L));
+		qualificationTable.addCandidate(new QualificationCandidate(8, "Player 8", true, 26L, 13L, 13L));
+		qualificationTable.addCandidate(new QualificationCandidate(9, "Player 9", false, 25L, 11L));
+		qualificationTable.addCandidate(new QualificationCandidate(10, "Player 10", false, 24L));
+		initMenuData.setQualification(qualificationTable);
+		
+		// Dummy tournament results
+		TournamentTable tournamentTable = new TournamentTable();
+		tournamentTable.addMatch(0, new Match(new PlayerStatus(new Player(1, "aPlayer 1"), 15),
+				new PlayerStatus(new Player(2, "aPlayer 2"), 30), true));
+		tournamentTable.addMatch(0, new Match(new PlayerStatus(new Player(3, "aPlayer 3"), 11),
+				new PlayerStatus(new Player(4, "aPlayer 4"), 27), true));
+		tournamentTable.addMatch(0, new Match(new PlayerStatus(new Player(5, "aPlayer 5"), 42),
+				new PlayerStatus(new Player(6, "aPlayer 6"), 12), true));
+		tournamentTable.addMatch(0, new Match(new PlayerStatus(new Player(7, "aPlayer 7"), 25),
+				new PlayerStatus(new Player(8, "aPlayer 8"), 32), true));
+		tournamentTable.addMatch(1, new Match(new PlayerStatus(new Player(2, "bPlayer 2"), 55),
+				new PlayerStatus(new Player(5, "bPlayer 4"), 20), true));
+		tournamentTable.addMatch(1, new Match(new PlayerStatus(new Player(5, "bPlayer 5"), 11),
+				new PlayerStatus(new Player(8, "bPlayer 8"), 60), true));
+		tournamentTable.addMatch(2, new Match(new PlayerStatus(new Player(2, "cPlayer 2"), 32),
+				new PlayerStatus(new Player(8, "cPlayer 8"), 23), true));
+		initMenuData.setTournament(tournamentTable);
 	}
 
 	/**
@@ -435,7 +491,9 @@ public class Menu extends JPanel {
 		// Set up the content pane.
 		// frame.add(new Menu(new InitMenuData(), new GameMenuHandler(), frame),
 		// BorderLayout.CENTER);
-		frame.add(new Menu(new InitMenuData(), null, frame), BorderLayout.CENTER);
+		InitMenuData initMenuData = new InitMenuData();
+		initDummyData(initMenuData);
+		frame.add(new Menu(initMenuData, null, frame), BorderLayout.CENTER);
 
 		// Display the window.
 		frame.pack();
