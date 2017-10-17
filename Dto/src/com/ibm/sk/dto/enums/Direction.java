@@ -1,6 +1,8 @@
 package com.ibm.sk.dto.enums;
 
 import java.awt.Point;
+import java.util.Arrays;
+import java.util.List;
 import java.util.Random;
 
 public enum Direction {
@@ -135,5 +137,21 @@ public enum Direction {
 
 	public static Direction random() {
 		return Direction.values()[RANDOM.nextInt(Direction.values().length - 1)];
+	}
+	
+	public static List<Direction> getEastDirections() {
+		return Arrays.asList(Direction.EAST, Direction.NORTHEAST, Direction.SOUTHEAST);
+	}
+	
+	public static List<Direction> getWestDirections() {
+		return Arrays.asList(Direction.WEST, Direction.NORTHWEST, Direction.SOUTHWEST);
+	}
+	
+	public static List<Direction> getNonEastDirections() {
+		return Arrays.asList(Direction.WEST, Direction.NORTHWEST, Direction.SOUTHWEST, Direction.NO_MOVE, Direction.SOUTH, Direction.NORTH);
+	}
+	
+	public static List<Direction> getNonWestDirections() {
+		return Arrays.asList(Direction.EAST, Direction.NORTHEAST, Direction.SOUTHEAST, Direction.NO_MOVE, Direction.SOUTH, Direction.NORTH);
 	}
 }

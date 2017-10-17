@@ -1,6 +1,10 @@
 package com.ibm.sk.ant.implementation;
 
 import java.awt.Point;
+import java.util.ArrayList;
+import java.util.Arrays;
+import java.util.List;
+import java.util.Random;
 
 import com.ibm.sk.dto.AbstractAnt;
 import com.ibm.sk.dto.Hill;
@@ -14,7 +18,9 @@ public class StripedAnt extends AbstractAnt {
 	 */
 	private static final long serialVersionUID = 1L;
 	private Zone antZone;	
-	private Direction mainDirection;
+	private List<Direction> mainDirection;
+	private List<Direction> noHomeDirection;
+	private Direction lastMove;
 
 	enum Zone{
 		/*
@@ -34,13 +40,12 @@ public class StripedAnt extends AbstractAnt {
 		ZONE_14(new int[] {90,94}),
 		ZONE_15(new int[] {95,98}),
 		ZONE_16(new int[] {99,100});
-		*/
+		*/		
 		
-		ZONE_1(new int[] {2,5}),
-		ZONE_2(new int[] {2,4}), 
-		ZONE_3(new int[] {4,6}),
-		ZONE_4(new int[] {6,8}), 
-		ZONE_5(new int[] {8,10});
+		ZONE_1(new int[] {1,4}),
+		ZONE_2(new int[] {4,6}), 
+		ZONE_3(new int[] {7,9});
+		
 		
 		private int[] minMaxY;
 		
@@ -52,12 +57,18 @@ public class StripedAnt extends AbstractAnt {
 			return minMaxY;
 		}
 
-	}
+	}	
 	
 	public StripedAnt(long id, Point position, Hill myHill) {
 		super(id, position, myHill);
-		//this.antZone = Zone.values()[new Random().nextInt(Zone.values().length - 1)];		
-		this.antZone = Zone.ZONE_1;
+		this.antZone = Zone.values()[new Random().nextInt(Zone.values().length - 1)];		
+		if (myHill.getPosition().x < 2) {
+			mainDirection = Direction.getEastDirections();
+		} else {
+			mainDirection = Direction.getWestDirections();
+		}
+		noHomeDirection = new ArrayList<>(mainDirection);
+		noHomeDirection.addAll(Arrays.asList(Direction.NORTH, Direction.SOUTH, Direction.NO_MOVE));
 	}
 
 	@Override
@@ -69,14 +80,27 @@ public class StripedAnt extends AbstractAnt {
 				if (ObjectType.FOOD.equals(objectType)) {
 					System.out.println("I see food!");
 					returnValue = direction;
+					break;
 				}
 			}
 
 			if (Direction.NO_MOVE.equals(returnValue)) {
 				System.out.println("Where to go?");
-				if (antZone.getMinMaxY()[0] <= this.position.y) { 
-					if ( this.position.y < antZone.getMinMaxY()[1]) {
-						returnValue = Direction.random();
+				if (this.position.y < antZone.getMinMaxY()[1]) { 
+					if ( this.position.y >= antZone.getMinMaxY()[0]) {						
+						if ((mainDirection.contains(lastMove)) || (this.position.x == 1)) {
+							returnValue = mainDirection.get(RANDOM.nextInt(mainDirection.size() - 1));
+							ObjectType objectType = vision.look(returnValue);
+							if (ObjectType.BORDER.equals(objectType)) {
+								if (Direction.getWestDirections().contains(returnValue)) {
+									returnValue = Direction.EAST;
+								} else {
+									returnValue = Direction.WEST;
+								}							
+							}
+						} else {
+							returnValue = lastMove;
+						}
 					}
 					else {
 						returnValue = Direction.SOUTH;
@@ -89,10 +113,11 @@ public class StripedAnt extends AbstractAnt {
 			System.out.println("Going home!");
 			returnValue = findWayHome();
 		}
-		// Add your implementation here
-
+		this.lastMove = returnValue;
 		return returnValue;
 	}
+	
+	private static final Random RANDOM = new Random();
 	
 	/**
 	 * Finds the Direction towards home based on current coordinates and
