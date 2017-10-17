@@ -1,4 +1,4 @@
-package com.ibm.sk.dto.matchmaking.strategy;
+package com.ibm.sk.engine.matchmaking;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -8,13 +8,13 @@ import java.util.stream.Collectors;
 import com.ibm.sk.dto.matchmaking.Match;
 import com.ibm.sk.dto.matchmaking.Player;
 import com.ibm.sk.dto.matchmaking.PlayerStatus;
-import com.ibm.sk.dto.matchmaking.Tournament;
 import com.ibm.sk.dto.matchmaking.comparator.PlayerScoreComparator;
 /**
  * @author Vladimir Martinka (vladimir.martinka@gmail.com)
  * @see <a href="http://denegames.ca/tournaments/index.html">http://denegames.ca/tournaments/index.html</a>
  */
 import com.ibm.sk.dto.tournament.TournamentTable;
+import com.ibm.sk.engine.ProcessExecutor;
 public class SingleElimination extends Tournament {
 	
 	
@@ -27,8 +27,8 @@ public class SingleElimination extends Tournament {
 	 * List of players, ideally sorted by their ranking ascending.
 	 * @param players Sorted list of players. Pairs will be made starting from first element.
 	 */
-	public SingleElimination(List<Player> players) {
-		super(players);
+	public SingleElimination(List<Player> players, ProcessExecutor executor) {
+		super(players, executor);
 		
 		/*
 		 * Limit first round matches to get power of PLAYERS_PER_MATCH

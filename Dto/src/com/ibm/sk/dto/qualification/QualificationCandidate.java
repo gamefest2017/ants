@@ -20,7 +20,7 @@ public class QualificationCandidate extends Player {
 	public List<Long> getScore() {
 		return score;
 	}
-
+	
 	public Long getScore(int i) {
 		if (score == null || score.size() <= i) {
 			return null;

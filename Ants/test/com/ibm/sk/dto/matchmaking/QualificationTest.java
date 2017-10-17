@@ -5,13 +5,15 @@ import static org.junit.Assert.assertTrue;
 
 import org.junit.Test;
 
-import com.ibm.sk.dto.matchmaking.strategy.Qualification;
+import com.ibm.sk.engine.matchmaking.TournamentTest;
+import com.ibm.sk.engine.matchmaking.ITournament;
+import com.ibm.sk.engine.matchmaking.Qualification;
 
 public class QualificationTest extends TournamentTest {
 
 	@Override
 	public ITournament createTournament() {
-		return new Qualification(PLAYERS);
+		return new Qualification(PLAYERS, null);
 	}
 	
 	@Test

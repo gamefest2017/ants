@@ -10,13 +10,18 @@ import javax.swing.JOptionPane;
 import javax.swing.JRadioButton;
 import javax.swing.JScrollPane;
 import javax.swing.JTabbedPane;
+import javax.swing.ListModel;
 import javax.swing.event.ChangeEvent;
 import javax.swing.event.ChangeListener;
 import javax.swing.event.ListSelectionEvent;
 import javax.swing.event.ListSelectionListener;
 
+import com.ibm.sk.dto.qualification.QualificationCandidate;
+import com.ibm.sk.dto.qualification.QualificationTable;
+import com.ibm.sk.dto.tournament.TournamentTable;
 import com.ibm.sk.ff.gui.common.events.GuiEvent;
 import com.ibm.sk.ff.gui.common.events.GuiEventListener;
+import com.ibm.sk.ff.gui.common.mapper.Mapper;
 
 /**
  * <h2>Listener for the {@link Menu}</h2>
@@ -116,7 +121,21 @@ public class MenuListener implements ChangeListener, ActionListener, ListSelecti
 				}
 				break;
 			case 2:
-				sendGuiEvent(new GuiEvent(GuiEvent.EventTypes.TOURNAMENT_PLAY_START, ""));
+				if (radioQualification.isSelected()) {
+					QualificationTable t = new QualificationTable();
+					ListModel<String> m = firstListOfAnthills.getModel();
+					for (int i = 0 ; i < m.getSize(); i++) {
+						t.addCandidate(new QualificationCandidate(i, m.getElementAt(i), false, 0L));
+					}
+//					sendGuiEvent(new GuiEvent(GuiEvent.EventTypes.TOURNAMENT_PLAY_START, Mapper.INSTANCE.pojoToJson(t)));
+					sendGuiEvent(new GuiEvent(GuiEvent.EventTypes.TOURNAMENT_PLAY_START, ""));
+				} else {
+					TournamentTable t = new TournamentTable();
+					//TODO get qualification result data via callback in case we need to initialize the tournament, otherwise just execute next match
+					
+					sendGuiEvent(new GuiEvent(GuiEvent.EventTypes.TOURNAMENT_PLAY_START, Mapper.INSTANCE.pojoToJson(t)));
+				}
+				
 				break;
 			case 3:
 				if (replays.getSelectedIndex() == -1) {
