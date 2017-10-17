@@ -7,7 +7,7 @@ public class WorldConstans {
 	/**
 	 * number of TURNS to evaluate game.
 	 */
-	public static final int TURNS = 100;
+	public static final int TURNS = 50;
 	/**
 	 * the amount of ants in one anthill at the beginning of the world.
 	 */

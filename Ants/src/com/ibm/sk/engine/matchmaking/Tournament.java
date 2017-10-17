@@ -8,6 +8,7 @@ import java.util.List;
 import java.util.Random;
 
 import com.ibm.sk.dto.Hill;
+import com.ibm.sk.dto.IAnt;
 import com.ibm.sk.dto.enums.HillOrder;
 import com.ibm.sk.dto.matchmaking.Match;
 import com.ibm.sk.dto.matchmaking.Player;
@@ -34,12 +35,12 @@ public abstract class Tournament implements ITournament {
 	@Override
 	public Match resolveNextMatch() throws NoMoreMatchesException {
 		Match match = getNextMatch().orElseThrow(NoMoreMatchesException::new);
-		
-		
+
 		boolean singlePlayer = match.getPlayers().contains(AI);
 		
 		match.startMatch();
 		
+//		World.reset();
 		World.createWorldBorder();
 		final Hill firstHill = createHill(HillOrder.FIRST, match.getPlayer(0).getName());
 		Hill secondHill = null;
@@ -49,8 +50,8 @@ public abstract class Tournament implements ITournament {
 		executor.initGame(firstHill, secondHill);
 
 		for (int turn = 0; turn < TURNS; turn++) {
-//			ProcessExecutor.execute(firstHill, secondHill);
-//			FoodHandler.dropFood();
+			ProcessExecutor.execute(firstHill, secondHill, turn);
+			FoodHandler.dropFood(turn);
 		}
 		match.getPlayerStatus(0).addScore(firstHill.getFood());
 		if (!singlePlayer) {

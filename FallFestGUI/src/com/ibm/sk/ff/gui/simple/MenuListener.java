@@ -2,6 +2,7 @@ package com.ibm.sk.ff.gui.simple;
 
 import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
+import java.util.StringJoiner;
 
 import javax.swing.JButton;
 import javax.swing.JFrame;
@@ -121,19 +122,15 @@ public class MenuListener implements ChangeListener, ActionListener, ListSelecti
 				}
 				break;
 			case 2:
-				if (radioQualification.isSelected()) {
-					QualificationTable t = new QualificationTable();
-					ListModel<String> m = firstListOfAnthills.getModel();
-					for (int i = 0 ; i < m.getSize(); i++) {
-						t.addCandidate(new QualificationCandidate(i, m.getElementAt(i), false, 0L));
-					}
-//					sendGuiEvent(new GuiEvent(GuiEvent.EventTypes.TOURNAMENT_PLAY_START, Mapper.INSTANCE.pojoToJson(t)));
+				if (radioTournamentSemiFinals.isSelected()) {
 					sendGuiEvent(new GuiEvent(GuiEvent.EventTypes.TOURNAMENT_PLAY_START, ""));
 				} else {
-					TournamentTable t = new TournamentTable();
-					//TODO get qualification result data via callback in case we need to initialize the tournament, otherwise just execute next match
-					
-					sendGuiEvent(new GuiEvent(GuiEvent.EventTypes.TOURNAMENT_PLAY_START, Mapper.INSTANCE.pojoToJson(t)));
+					StringJoiner sj = new StringJoiner(",");
+					ListModel<String> m = firstListOfAnthills.getModel();
+					for (int i = 0 ; i < m.getSize(); i++) {
+						sj.add(m.getElementAt(i));
+					}
+					sendGuiEvent(new GuiEvent(GuiEvent.EventTypes.QUALIFICATION_START, sj.toString()));
 				}
 				
 				break;

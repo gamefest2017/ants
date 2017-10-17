@@ -11,8 +11,11 @@ public class GuiEvent {
 	public static final String HLL_NAMES_SEPARATOR = ";";
 
 	public static enum EventTypes {
-		SINGLE_PLAY_START("singlePlayStart"), DOUBLE_PLAY_START("doublePlayStart"), TOURNAMENT_PLAY_START(
-				"tournamentPlayStart"), PLAYER_1_SELECTED("playerOneSelected"), PLAYER_2_SELECTED(
+		SINGLE_PLAY_START("singlePlayStart"), 
+		DOUBLE_PLAY_START("doublePlayStart"), 
+		QUALIFICATION_START("qualificationStart"),
+		TOURNAMENT_PLAY_START("tournamentPlayStart"), 
+		PLAYER_1_SELECTED("playerOneSelected"), PLAYER_2_SELECTED(
 						"playerTwoSelected"), START_REPLAY("startReplay"), REPLAY_SELECTED("replaySelected"),;
 
 		private static final Map<String, EventTypes> MAP = new HashMap<>();

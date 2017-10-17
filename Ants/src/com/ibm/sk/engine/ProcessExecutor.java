@@ -28,7 +28,7 @@ import com.ibm.sk.models.WorldBorder;
 
 public final class ProcessExecutor {
 
-	private static GuiConnector guiConnector;
+	public static GuiConnector guiConnector;
 
 	public ProcessExecutor(final GUIFacade FACADE) {
 		guiConnector = new GuiConnector(FACADE);
