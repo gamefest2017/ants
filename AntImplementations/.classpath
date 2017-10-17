@@ -2,6 +2,17 @@
 <classpath>
 	<classpathentry kind="con" path="org.eclipse.jdt.launching.JRE_CONTAINER/org.eclipse.jdt.internal.debug.ui.launcher.StandardVMType/JavaSE-1.8"/>
 	<classpathentry kind="src" path="src"/>
+	<classpathentry kind="src" path="test"/>
 	<classpathentry combineaccessrules="false" kind="src" path="/Dto"/>
+	<classpathentry kind="lib" path="lib/reflections-0.9.12-SNAPSHOT.jar"/>
+	<classpathentry kind="lib" path="lib/dom4j-1.6.1.jar"/>
+	<classpathentry kind="lib" path="lib/gson-2.8.0.jar"/>
+	<classpathentry kind="lib" path="lib/guava-20.0.jar"/>
+	<classpathentry kind="lib" path="lib/javassist-3.21.0-GA.jar"/>
+	<classpathentry kind="lib" path="lib/jsr305-3.0.1.jar"/>
+	<classpathentry kind="lib" path="lib/junit-4.12.jar"/>
+	<classpathentry kind="lib" path="lib/servlet-api-2.5.jar"/>
+	<classpathentry kind="lib" path="lib/slf4j-api-1.7.24.jar"/>
+	<classpathentry kind="lib" path="lib/slf4j-simple-1.7.24.jar"/>
 	<classpathentry kind="output" path="bin"/>
 </classpath>
