@@ -34,16 +34,18 @@ public class MenuListener implements ChangeListener, ActionListener, ListSelecti
 	private JList<String> firstListOfAnthills = null;
 	private JList<String> secondListOfAnthills = null;
 	private JList<String> thirdListOfAnthills = null;
+	private JList<String> replays = null;
 
 	public MenuListener(JFrame mainContainer, GuiEventListener listener, JTabbedPane tabbedPane,
 			JList<String> firstListOfAnthills, JList<String> secondListOfAnthills, JList<String> thirdListOfAnthills,
-			JButton buttonStart, JRadioButton radioQualification, JRadioButton radioTournamentSemiFinals,
+			JList<String> replays, JButton buttonStart, JRadioButton radioQualification, JRadioButton radioTournamentSemiFinals,
 			JScrollPane scrollPaneQualification, JScrollPane scrollPaneTournament) {
 		this.tabbedPane = tabbedPane;
 		this.buttonStart = buttonStart;
 		this.firstListOfAnthills = firstListOfAnthills;
 		this.secondListOfAnthills = secondListOfAnthills;
 		this.thirdListOfAnthills = thirdListOfAnthills;
+		this.replays = replays;
 		this.radioQualification = radioQualification;
 		this.radioTournamentSemiFinals = radioTournamentSemiFinals;
 		this.scrollPaneQualification = scrollPaneQualification;
@@ -54,6 +56,7 @@ public class MenuListener implements ChangeListener, ActionListener, ListSelecti
 		firstListOfAnthills.addListSelectionListener(this);
 		secondListOfAnthills.addListSelectionListener(this);
 		thirdListOfAnthills.addListSelectionListener(this);
+		replays.addListSelectionListener(this);
 		buttonStart.addActionListener(this);
 		radioQualification.addActionListener(this);
 		radioTournamentSemiFinals.addActionListener(this);
@@ -66,7 +69,7 @@ public class MenuListener implements ChangeListener, ActionListener, ListSelecti
 	@Override
 	public void stateChanged(ChangeEvent e) {
 		if (e.getSource() instanceof JTabbedPane) {
-			if (tabbedPane.getSelectedIndex() == 3) {
+			if (tabbedPane.getSelectedIndex() == 4) {
 				if (buttonStart != null) {
 					buttonStart.setEnabled(false);
 				}
@@ -116,6 +119,15 @@ public class MenuListener implements ChangeListener, ActionListener, ListSelecti
 				sendGuiEvent(new GuiEvent(GuiEvent.EventTypes.TOURNAMENT_PLAY_START, ""));
 				break;
 			case 3:
+				if (replays.getSelectedIndex() == -1) {
+					JOptionPane.showMessageDialog(mainContainer, "Please, select 1 saved game.",
+							"Can't start a replay!", JOptionPane.WARNING_MESSAGE);
+				} else {
+					sendGuiEvent(new GuiEvent(GuiEvent.EventTypes.REPLAY_SELECTED,
+							replays.getSelectedValue()));
+				}
+				break;
+			case 4:
 				// About dialog, ignore, no ActionEvent is expected here
 				break;
 			default:
@@ -159,6 +171,11 @@ public class MenuListener implements ChangeListener, ActionListener, ListSelecti
 			if (!e.getValueIsAdjusting()) {
 				sendGuiEvent(
 						new GuiEvent(GuiEvent.EventTypes.PLAYER_2_SELECTED, thirdListOfAnthills.getSelectedValue()));
+			}
+		} else if (e.getSource().equals(replays)) {
+			if (!e.getValueIsAdjusting()) {
+				sendGuiEvent(
+						new GuiEvent(GuiEvent.EventTypes.REPLAY_SELECTED, replays.getSelectedValue()));
 			}
 		}
 	}
