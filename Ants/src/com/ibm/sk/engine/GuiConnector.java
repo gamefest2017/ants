@@ -184,10 +184,11 @@ public class GuiConnector {
 		}
 	}
 
-	public void showScore(final String teamName, final int points) {
+	public void showScore(final String teamName, final int points, final int turnsRemaining) {
 		final ScoreData data = new ScoreData();
 		data.setMessage(teamName);
 		data.setScore(points);
+		data.setTurnsRemaining(turnsRemaining);
 		this.FACADE.showScore(data);
 	}
 

@@ -74,12 +74,12 @@ public class SimpleGUI implements GUI {
 		final JLabel label = new JLabel(new ImageIcon(loadBackgroundImage()));
 		this.frame.setContentPane(label);
 
-		this.canvas = new SimpleCanvas(data.getWidth(), data.getHeight(), data.getTeams(), this.frame);		
-		
+		this.canvas = new SimpleCanvas(data.getWidth(), data.getHeight(), data.getTeams(), this.frame);
+
 		JPanel panelNorth = new JPanel();
 		panelNorth.setLayout(new FlowLayout());
 		this.scoreboard = new ScoreboardSmall(data);
-		this.scoreboard.setPreferredSize(new Dimension(500, 25));
+		this.scoreboard.setPreferredSize(new Dimension(600, 25));
 		this.fastForward = new JCheckBox("Fast forward");
 		this.fastForward.addActionListener(new ActionListener() {
 			@Override
@@ -89,7 +89,6 @@ public class SimpleGUI implements GUI {
 		});
 		panelNorth.add(this.scoreboard);
 		panelNorth.add(this.fastForward);
-		
 
 		this.frame.setLayout(new BorderLayout());
 		this.frame.add(this.canvas, BorderLayout.CENTER);
@@ -100,8 +99,12 @@ public class SimpleGUI implements GUI {
 		this.frame.pack();
 		this.frame.setLocationRelativeTo(null);
 		this.frame.setVisible(true);
-		
-		try { Thread.sleep(1000); } catch (Exception e) { e.printStackTrace(); }
+
+		try {
+			Thread.sleep(1000);
+		} catch (Exception e) {
+			e.printStackTrace();
+		}
 	}
 
 	private BufferedImage loadBackgroundImage() {
@@ -153,16 +156,16 @@ public class SimpleGUI implements GUI {
 			this.frame = null;
 		}
 
-		//Create and set up the window.
+		// Create and set up the window.
 		this.frame = new JFrame("IBM Slovakia / Fall Fest 2017 / Anthill");
-		this.frame.setExtendedState(this.frame.getExtendedState()|Frame.MAXIMIZED_BOTH);
+		this.frame.setExtendedState(this.frame.getExtendedState() | Frame.MAXIMIZED_BOTH);
 		this.frame.setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
 		this.frame.setLayout(new BorderLayout());
 
-		//Set up the content pane.
+		// Set up the content pane.
 		this.frame.add(new Menu(data, this.listener, this.frame));
 
-		//Display the window.
+		// Display the window.
 		this.frame.pack();
 		this.frame.setVisible(true);
 	}
