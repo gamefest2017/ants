@@ -89,9 +89,19 @@ public class Qualification extends Tournament {
 					ps.getPlayer().getId(), 
 					ps.getPlayer().getName(), 
 					++index > maxQualifiedPlayers ? false : true, 
-					ps.getScore().longValue()));
+//					ps.getScore().longValue())
+					getScoresForPlayer(ps.getPlayer())));
+					
 		}
 		return table;
+	}
+	
+	private List<Long> getScoresForPlayer(Player player) {
+		return getMatches().stream()
+		.flatMap(m -> m.getPlayerStatus().stream())
+		.filter(ps -> player.equals(ps.getPlayer()))
+		.map(ps -> ps.getScore().longValue())
+		.collect(Collectors.toList());
 	}
 
 }

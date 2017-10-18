@@ -22,6 +22,7 @@ import com.ibm.sk.engine.World;
 import com.ibm.sk.engine.matchmaking.NoMoreMatchesException;
 import com.ibm.sk.engine.matchmaking.Qualification;
 import com.ibm.sk.engine.matchmaking.SingleElimination;
+import com.ibm.sk.ff.gui.client.GUIFacade;
 import com.ibm.sk.ff.gui.common.events.GuiEvent;
 import com.ibm.sk.ff.gui.common.events.GuiEventListener;
 import com.ibm.sk.ff.gui.common.objects.operations.InitMenuData;
@@ -30,12 +31,17 @@ public class GameMenuHandler implements GuiEventListener {
 
 	private static int turn;
 	private final ProcessExecutor executor;
+	private final InitMenuData menuData;
+	private final GUIFacade facade;
 	
 	private Qualification qualification = null;
 	private SingleElimination tournament = null;
+	
 
-	public GameMenuHandler(final ProcessExecutor executor) {
-		this.executor = executor;
+	public GameMenuHandler(final GUIFacade facade, InitMenuData menuData) {
+		this.executor = new ProcessExecutor(facade);
+		this.facade = facade;
+		this.menuData = menuData;
 	}
 
 	@Override
@@ -47,26 +53,25 @@ public class GameMenuHandler implements GuiEventListener {
 			final int separatorPos = hillNames.indexOf(GuiEvent.HLL_NAMES_SEPARATOR);
 			startDoublePlayer(hillNames.substring(0, separatorPos) + "1", hillNames.substring(separatorPos + 1) + "2");
 		} else if (GuiEvent.EventTypes.QUALIFICATION_START.name().equals(event.getType().name()) ) {
-			AtomicInteger index = new AtomicInteger();
-			List<Player> players = Arrays.asList(event.getData().split(",")).stream().map(s -> new Player(index.incrementAndGet(), s)).collect(Collectors.toList());
-			
+
+			//lazy initialize qualification on first run
 			if (qualification == null) {
+				AtomicInteger index = new AtomicInteger();
+				List<Player> players = Arrays.asList(event.getData().split(",")).stream().map(s -> new Player(index.incrementAndGet(), s)).collect(Collectors.toList());
 				qualification = new Qualification(players, executor);
 			}
 			
 			try {
 				qualification.resolveNextMatch();
 			} catch (NoMoreMatchesException e) {
-				// TODO Auto-generated catch block
 				e.printStackTrace();
 			}
 			
-			//TODO - repeated matches do not reset game state
+			//TODO - repeated matches do not reset game state, leftover objects cause exceptions after a while
 			
-			InitMenuData data = new InitMenuData();
-			data.setQualification(qualification.getQualificationTable()); //TODO qualification table serialization aint working
+			menuData.setQualification(qualification.getQualificationTable());
 			
-			executor.guiConnector.getFacade().showInitMenu(data);
+			facade.showInitMenu(menuData);
 			
 		} else if (GuiEvent.EventTypes.TOURNAMENT_PLAY_START.name().equals(event.getType().name()) ) {
 			//take results from qualification, start tournament
@@ -79,14 +84,12 @@ public class GameMenuHandler implements GuiEventListener {
 			try {
 				tournament.resolveNextMatch();
 			} catch (NoMoreMatchesException e) {
-				// TODO Auto-generated catch block
 				e.printStackTrace();
 			}
 			
-			InitMenuData data = new InitMenuData();
-			data.setTournament(this.tournament.getTournamentTable());
+			menuData.setTournament(this.tournament.getTournamentTable());
 			
-			executor.guiConnector.getFacade().showInitMenu(data);
+			facade.showInitMenu(menuData);
 		}
 	}
 
