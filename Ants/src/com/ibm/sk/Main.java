@@ -7,7 +7,7 @@ public class Main extends AbstractMain {
 
 	public static void main(final String args[]) {
 
-		final GameMenuHandler menuHandler = new GameMenuHandler(new ProcessExecutor(FACADE));
+		final GameMenuHandler menuHandler = new GameMenuHandler(FACADE, null);
 		if (args.length == 0) {
 			menuHandler.startSinglePlayer("Majstri Svetla");
 		} else if (args.length == 1) {

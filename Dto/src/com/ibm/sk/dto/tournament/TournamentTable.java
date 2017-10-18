@@ -5,6 +5,7 @@ import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 
+import com.fasterxml.jackson.annotation.JsonIgnore;
 import com.ibm.sk.dto.matchmaking.Match;
 
 public class TournamentTable {
@@ -22,6 +23,7 @@ public class TournamentTable {
 		return round >= matches.size() ? null : matches.get(round);
 	}
 	
+	@JsonIgnore
 	public int getRounds() {
 		return matches.keySet().size();
 	}

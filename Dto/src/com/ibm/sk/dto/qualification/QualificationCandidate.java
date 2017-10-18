@@ -23,6 +23,12 @@ public class QualificationCandidate extends Player {
 		this.qualified = qualified;
 		this.score = Arrays.asList(scoreInQualificationRounds);
 	}
+	
+	public QualificationCandidate(Integer id, String name, boolean qualified, List<Long> scoreInQualificationRounds) {
+		super(id, name);
+		this.qualified = qualified;
+		this.score = scoreInQualificationRounds;
+	}
 
 	public List<Long> getScore() {
 		return score;
