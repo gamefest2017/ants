@@ -53,7 +53,7 @@ public class ScoreboardSmall extends JPanel {
 	}
 
 	public void setScore(final ScoreData sd) {
-		this.turnsText.setText(sd.getTurn() + " / " + WorldConstans.TURNS);
+		this.turnsText.setText(sd.getCurrentTurn() + " / " + WorldConstans.TURNS);
 		for (int i = 0; i < this.labels.length; i++) {
 			if (this.labels[i].getText().equals(sd.getMessage())) {
 				this.texts[i].setText(sd.getScore() + "");

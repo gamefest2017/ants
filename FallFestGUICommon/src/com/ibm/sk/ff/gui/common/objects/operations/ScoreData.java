@@ -4,7 +4,8 @@ public class ScoreData {
 
 	private String team;
 	private int score;
-	private int turn;
+	private int currentTurn;
+	private int turns;
 
 	public void setMessage(String message) {
 		this.team = message;
@@ -22,12 +23,20 @@ public class ScoreData {
 		return score;
 	}
 
-	public void setTurn(int turn) {
-		this.turn = turn;
+	public void setCurrentTurn(int currentTurn) {
+		this.currentTurn = currentTurn;
 	}
 
-	public int getTurn() {
-		return turn;
+	public int getCurrentTurn() {
+		return currentTurn;
+	}
+
+	public void setTurns(int turns) {
+		this.turns = turns;
+	}
+
+	public int getTurns() {
+		return this.turns;
 	}
 
 }
