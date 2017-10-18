@@ -14,26 +14,26 @@ import com.ibm.sk.engine.exceptions.InvalidWorldPositionException;
 import com.ibm.sk.models.WorldBorder;
 
 public final class World {
-	protected static long idSequence = 0L;
-	private static List<IWorldObject> worldObjects = new ArrayList<>();
-	private static List<IWorldObject> deadObjects = new ArrayList<>();
-	private static List<Hill> hills = new ArrayList<>();
+	protected long idSequence = 0L;
+	private final List<IWorldObject> worldObjects = new ArrayList<>();
+	private final List<IWorldObject> deadObjects = new ArrayList<>();
+	private final List<Hill> hills = new ArrayList<>();
 
-	private World() {
+	public World() {
 	}
 
-	protected static List<IWorldObject> getWorldObjects() {
-		return worldObjects;
+	protected List<IWorldObject> getWorldObjects() {
+		return this.worldObjects;
 	}
 
-	protected static List<IWorldObject> getDeadObjects() {
-		return deadObjects;
+	protected List<IWorldObject> getDeadObjects() {
+		return this.deadObjects;
 	}
 
-	protected static IWorldObject getWorldObject(final Point position) {
+	protected IWorldObject getWorldObject(final Point position) {
 		IWorldObject result = null;
 
-		for (final IWorldObject worldObject : worldObjects) {
+		for (final IWorldObject worldObject : this.worldObjects) {
 			if (worldObject.getPosition().equals(position)) {
 				result = worldObject;
 				System.out.println("Found world object: " + result + " on position: " + position);
@@ -44,27 +44,27 @@ public final class World {
 		return result;
 	}
 
-	protected static void placeObject(final IWorldObject worldObject) throws InvalidWorldPositionException {
+	protected void placeObject(final IWorldObject worldObject) throws InvalidWorldPositionException {
 		if (worldObject.getPosition() == null) {
 			throw new InvalidWorldPositionException("Position for given world object is not set" + worldObject);
 		}
 
 		System.out.println("New object added to world: " + worldObject);
-		worldObjects.add(worldObject);
+		this.worldObjects.add(worldObject);
 	}
 
-	protected static void removeObject(final IWorldObject worldObject) {
-		if (!worldObjects.remove(worldObject)) {
+	protected void removeObject(final IWorldObject worldObject) {
+		if (!this.worldObjects.remove(worldObject)) {
 			System.out.println("Nothing was removed. Object is unknown in the world: " + worldObject);
 		}
 	}
 
-	protected static void removeObject(final Point position) {
-		for (final IWorldObject worldObject : worldObjects) {
+	protected void removeObject(final Point position) {
+		for (final IWorldObject worldObject : this.worldObjects) {
 			if (worldObject.getPosition().equals(position)) {
-				worldObjects.remove(worldObject);
+				this.worldObjects.remove(worldObject);
 				if (worldObject instanceof IAnt) {
-					deadObjects.add(worldObject);
+					this.deadObjects.add(worldObject);
 				}
 				break;
 			}
@@ -73,10 +73,10 @@ public final class World {
 		System.out.println("No object on that position, nothing was removed.");
 	}
 
-	public static boolean isPositionOccupiedByBorder(final Point position) {
+	public boolean isPositionOccupiedByBorder(final Point position) {
 		boolean isOccupied = false;
 
-		for (final IWorldObject worldObject : worldObjects) {
+		for (final IWorldObject worldObject : this.worldObjects) {
 			if (worldObject instanceof WorldBorder && worldObject.getPosition().equals(position)) {
 				isOccupied = true;
 				System.out.println("Position is occupied: " + position);
@@ -87,25 +87,25 @@ public final class World {
 		return isOccupied;
 	}
 
-	public static void createWorldBorder() {
+	public void createWorldBorder() {
 		try {
 			for (int i = 0; i < WorldConstans.X_BOUNDRY; i++) {
-				placeObject(new WorldBorder(World.idSequence++, new Point(i, 0)));
-				placeObject(new WorldBorder(World.idSequence++, new Point(i, WorldConstans.Y_BOUNDRY - 1)));
+				placeObject(new WorldBorder(this.idSequence++, new Point(i, 0)));
+				placeObject(new WorldBorder(this.idSequence++, new Point(i, WorldConstans.Y_BOUNDRY - 1)));
 			}
 			for (int i = 1; i < WorldConstans.Y_BOUNDRY - 1; i++) {
-				placeObject(new WorldBorder(World.idSequence++, new Point(0, i)));
-				placeObject(new WorldBorder(World.idSequence++, new Point(WorldConstans.X_BOUNDRY - 1, i)));
+				placeObject(new WorldBorder(this.idSequence++, new Point(0, i)));
+				placeObject(new WorldBorder(this.idSequence++, new Point(WorldConstans.X_BOUNDRY - 1, i)));
 			}
 		} catch (final InvalidWorldPositionException e) {
 			System.out.println("Invalid position.");
 		}
 	}
 
-	public static boolean isPositionOccupied(final Point position) {
+	public boolean isPositionOccupied(final Point position) {
 		boolean isOccupied = false;
 
-		for (final IWorldObject worldObject : worldObjects) {
+		for (final IWorldObject worldObject : this.worldObjects) {
 			if (worldObject.getPosition().equals(position)) {
 				isOccupied = true;
 				System.out.println("Position is occupied: " + position);
@@ -116,10 +116,10 @@ public final class World {
 		return isOccupied;
 	}
 
-	public static boolean isHillPosition(final Point position) {
+	public boolean isHillPosition(final Point position) {
 		boolean isHillPosition = false;
 
-		for (final IWorldObject worldObject : hills) {
+		for (final IWorldObject worldObject : this.hills) {
 			if (worldObject.getPosition().equals(position)) {
 				isHillPosition = true;
 				System.out.println("Found hill on given position: " + position);
@@ -130,21 +130,21 @@ public final class World {
 		return isHillPosition;
 	}
 
-	public static Hill createHill(final HillOrder order, final String name) {
-		final long hillId = idSequence++;
+	public Hill createHill(final HillOrder order, final String name) {
+		final long hillId = this.idSequence++;
 		final Hill hill = new Hill(name, new Point(order.getOrder() * WorldConstans.X_BOUNDRY + order.getXOffset(),
 				WorldConstans.Y_BOUNDRY / 2));
 		hill.setId(hillId);
 
-		hills.add(hill);
+		this.hills.add(hill);
 
 		return hill;
 	}
 
-	public static List<IWorldObject> getAllFoods() {
+	public List<IWorldObject> getAllFoods() {
 		final List<IWorldObject> result = new ArrayList<>();
 
-		for (final IWorldObject worldObject : worldObjects) {
+		for (final IWorldObject worldObject : this.worldObjects) {
 			if (worldObject instanceof Food) {
 				result.add(worldObject);
 			}
@@ -153,10 +153,10 @@ public final class World {
 		return result;
 	}
 
-	public static List<IWorldObject> getWorldObjectsToMove() {
+	public List<IWorldObject> getWorldObjectsToMove() {
 		final List<IWorldObject> result = new ArrayList<>();
 
-		for (final IWorldObject worldObject : worldObjects) {
+		for (final IWorldObject worldObject : this.worldObjects) {
 			if (worldObject instanceof IAnt) {
 				result.add(worldObject);
 			}
@@ -164,5 +164,5 @@ public final class World {
 
 		return result;
 	}
-	
+
 }

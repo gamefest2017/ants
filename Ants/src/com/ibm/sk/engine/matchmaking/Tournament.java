@@ -1,7 +1,6 @@
 package com.ibm.sk.engine.matchmaking;
 
 import static com.ibm.sk.WorldConstans.TURNS;
-import static com.ibm.sk.engine.World.createHill;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -31,6 +30,7 @@ public abstract class Tournament implements ITournament {
 	@Setter(AccessLevel.NONE)
 	@Getter(AccessLevel.PROTECTED)
 	private List<Match> matches = new ArrayList<>();
+	private FoodHandler foodHandler;
 	
 	@Override
 	public Match resolveNextMatch() throws NoMoreMatchesException {
@@ -41,17 +41,18 @@ public abstract class Tournament implements ITournament {
 		match.startMatch();
 		
 //		World.reset();
-		World.createWorldBorder();
-		final Hill firstHill = createHill(HillOrder.FIRST, match.getPlayer(0).getName());
+		final World world = new World();
+		world.createWorldBorder();
+		final Hill firstHill = world.createHill(HillOrder.FIRST, match.getPlayer(0).getName());
 		Hill secondHill = null;
 		if (!singlePlayer) {
-			secondHill = createHill(HillOrder.SECOND, match.getPlayer(1).getName());
+			secondHill = world.createHill(HillOrder.SECOND, match.getPlayer(1).getName());
 		}
-		executor.initGame(firstHill, secondHill);
+		this.executor.initGame(firstHill, secondHill);
 
 		for (int turn = 0; turn < TURNS; turn++) {
-			ProcessExecutor.execute(firstHill, secondHill, turn);
-			FoodHandler.dropFood(turn);
+			this.executor.execute(firstHill, secondHill, turn);
+			this.foodHandler.dropFood(turn);
 		}
 		match.getPlayerStatus(0).addScore(firstHill.getFood());
 		if (!singlePlayer) {

@@ -12,25 +12,21 @@ import com.ibm.sk.engine.exceptions.MoveException;
 
 public final class MovementHandler {
 
-	private static MovementHandler movementHandler;
-	private static PopulationHandler populationHandler;
+	private final PopulationHandler populationHandler;
+	private final World world;
+	private final FoodHandler foodHandler;
 
-	private MovementHandler() {
-	}
-
-	public static synchronized MovementHandler getInstance() {
-		if (movementHandler == null) {
-			movementHandler = new MovementHandler();
-			populationHandler = PopulationHandler.getInstance();
-		}
-		return movementHandler;
+	public MovementHandler(final World world, final PopulationHandler populationHandler) {
+		this.world = world;
+		this.populationHandler = populationHandler;
+		this.foodHandler = new FoodHandler(this.world);
 	}
 
 	public IAnt makeMove(final IAnt ant, final Direction direction) throws MoveException {
 		final double newXPos = ant.getPosition().getX() + direction.getPositionChange().getX();
 		final double newYPos = ant.getPosition().getY() + direction.getPositionChange().getY();
 		final Point destination = new Point((int) newXPos, (int) newYPos);
-		if (World.isPositionOccupiedByBorder(destination)) {
+		if (this.world.isPositionOccupiedByBorder(destination)) {
 			throw new MoveException("Can't go to border of the world grid at position " + destination);
 		}
 		final Point position = new Point();
@@ -40,14 +36,14 @@ public final class MovementHandler {
 			moveHome(ant.getMyHill(), (AbstractAnt) ant);
 		}
 
-		final Object worldObject = World.getWorldObject(position);
+		final Object worldObject = this.world.getWorldObject(position);
 
 		if (worldObject == null || ant.getMyHill().getPosition().equals(position)) {
 			System.out.println("I'm moving from [" + ant.getPosition().x + ", " + ant.getPosition().y + "] to "
 					+ direction.name() + "[" + position.x + ", " + position.y + "]" + ", out of my way!");
 			ant.setPosition(position);
 		} else if (worldObject instanceof Food && ant instanceof AbstractAnt) {
-			FoodHandler.pickUpFood((AbstractAnt) ant, (Food) worldObject);
+			this.foodHandler.pickUpFood((AbstractAnt) ant, (Food) worldObject);
 			ant.setPosition(position);
 		} else if (worldObject instanceof IAnt && ant instanceof AbstractWarrior && ant.isEnemy((IAnt) worldObject)) {
 			final AbstractWarrior warrior = (AbstractWarrior) ant;
@@ -63,7 +59,7 @@ public final class MovementHandler {
 	private void moveHome(final Hill hill, final AbstractAnt ant) {
 		final Food droppedFood = ant.dropFood();
 		if (droppedFood != null && droppedFood.getAmount() > 0) {
-			populationHandler.incrementFood(hill, droppedFood.getAmount());
+			this.populationHandler.incrementFood(hill, droppedFood.getAmount());
 		}
 	}
 
@@ -72,7 +68,7 @@ public final class MovementHandler {
 	}
 
 	private void moveToEnemyAndKill(final AbstractWarrior warrior, final IAnt enemy) {
-		PopulationHandler.killAnt(enemy);
+		this.populationHandler.killAnt(enemy);
 		warrior.killed(enemy);
 	}
 }
