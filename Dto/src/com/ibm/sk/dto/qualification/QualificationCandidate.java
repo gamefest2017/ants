@@ -4,13 +4,20 @@ import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.List;
 
+import com.fasterxml.jackson.annotation.JsonIgnore;
 import com.ibm.sk.dto.matchmaking.Player;
+
+import lombok.Data;
 
 public class QualificationCandidate extends Player {
 
 	private List<Long> score = new ArrayList<>();
 	private boolean qualified = false;
-
+	
+	public QualificationCandidate() {
+		super(null,null);
+	}
+	
 	public QualificationCandidate(Integer id, String name, boolean qualified, Long... scoreInQualificationRounds) {
 		super(id, name);
 		this.qualified = qualified;
@@ -20,7 +27,7 @@ public class QualificationCandidate extends Player {
 	public List<Long> getScore() {
 		return score;
 	}
-
+	
 	public Long getScore(int i) {
 		if (score == null || score.size() <= i) {
 			return null;
@@ -31,7 +38,12 @@ public class QualificationCandidate extends Player {
 	public void addScore(long scoreInOneRound) {
 		score.add(scoreInOneRound);
 	}
+	
+	public void setScore(List<Long> score) {
+		this.score = score;
+	}
 
+	@JsonIgnore
 	public long getAvgScore() {
 		return score == null || score.isEmpty() ? 0 : Math.round(score.stream().mapToLong(Long::longValue).average().getAsDouble());
 	}

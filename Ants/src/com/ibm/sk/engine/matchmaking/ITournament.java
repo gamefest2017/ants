@@ -1,9 +1,11 @@
-package com.ibm.sk.dto.matchmaking;
+package com.ibm.sk.engine.matchmaking;
 
 import java.util.List;
 import java.util.Optional;
 
-import com.ibm.sk.dto.matchmaking.strategy.NoMoreMatchesException;
+import com.ibm.sk.dto.matchmaking.Match;
+import com.ibm.sk.dto.matchmaking.Player;
+import com.ibm.sk.dto.matchmaking.PlayerStatus;
 
 public interface ITournament {
 	/**

@@ -1,4 +1,4 @@
-package com.ibm.sk.dto.matchmaking.strategy;
+package com.ibm.sk.engine.matchmaking;
 
 import static java.util.stream.Collectors.groupingBy;
 import static java.util.stream.Collectors.summingInt;
@@ -13,10 +13,10 @@ import java.util.stream.IntStream;
 import com.ibm.sk.dto.matchmaking.Match;
 import com.ibm.sk.dto.matchmaking.Player;
 import com.ibm.sk.dto.matchmaking.PlayerStatus;
-import com.ibm.sk.dto.matchmaking.Tournament;
 import com.ibm.sk.dto.matchmaking.comparator.PlayerScoreComparator;
 import com.ibm.sk.dto.qualification.QualificationCandidate;
 import com.ibm.sk.dto.qualification.QualificationTable;
+import com.ibm.sk.engine.ProcessExecutor;
 
 /**
  * Each player has 3 rounds with AI and gets ranking based on his score.
@@ -28,17 +28,17 @@ import com.ibm.sk.dto.qualification.QualificationTable;
 public class Qualification extends Tournament {
 
 	private static final Integer MATCHES_PER_PLAYER = 3;
-	private static final Player AI = new Player(null, "AI");
 	
-	public Qualification(List<Player> players) {
-		super(players);
+	
+	public Qualification(List<Player> players, ProcessExecutor executor) {
+		super(players, executor);
 		getPlayers().stream().forEach(player -> {
 			IntStream.range(0, MATCHES_PER_PLAYER).forEach(i -> {
 				getMatches().add(new Match(Arrays.asList(player, AI)));
 			});
 		});
 	}
-
+	
 	@Override
 	public Optional<Match> getNextMatch() {
 		return getMatches().stream().filter(m -> !m.isFinished()).findFirst();

@@ -94,6 +94,7 @@ public class Menu extends JPanel {
 
 		// Components MenuListener will need
 		final JButton buttonStart;
+		final JButton buttonNextGame;
 		final JTabbedPane tabbedPane;
 		final JList<String> firstListOfAnthills;
 		final JList<String> secondListOfAnthills;
@@ -363,6 +364,7 @@ public class Menu extends JPanel {
 		buttonStart.setRolloverIcon(menuStartButton2);
 		buttonStart.setPressedIcon(menuStartButton3);
 		panelCenter.add(buttonStart, c);
+		
 		add(panelCenter, BorderLayout.CENTER);
 		add(menuAntLabel2, BorderLayout.LINE_END);
 		add(labelFooter, BorderLayout.PAGE_END);

@@ -1,9 +1,11 @@
-package com.ibm.sk.dto.matchmaking;
+package com.ibm.sk.engine.matchmaking;
 
 import java.util.Arrays;
 import java.util.List;
 
 import org.junit.Before;
+
+import com.ibm.sk.dto.matchmaking.Player;
 
 import lombok.Getter;
 

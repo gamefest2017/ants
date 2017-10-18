@@ -1,4 +1,4 @@
-package com.ibm.sk.dto.matchmaking.strategy;
+package com.ibm.sk.engine.matchmaking;
 
 public class NoMoreMatchesException extends Exception {
 

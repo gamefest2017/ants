@@ -2,6 +2,7 @@ package com.ibm.sk.ff.gui.simple;
 
 import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
+import java.util.StringJoiner;
 
 import javax.swing.JButton;
 import javax.swing.JFrame;
@@ -10,13 +11,18 @@ import javax.swing.JOptionPane;
 import javax.swing.JRadioButton;
 import javax.swing.JScrollPane;
 import javax.swing.JTabbedPane;
+import javax.swing.ListModel;
 import javax.swing.event.ChangeEvent;
 import javax.swing.event.ChangeListener;
 import javax.swing.event.ListSelectionEvent;
 import javax.swing.event.ListSelectionListener;
 
+import com.ibm.sk.dto.qualification.QualificationCandidate;
+import com.ibm.sk.dto.qualification.QualificationTable;
+import com.ibm.sk.dto.tournament.TournamentTable;
 import com.ibm.sk.ff.gui.common.events.GuiEvent;
 import com.ibm.sk.ff.gui.common.events.GuiEventListener;
+import com.ibm.sk.ff.gui.common.mapper.Mapper;
 
 /**
  * <h2>Listener for the {@link Menu}</h2>
@@ -116,7 +122,17 @@ public class MenuListener implements ChangeListener, ActionListener, ListSelecti
 				}
 				break;
 			case 2:
-				sendGuiEvent(new GuiEvent(GuiEvent.EventTypes.TOURNAMENT_PLAY_START, ""));
+				if (radioTournamentSemiFinals.isSelected()) {
+					sendGuiEvent(new GuiEvent(GuiEvent.EventTypes.TOURNAMENT_PLAY_START, ""));
+				} else {
+					StringJoiner sj = new StringJoiner(",");
+					ListModel<String> m = firstListOfAnthills.getModel();
+					for (int i = 0 ; i < m.getSize(); i++) {
+						sj.add(m.getElementAt(i));
+					}
+					sendGuiEvent(new GuiEvent(GuiEvent.EventTypes.QUALIFICATION_START, sj.toString()));
+				}
+				
 				break;
 			case 3:
 				if (replays.getSelectedIndex() == -1) {
