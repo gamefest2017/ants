@@ -7,15 +7,15 @@ public class WorldConstans {
 	/**
 	 * number of TURNS to evaluate game.
 	 */
-	public static final int TURNS = 20;
+	public static final int TURNS = 50;
 	/**
 	 * the amount of ants in one anthill at the beginning of the world.
 	 */
-	public static final int INITIAL_ANT_COUNT = 10;
+	public static final int INITIAL_ANT_COUNT = 5;
 	/**
 	 * frequency of food adding.
 	 */
-	public static final int FOOD_REFILL_FREQUENCY = 20;
+	public static final int FOOD_REFILL_FREQUENCY = 5;
 	public static final double POPULATION_WAR_FACTOR = 2.0 / 5.0;
 
 	/**
