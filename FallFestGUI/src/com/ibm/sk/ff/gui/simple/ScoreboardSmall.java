@@ -12,15 +12,17 @@ import javax.swing.JLabel;
 import javax.swing.JPanel;
 import javax.swing.JTextField;
 
+import com.ibm.sk.WorldConstans;
 import com.ibm.sk.ff.gui.common.objects.operations.CreateGameData;
 import com.ibm.sk.ff.gui.common.objects.operations.ScoreData;
 
 public class ScoreboardSmall extends JPanel {
 
 	private static final long serialVersionUID = 8475229618454645422L;
-
-	private static final List<Color> colors = Arrays.asList(Color.RED, Color.BLACK);
-	private static final String TURNS_LABEL = "Turns remaining";
+	private static final String SCORE_FONT = "Verdana";
+	private static final int SCORE_FONT_SIZE = 14;
+	private static final List<Color> colors = Arrays.asList(Color.BLACK, Color.RED);
+	private static final String TURN_LABEL = "Turn";
 	private JLabel[] labels;
 	private JTextField[] texts;
 	private JLabel turnsLabel;
@@ -38,7 +40,7 @@ public class ScoreboardSmall extends JPanel {
 			int i = 0;
 			for (final String it : cgd.getTeams()) {
 				this.labels[i] = new JLabel(it);
-				this.labels[i].setFont(new Font("Verdana", Font.BOLD, 14));
+				this.labels[i].setFont(new Font(SCORE_FONT, Font.BOLD, SCORE_FONT_SIZE));
 				this.labels[i].setBorder(BorderFactory.createLineBorder(colors.get(i % colors.size()), 1));
 				this.texts[i] = new JTextField();
 				this.texts[i].setColumns(5);
@@ -51,7 +53,7 @@ public class ScoreboardSmall extends JPanel {
 	}
 
 	public void setScore(final ScoreData sd) {
-		this.turnsText.setText(sd.getTurnsRemaining() + "");
+		this.turnsText.setText(sd.getTurn() + " / " + WorldConstans.TURNS);
 		for (int i = 0; i < this.labels.length; i++) {
 			if (this.labels[i].getText().equals(sd.getMessage())) {
 				this.texts[i].setText(sd.getScore() + "");
@@ -60,7 +62,7 @@ public class ScoreboardSmall extends JPanel {
 	}
 
 	private void createTurnsArea() {
-		this.turnsLabel = new JLabel(TURNS_LABEL);
+		this.turnsLabel = new JLabel(TURN_LABEL);
 		this.turnsText = new JTextField(5);
 		this.turnsText.setEditable(false);
 		add(this.turnsLabel);
