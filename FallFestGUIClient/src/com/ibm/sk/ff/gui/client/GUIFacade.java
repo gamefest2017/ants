@@ -1,11 +1,19 @@
 package com.ibm.sk.ff.gui.client;
 
+import static com.ibm.sk.ff.gui.common.GUIOperations.CLOSE;
+import static com.ibm.sk.ff.gui.common.GUIOperations.CREATE_GAME;
+import static com.ibm.sk.ff.gui.common.GUIOperations.EVENT_POLL;
+import static com.ibm.sk.ff.gui.common.GUIOperations.REMOVE;
+import static com.ibm.sk.ff.gui.common.GUIOperations.SCORE;
+import static com.ibm.sk.ff.gui.common.GUIOperations.SET;
+import static com.ibm.sk.ff.gui.common.GUIOperations.SHOW_INIT_MENU;
+import static com.ibm.sk.ff.gui.common.GUIOperations.SHOW_RESULT;
+
 import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 
-import com.ibm.sk.ff.gui.common.GUIOperations;
 import com.ibm.sk.ff.gui.common.events.GuiEvent;
 import com.ibm.sk.ff.gui.common.events.GuiEventListener;
 import com.ibm.sk.ff.gui.common.mapper.Mapper;
@@ -20,6 +28,7 @@ import com.ibm.sk.ff.gui.common.objects.operations.CreateGameData;
 import com.ibm.sk.ff.gui.common.objects.operations.InitMenuData;
 import com.ibm.sk.ff.gui.common.objects.operations.ResultData;
 import com.ibm.sk.ff.gui.common.objects.operations.ScoreData;
+import com.ibm.sk.ff.gui.common.objects.operations.Step;
 
 public class GUIFacade {
 
@@ -30,6 +39,8 @@ public class GUIFacade {
 	private final List<GAntFoodObject> antFoodObjects = new ArrayList<>();
 
 	private final Map<GAntObject, GAntFoodObject> notRenderedYet = new HashMap<>();
+
+	private List<Step> steps;
 
 	public GUIFacade() {
 		this.CLIENT = new Client();
@@ -59,7 +70,8 @@ public class GUIFacade {
 
 			final GUIObjectCrate crate = new GUIObjectCrate();
 			crate.sortOut(objects);
-			this.CLIENT.postMessage(GUIOperations.SET.toString(), Mapper.INSTANCE.pojoToJson(crate));
+			this.CLIENT.postMessage(SET.toString(), Mapper.INSTANCE.pojoToJson(crate));
+//			steps.add(new Step(SET, crate));
 		}
 
 		sendNotYetRenderedData(o);
@@ -80,7 +92,7 @@ public class GUIFacade {
 			remove(foodsToRemove.stream().toArray(GFoodObject[]::new));
 
 			this.CLIENT.postMessage(
-					GUIOperations.SET.toString() + "/" + GUIObjectTypes.ANT_FOOD.toString(),
+					SET.toString() + "/" + GUIObjectTypes.ANT_FOOD.toString(),
 					Mapper.INSTANCE.pojoToJson(mapNotYetRendered(o))
 					);
 		}
@@ -172,35 +184,36 @@ public class GUIFacade {
 		final GUIObjectCrate crate = new GUIObjectCrate();
 		final GUIObject[] mapped = map(objects);
 		crate.sortOut(mapped);
-		this.CLIENT.postMessage(GUIOperations.REMOVE.toString() + "/", Mapper.INSTANCE.pojoToJson(crate));
+		this.CLIENT.postMessage(REMOVE.toString() + "/", Mapper.INSTANCE.pojoToJson(crate));
+		steps.add(new Step(REMOVE, crate));
 	}
 
 	public void showScore(final ScoreData data) {
-		this.CLIENT.postMessage(GUIOperations.SCORE.toString(), Mapper.INSTANCE.pojoToJson(data));
+		this.CLIENT.postMessage(SCORE.toString(), Mapper.INSTANCE.pojoToJson(data));
 	}
 
 	//
 	// Operations
 	//
 	public void showInitMenu(final InitMenuData data) {
-		this.CLIENT.postMessage(GUIOperations.SHOW_INIT_MENU.toString(), Mapper.INSTANCE.pojoToJson(data));
+		this.CLIENT.postMessage(SHOW_INIT_MENU.toString(), Mapper.INSTANCE.pojoToJson(data));
 	}
 
 	public void createGame(final CreateGameData data) {
-		this.CLIENT.postMessage(GUIOperations.CREATE_GAME.toString(), Mapper.INSTANCE.pojoToJson(data));
+		this.CLIENT.postMessage(CREATE_GAME.toString(), Mapper.INSTANCE.pojoToJson(data));
 	}
 
 	public void showResult(final ResultData data) {
-		this.CLIENT.postMessage(GUIOperations.SHOW_RESULT.toString(), Mapper.INSTANCE.pojoToJson(data));
+		this.CLIENT.postMessage(SHOW_RESULT.toString(), Mapper.INSTANCE.pojoToJson(data));
 	}
 
 	public void close(final CloseData data) {
-		this.CLIENT.postMessage(GUIOperations.CLOSE.toString(), Mapper.INSTANCE.pojoToJson(data));
+		this.CLIENT.postMessage(CLOSE.toString(), Mapper.INSTANCE.pojoToJson(data));
 	}
 
 	// Poll for events
 	private void checkEvents() {
-		final String events = this.CLIENT.getMessage(GUIOperations.EVENT_POLL.toString());
+		final String events = this.CLIENT.getMessage(EVENT_POLL.toString());
 		if (events != null && events.length() > 0) {
 			final GuiEvent[] swp = Mapper.INSTANCE.jsonToPojo(events, GuiEvent[].class);
 			castEvent(swp);
