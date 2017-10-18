@@ -9,9 +9,11 @@ import java.awt.GridBagLayout;
 import java.awt.GridLayout;
 import java.awt.Insets;
 import java.util.ArrayList;
+import java.util.Arrays;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
+import java.util.stream.Collectors;
 
 import javax.swing.BorderFactory;
 import javax.swing.Box;
@@ -44,6 +46,7 @@ import com.ibm.sk.dto.qualification.QualificationTable;
 import com.ibm.sk.dto.tournament.TournamentTable;
 import com.ibm.sk.ff.gui.common.events.GuiEventListener;
 import com.ibm.sk.ff.gui.common.objects.operations.InitMenuData;
+import com.ibm.sk.ff.gui.common.objects.operations.Replay;
 import com.mxgraph.swing.mxGraphComponent;
 import com.mxgraph.view.mxGraph;
 
@@ -401,7 +404,7 @@ public class Menu extends JPanel {
 	 */
 	protected void addReplays(DefaultListModel<String> list) {
 		if (initMenuData != null && initMenuData.replays != null && initMenuData.replays.length > 0) {
-			for (String replay : initMenuData.replays) {
+			for (String replay : Arrays.asList(initMenuData.replays).stream().map(r -> r.getReplayName()).collect(Collectors.toList())) {
 				list.addElement(replay);
 			}
 		}
@@ -426,7 +429,7 @@ public class Menu extends JPanel {
 				"Winners"};
 		
 		// Dummy list of replays
-		initMenuData.replays = new String[] {
+		initMenuData.replays = Arrays.asList(new String[] {
 				"[2017-10-01 10:00:05, Duel] Chuck Norris - Superman",
 				"[2017-10-01 12:10:45, Duel] Batman - Superman",
 				"[2017-10-01 17:20:11, Duel] Chuck Norris - Lady Gaga",
@@ -443,7 +446,7 @@ public class Menu extends JPanel {
 				"[2017-10-03 22:10:45, Tournament] Batman - Superman",
 				"[2017-10-03 23:20:11, Tournament] Chuck Norris - Lady Gaga",
 				"[2017-10-03 23:30:44, Tournament] Lady Gaga - Justin Bieber"
-		};
+		}).stream().map(d -> new Replay(new ArrayList<>(), d)).toArray(Replay[]::new);
 		
 		// Dummy qualification results
 		QualificationTable qualificationTable = new QualificationTable();

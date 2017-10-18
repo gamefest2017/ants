@@ -17,6 +17,7 @@ import com.ibm.sk.ff.gui.common.events.GuiEventListener;
 import com.ibm.sk.ff.gui.common.objects.operations.CloseData;
 import com.ibm.sk.ff.gui.common.objects.operations.CreateGameData;
 import com.ibm.sk.ff.gui.common.objects.operations.InitMenuData;
+import com.ibm.sk.ff.gui.common.objects.operations.Replay;
 
 public class CreationPanel extends JPanel implements GuiEventListener {
 

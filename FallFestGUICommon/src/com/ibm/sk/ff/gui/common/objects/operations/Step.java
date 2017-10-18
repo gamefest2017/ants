@@ -1,4 +1,4 @@
-package com.ibm.sk.ff.gui.client;
+package com.ibm.sk.ff.gui.common.objects.operations;
 
 import com.ibm.sk.ff.gui.common.GUIOperations;
 

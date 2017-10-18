@@ -9,6 +9,8 @@ import java.io.FileWriter;
 import java.io.IOException;
 import java.util.List;
 
+import com.ibm.sk.ff.gui.common.objects.operations.Step;
+
 public final class FileHelper {
     private FileHelper() {
     }

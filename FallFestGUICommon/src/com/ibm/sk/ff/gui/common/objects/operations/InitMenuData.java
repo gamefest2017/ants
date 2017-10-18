@@ -1,11 +1,9 @@
 package com.ibm.sk.ff.gui.common.objects.operations;
 
 import java.util.Arrays;
-import java.util.List;
 
 import com.ibm.sk.dto.qualification.QualificationTable;
 import com.ibm.sk.dto.tournament.TournamentTable;
-import com.ibm.sk.ff.gui.client.Replay;
 
 public class InitMenuData {
 	

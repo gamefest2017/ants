@@ -1,6 +1,13 @@
 package com.ibm.sk.ff.gui.client;
 
-import static com.ibm.sk.ff.gui.common.GUIOperations.*;
+import static com.ibm.sk.ff.gui.common.GUIOperations.CLOSE;
+import static com.ibm.sk.ff.gui.common.GUIOperations.CREATE_GAME;
+import static com.ibm.sk.ff.gui.common.GUIOperations.EVENT_POLL;
+import static com.ibm.sk.ff.gui.common.GUIOperations.REMOVE;
+import static com.ibm.sk.ff.gui.common.GUIOperations.SCORE;
+import static com.ibm.sk.ff.gui.common.GUIOperations.SET;
+import static com.ibm.sk.ff.gui.common.GUIOperations.SHOW_INIT_MENU;
+import static com.ibm.sk.ff.gui.common.GUIOperations.SHOW_RESULT;
 
 import java.util.ArrayList;
 import java.util.HashMap;
@@ -21,6 +28,7 @@ import com.ibm.sk.ff.gui.common.objects.operations.CreateGameData;
 import com.ibm.sk.ff.gui.common.objects.operations.InitMenuData;
 import com.ibm.sk.ff.gui.common.objects.operations.ResultData;
 import com.ibm.sk.ff.gui.common.objects.operations.ScoreData;
+import com.ibm.sk.ff.gui.common.objects.operations.Step;
 
 public class GUIFacade {
 
