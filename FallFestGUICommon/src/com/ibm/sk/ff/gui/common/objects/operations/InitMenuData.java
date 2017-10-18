@@ -2,14 +2,18 @@ package com.ibm.sk.ff.gui.common.objects.operations;
 
 import java.util.Arrays;
 
+<<<<<<< HEAD
 import com.ibm.sk.dto.qualification.QualificationTable;
 import com.ibm.sk.dto.tournament.TournamentTable;
+=======
+import com.ibm.sk.ff.gui.client.Replay;
+>>>>>>> Add support for read replay
 
 public class InitMenuData {
 	
 	public String[] competitors = {};
 	
-	public String[] replays = {};
+	public Replay[] replays = {};
 	
 	public QualificationTable qualification;
 	
@@ -44,16 +48,16 @@ public class InitMenuData {
 		return competitors;
 	}
 	
-	public void addReplay(String replay) {
+	public void addReplay(Replay replay) {
 		replays = Arrays.copyOf(replays, replays.length + 1);
 		replays[replays.length -1] = replay;
 	}
 	
-	public void setReplay(String[] replay) {
+	public void setReplay(Replay[] replay) {
 		replays = replay;
 	}
 	
-	public String[] getReplays() {
+	public Replay[] getReplays() {
 		return replays;
 	}
 

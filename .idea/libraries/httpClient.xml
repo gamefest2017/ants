@@ -1,0 +1,10 @@
+<component name="libraryTable">
+  <library name="httpClient">
+    <CLASSES>
+      <root url="file://$PROJECT_DIR$/FallFestGUILib/httpClient" />
+    </CLASSES>
+    <JAVADOC />
+    <SOURCES />
+    <jarDirectory url="file://$PROJECT_DIR$/FallFestGUILib/httpClient" recursive="false" />
+  </library>
+</component>

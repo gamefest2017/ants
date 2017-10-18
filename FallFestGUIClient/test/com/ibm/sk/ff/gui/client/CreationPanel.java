@@ -78,6 +78,7 @@ public class CreationPanel extends JPanel implements GuiEventListener {
 				facade.close(data);
 			}
 		});
+<<<<<<< HEAD
 
 		init.addActionListener(new ActionListener() {
 			@Override
@@ -90,6 +91,18 @@ public class CreationPanel extends JPanel implements GuiEventListener {
 				facade.showInitMenu(imd);
 			}
 		});
+=======
+		
+		init.addActionListener(event-> {
+            InitMenuData imd = new InitMenuData();
+
+            imd.setCompetitors(new String [] {"Competitor1", "Competitor2", "Competitor3", "Competitor4"});
+            Replay replay = new Replay(FileHelper.read(), "replayName");
+            imd.setReplay(new Replay[] {replay});
+
+            facade.showInitMenu(imd);
+        });
+>>>>>>> Add support for read replay
 	}
 
 	@Override
