@@ -4,7 +4,7 @@ public class ScoreData {
 
 	private String team;
 	private int score;
-	private int turnsRemaining;
+	private int turn;
 
 	public void setMessage(String message) {
 		this.team = message;
@@ -22,12 +22,12 @@ public class ScoreData {
 		return score;
 	}
 
-	public void setTurnsRemaining(int turnsRemaining) {
-		this.turnsRemaining = turnsRemaining;
+	public void setTurn(int turn) {
+		this.turn = turn;
 	}
 
-	public int getTurnsRemaining() {
-		return turnsRemaining;
+	public int getTurn() {
+		return turn;
 	}
 
 }

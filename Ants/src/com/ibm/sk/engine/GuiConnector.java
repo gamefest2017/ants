@@ -188,7 +188,7 @@ public class GuiConnector {
 		final ScoreData data = new ScoreData();
 		data.setMessage(teamName);
 		data.setScore(points);
-		data.setTurnsRemaining(turnsRemaining);
+		data.setTurn(turnsRemaining);
 		this.FACADE.showScore(data);
 	}
 

@@ -55,9 +55,9 @@ public final class ProcessExecutor {
 		guiConnector.placeGuiObjects(World.getWorldObjectsToMove());
 		guiConnector.removeGuiObjects(getDeadObjects());
 		getDeadObjects().clear();
-		guiConnector.showScore(firstHill.getName(), firstHill.getFood(), WorldConstans.TURNS - turn);
+		guiConnector.showScore(firstHill.getName(), firstHill.getFood(), turn + 1);
 		if (secondHill != null) {
-			guiConnector.showScore(secondHill.getName(), secondHill.getFood(), WorldConstans.TURNS - turn);
+			guiConnector.showScore(secondHill.getName(), secondHill.getFood(), turn + 1);
 		}
 	}
 
