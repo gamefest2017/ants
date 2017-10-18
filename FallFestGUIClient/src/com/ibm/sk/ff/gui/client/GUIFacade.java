@@ -71,7 +71,7 @@ public class GUIFacade {
 			final GUIObjectCrate crate = new GUIObjectCrate();
 			crate.sortOut(objects);
 			this.CLIENT.postMessage(SET.toString(), Mapper.INSTANCE.pojoToJson(crate));
-			steps.add(new Step(SET, crate));
+//			steps.add(new Step(SET, crate));
 		}
 
 		sendNotYetRenderedData(o);
