@@ -5,14 +5,11 @@ import static com.ibm.sk.engine.World.createHill;
 
 import java.util.ArrayList;
 import java.util.List;
-import java.util.Random;
 
 import com.ibm.sk.dto.Hill;
-import com.ibm.sk.dto.IAnt;
 import com.ibm.sk.dto.enums.HillOrder;
 import com.ibm.sk.dto.matchmaking.Match;
 import com.ibm.sk.dto.matchmaking.Player;
-import com.ibm.sk.dto.matchmaking.PlayerStatus;
 import com.ibm.sk.engine.FoodHandler;
 import com.ibm.sk.engine.ProcessExecutor;
 import com.ibm.sk.engine.World;
@@ -56,6 +53,12 @@ public abstract class Tournament implements ITournament {
 		match.getPlayerStatus(0).addScore(firstHill.getFood());
 		if (!singlePlayer) {
 			match.getPlayerStatus(1).addScore(secondHill.getFood());
+		}
+		
+		if (singlePlayer) {
+			executor.finishGame(firstHill);
+		} else {
+			executor.finishGame((firstHill.getFood() > secondHill.getFood()) ? firstHill : secondHill);
 		}
 		
 		match.endMatch();

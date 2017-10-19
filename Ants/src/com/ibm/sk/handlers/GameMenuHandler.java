@@ -7,16 +7,15 @@ import java.util.Arrays;
 import java.util.List;
 import java.util.concurrent.atomic.AtomicInteger;
 import java.util.stream.Collectors;
-import java.util.stream.Stream;
 
+import com.ibm.sk.MenuMain;
 import com.ibm.sk.WorldConstans;
 import com.ibm.sk.dto.Hill;
 import com.ibm.sk.dto.IAnt;
 import com.ibm.sk.dto.enums.HillOrder;
 import com.ibm.sk.dto.matchmaking.Player;
-import com.ibm.sk.dto.qualification.QualificationCandidate;
-import com.ibm.sk.dto.qualification.QualificationTable;
 import com.ibm.sk.engine.FoodHandler;
+import com.ibm.sk.engine.GuiConnector;
 import com.ibm.sk.engine.ProcessExecutor;
 import com.ibm.sk.engine.World;
 import com.ibm.sk.engine.matchmaking.NoMoreMatchesException;
@@ -87,6 +86,9 @@ public class GameMenuHandler implements GuiEventListener {
 			data.setTournament(this.tournament.getTournamentTable());
 			
 			executor.guiConnector.getFacade().showInitMenu(data);
+		} else if (GuiEvent.EventTypes.RESULT_CLOSE.equals(event.getType())) {
+			//TODO - show init menu
+			MenuMain.showMainWindow();
 		}
 	}
 
@@ -108,6 +110,7 @@ public class GameMenuHandler implements GuiEventListener {
 		for (final IAnt ant : hill.getAnts()) {
 			System.out.println(ant);
 		}
+		executor.finishGame(hill);
 		System.out.println("Game duration: " + turn + " turns, in " + (endTime - startTime) + " ms");
 	}
 
@@ -129,6 +132,7 @@ public class GameMenuHandler implements GuiEventListener {
 		final long endTime = System.currentTimeMillis();
 		printScore(firstHill);
 		printScore(secondHill);
+		executor.finishGame((firstHill.getFood() > secondHill.getFood()) ? firstHill : secondHill);
 		System.out.println("Game duration: " + turn + " turns, in " + (endTime - startTime) + " ms");
 	}
 

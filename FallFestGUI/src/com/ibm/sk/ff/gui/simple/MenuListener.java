@@ -17,12 +17,8 @@ import javax.swing.event.ChangeListener;
 import javax.swing.event.ListSelectionEvent;
 import javax.swing.event.ListSelectionListener;
 
-import com.ibm.sk.dto.qualification.QualificationCandidate;
-import com.ibm.sk.dto.qualification.QualificationTable;
-import com.ibm.sk.dto.tournament.TournamentTable;
 import com.ibm.sk.ff.gui.common.events.GuiEvent;
 import com.ibm.sk.ff.gui.common.events.GuiEventListener;
-import com.ibm.sk.ff.gui.common.mapper.Mapper;
 
 /**
  * <h2>Listener for the {@link Menu}</h2>

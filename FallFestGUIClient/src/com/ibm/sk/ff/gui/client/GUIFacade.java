@@ -40,7 +40,7 @@ public class GUIFacade {
 
 	private final Map<GAntObject, GAntFoodObject> notRenderedYet = new HashMap<>();
 
-	private List<Step> steps;
+	private List<Step> steps = new ArrayList<>();;
 
 	public GUIFacade() {
 		this.CLIENT = new Client();

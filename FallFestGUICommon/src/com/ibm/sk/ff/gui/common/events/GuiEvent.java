@@ -15,8 +15,12 @@ public class GuiEvent {
 		DOUBLE_PLAY_START("doublePlayStart"), 
 		QUALIFICATION_START("qualificationStart"),
 		TOURNAMENT_PLAY_START("tournamentPlayStart"), 
-		PLAYER_1_SELECTED("playerOneSelected"), PLAYER_2_SELECTED(
-						"playerTwoSelected"), START_REPLAY("startReplay"), REPLAY_SELECTED("replaySelected"),;
+		PLAYER_1_SELECTED("playerOneSelected"),
+		PLAYER_2_SELECTED("playerTwoSelected"),
+		START_REPLAY("startReplay"),
+		REPLAY_SELECTED("replaySelected"),
+		RESULT_CLOSE("resultClose"),
+		;
 
 		private static final Map<String, EventTypes> MAP = new HashMap<>();
 

@@ -5,8 +5,6 @@ import java.util.stream.Collectors;
 
 import com.ibm.sk.ant.AntLoader;
 import com.ibm.sk.ant.facade.AntFactory;
-import com.ibm.sk.dto.qualification.QualificationCandidate;
-import com.ibm.sk.dto.qualification.QualificationTable;
 import com.ibm.sk.engine.ProcessExecutor;
 import com.ibm.sk.ff.gui.common.objects.operations.InitMenuData;
 import com.ibm.sk.handlers.GameMenuHandler;
@@ -18,6 +16,10 @@ public class MenuMain extends AbstractMain {
 	}
 
 	public static void main(final String args[]) {
+		showMainWindow();
+	}
+	
+	public static void showMainWindow() {
 		AntFactory[] implementations = AntLoader.getImplementations();
 		InitMenuData imd = new InitMenuData();
 		

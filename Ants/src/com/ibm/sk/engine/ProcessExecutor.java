@@ -77,6 +77,10 @@ public final class ProcessExecutor {
 			guiConnector.placeGuiObjects(new ArrayList<>(team2.getAnts()));
 		}
 	}
+	
+	public void finishGame(final Hill team1) {
+		guiConnector.showResult(team1);
+	}
 
 	private static void initAnts(final Hill hill) {
 		for (int i = 0; i < Math.ceil(INITIAL_ANT_COUNT * (1.0 - POPULATION_WAR_FACTOR)); i++) {
