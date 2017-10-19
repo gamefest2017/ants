@@ -20,6 +20,7 @@ import javax.swing.ButtonGroup;
 import javax.swing.DefaultListModel;
 import javax.swing.ImageIcon;
 import javax.swing.JButton;
+import javax.swing.JCheckBox;
 import javax.swing.JFrame;
 import javax.swing.JLabel;
 import javax.swing.JList;
@@ -91,6 +92,7 @@ public class Menu extends JPanel {
 
 		// Components MenuListener will need
 		final JButton buttonStart;
+		final JCheckBox runInBackgroundCheckbox;
 		final JTabbedPane tabbedPane;
 		final JList<String> firstListOfAnthills;
 		final JList<String> secondListOfAnthills;
@@ -360,6 +362,12 @@ public class Menu extends JPanel {
 		buttonStart.setRolloverIcon(menuStartButton2);
 		buttonStart.setPressedIcon(menuStartButton3);
 		panelCenter.add(buttonStart, c);
+		
+		runInBackgroundCheckbox = new JCheckBox("Run in background");
+		runInBackgroundCheckbox.setSelected(false);
+		panelCenter.add(runInBackgroundCheckbox);
+		
+		
 		
 		add(panelCenter, BorderLayout.CENTER);
 		add(menuAntLabel2, BorderLayout.LINE_END);

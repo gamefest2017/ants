@@ -153,11 +153,15 @@ public class MenuListener implements ChangeListener, ActionListener, ListSelecti
 			}
 		} else if (e.getSource().equals(radioQualification)) {
 			scrollPaneQualification.setVisible(true);
-			scrollPaneTournament.setVisible(false);
+			if (scrollPaneTournament != null) {
+				scrollPaneTournament.setVisible(false);
+			}
 			scrollPaneQualification.getParent().validate();
 		} else if (e.getSource().equals(radioTournamentSemiFinals)) {
 			scrollPaneQualification.setVisible(false);
-			scrollPaneTournament.setVisible(true);
+			if (scrollPaneTournament != null) {//for initial tournament run, pane is not initialized
+				scrollPaneTournament.setVisible(true);
+			}
 			scrollPaneQualification.getParent().validate();
 		}
 	}

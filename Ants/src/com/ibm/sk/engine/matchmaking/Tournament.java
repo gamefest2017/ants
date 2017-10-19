@@ -33,20 +33,16 @@ public abstract class Tournament implements ITournament {
 		match.startMatch();
 
 		final ProcessExecutor executor = new ProcessExecutor(new GUIFacade(), AntLoader.getImplementations());
-		final Map<String, Integer> results = executor.run(match.getPlayer(0).getName(), match.getPlayer(1).getName());
+		final Map<String, Integer> results = executor.run(match.getPlayer(0).getName(), singlePlayer ? null : match.getPlayer(1).getName());
 
 		match.getPlayerStatus(0).addScore(results.get(match.getPlayer(0).getName()).intValue());
 		if (!singlePlayer) {
 			match.getPlayerStatus(1).addScore(results.get(match.getPlayer(1).getName()).intValue());
 		}
 		
-		if (singlePlayer) {
-			ProcessExecutor.guiConnector.showResult(null);
-		} else {
-			ProcessExecutor.guiConnector.showResult(null);
-		}
-		
 		match.endMatch();
+		
+		ProcessExecutor.guiConnector.showResult(match.getWinners().get(0).getName());
 		
 		return match;
 	}
