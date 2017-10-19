@@ -148,10 +148,10 @@ public enum Direction {
 	}
 	
 	public static List<Direction> getNonEastDirections() {
-		return Arrays.asList(Direction.WEST, Direction.NORTHWEST, Direction.SOUTHWEST, Direction.NO_MOVE, Direction.SOUTH, Direction.NORTH);
+		return Arrays.asList(Direction.WEST, Direction.NORTHWEST, Direction.SOUTHWEST, Direction.SOUTH, Direction.NORTH);
 	}
 	
 	public static List<Direction> getNonWestDirections() {
-		return Arrays.asList(Direction.EAST, Direction.NORTHEAST, Direction.SOUTHEAST, Direction.NO_MOVE, Direction.SOUTH, Direction.NORTH);
+		return Arrays.asList(Direction.EAST, Direction.NORTHEAST, Direction.SOUTHEAST, Direction.SOUTH, Direction.NORTH);
 	}
 }

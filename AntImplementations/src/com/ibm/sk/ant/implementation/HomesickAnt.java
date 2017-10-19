@@ -3,6 +3,7 @@ package com.ibm.sk.ant.implementation;
 import java.awt.Point;
 import java.util.Random;
 
+import com.ibm.sk.WorldConstans;
 import com.ibm.sk.dto.AbstractAnt;
 import com.ibm.sk.dto.Hill;
 import com.ibm.sk.dto.Vision;
@@ -10,7 +11,11 @@ import com.ibm.sk.dto.enums.Direction;
 import com.ibm.sk.dto.enums.ObjectType;
 
 public class HomesickAnt extends AbstractAnt {
-	private int maxDistance = 4 + new Random().nextInt(6);
+	/**
+	 * 
+	 */
+	private static final long serialVersionUID = 1L;
+	private int maxDistance = 4 + new Random().nextInt(WorldConstans.X_BOUNDRY/2);
 	public HomesickAnt(long id, Point position, Hill myHill) {
 		super(id, position, myHill);
 		// TODO Auto-generated constructor stub
@@ -33,6 +38,11 @@ public class HomesickAnt extends AbstractAnt {
 						Math.abs(this.position.y - this.getMyHill().getPosition().y));
 				if (distance > this.maxDistance) {
 					returnValue = findWayHome();
+					
+					ObjectType objectType = vision.look(returnValue);
+					if (ObjectType.BORDER.equals(objectType)) {
+						returnValue = Direction.opposite(returnValue);
+					}
 				} else {
 					do {
 						System.out.println("Where to go?");
