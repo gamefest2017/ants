@@ -27,6 +27,11 @@ public final class ReplayFileHelper {
 			System.out.println("Failed to write to the file!" + e);
 		}
 	}
+	
+	public static Replay read(String fileName) {
+		File targetFile = new File(Config.REPLAY_FOLDER.toString() + "/" + fileName);
+		return read(targetFile);
+	}
 
 	public static Replay read(File fileName) {
 		String fileContent = "";

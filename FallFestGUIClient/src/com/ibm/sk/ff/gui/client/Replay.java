@@ -26,4 +26,22 @@ public class Replay {
     public void setReplayName(String replayName) {
         this.replayName = replayName;
     }
+    
+    public void play(GUIFacade facade) {
+    	facade.setRecord(false);
+    	for (Step it : steps) {
+    		switch (it.getOperation()) {
+			case CLOSE:	break;
+			case CREATE_GAME: facade.createGame(it.getCreateGame()); break;
+			case EVENT_POLL: break;
+			case REMOVE: facade.remove(it.getOperationData()); break;
+			case SCORE: facade.showScore(it.getScoreData()); break;
+			case SET: facade.set(it.getOperationData()); break;
+			case SHOW_INIT_MENU: break;
+			case SHOW_RESULT: facade.showResult(it.getResultData()); break;
+			default: break;
+    		}
+    	}
+    	facade.setRecord(true);
+    }
 }
