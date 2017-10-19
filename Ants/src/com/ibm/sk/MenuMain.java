@@ -25,7 +25,7 @@ public class MenuMain extends AbstractMain {
 		
 		imd.setCompetitors(Arrays.asList(implementations).stream().map(i -> i.getTeamName()).collect(Collectors.toList()).stream().toArray(String[]::new));
 		getGuiFacade().showInitMenu(imd);
-		getGuiFacade().addGuiEventListener(new GameMenuHandler(new ProcessExecutor(FACADE)));
+		getGuiFacade().addGuiEventListener(new GameMenuHandler(FACADE, imd));
 	}
 
 }
