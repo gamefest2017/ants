@@ -4,7 +4,7 @@ import java.awt.Point;
 import java.util.ArrayList;
 import java.util.List;
 
-import com.ibm.sk.WorldConstans;
+import com.ibm.sk.WorldConstants;
 import com.ibm.sk.dto.Food;
 import com.ibm.sk.dto.Hill;
 import com.ibm.sk.dto.IAnt;
@@ -89,13 +89,13 @@ public final class World {
 
 	public void createWorldBorder() {
 		try {
-			for (int i = 0; i < WorldConstans.X_BOUNDRY; i++) {
+			for (int i = 0; i < WorldConstants.X_BOUNDRY; i++) {
 				placeObject(new WorldBorder(this.idSequence++, new Point(i, 0)));
-				placeObject(new WorldBorder(this.idSequence++, new Point(i, WorldConstans.Y_BOUNDRY - 1)));
+				placeObject(new WorldBorder(this.idSequence++, new Point(i, WorldConstants.Y_BOUNDRY - 1)));
 			}
-			for (int i = 1; i < WorldConstans.Y_BOUNDRY - 1; i++) {
+			for (int i = 1; i < WorldConstants.Y_BOUNDRY - 1; i++) {
 				placeObject(new WorldBorder(this.idSequence++, new Point(0, i)));
-				placeObject(new WorldBorder(this.idSequence++, new Point(WorldConstans.X_BOUNDRY - 1, i)));
+				placeObject(new WorldBorder(this.idSequence++, new Point(WorldConstants.X_BOUNDRY - 1, i)));
 			}
 		} catch (final InvalidWorldPositionException e) {
 			System.out.println("Invalid position.");
@@ -132,8 +132,8 @@ public final class World {
 
 	public Hill createHill(final HillOrder order, final String name) {
 		final long hillId = this.idSequence++;
-		final Hill hill = new Hill(name, new Point(order.getOrder() * WorldConstans.X_BOUNDRY + order.getXOffset(),
-				WorldConstans.Y_BOUNDRY / 2));
+		final Hill hill = new Hill(name, new Point(order.getOrder() * WorldConstants.X_BOUNDRY + order.getXOffset(),
+				WorldConstants.Y_BOUNDRY / 2));
 		hill.setId(hillId);
 
 		this.hills.add(hill);

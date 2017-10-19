@@ -1,11 +1,13 @@
 package com.ibm.sk.engine.matchmaking;
 
-import static com.ibm.sk.WorldConstans.TURNS;
+import static com.ibm.sk.WorldConstants.TURNS;
 
 import java.util.ArrayList;
 import java.util.List;
+import java.util.Map;
 import java.util.Random;
 
+import com.ibm.sk.ant.AntLoader;
 import com.ibm.sk.dto.Hill;
 import com.ibm.sk.dto.IAnt;
 import com.ibm.sk.dto.enums.HillOrder;
@@ -15,6 +17,8 @@ import com.ibm.sk.dto.matchmaking.PlayerStatus;
 import com.ibm.sk.engine.FoodHandler;
 import com.ibm.sk.engine.ProcessExecutor;
 import com.ibm.sk.engine.World;
+import com.ibm.sk.ff.gui.client.GUIFacade;
+import com.ibm.sk.ff.gui.common.objects.operations.InitMenuData;
 
 import lombok.AccessLevel;
 import lombok.Data;
@@ -24,13 +28,11 @@ import lombok.Setter;
 @Data
 public abstract class Tournament implements ITournament {
 	private final List<Player> players;
-	private final ProcessExecutor executor;
 	protected static final Player AI = new Player(null, "AI");
 	
 	@Setter(AccessLevel.NONE)
 	@Getter(AccessLevel.PROTECTED)
 	private List<Match> matches = new ArrayList<>();
-	private FoodHandler foodHandler;
 	
 	@Override
 	public Match resolveNextMatch() throws NoMoreMatchesException {
@@ -39,24 +41,13 @@ public abstract class Tournament implements ITournament {
 		boolean singlePlayer = match.getPlayers().contains(AI);
 		
 		match.startMatch();
-		
-//		World.reset();
-		final World world = new World();
-		world.createWorldBorder();
-		final Hill firstHill = world.createHill(HillOrder.FIRST, match.getPlayer(0).getName());
-		Hill secondHill = null;
-		if (!singlePlayer) {
-			secondHill = world.createHill(HillOrder.SECOND, match.getPlayer(1).getName());
-		}
-		this.executor.initGame(firstHill, secondHill);
 
-		for (int turn = 0; turn < TURNS; turn++) {
-			this.executor.execute(firstHill, secondHill, turn);
-			this.foodHandler.dropFood(turn);
-		}
-		match.getPlayerStatus(0).addScore(firstHill.getFood());
+		ProcessExecutor executor = new ProcessExecutor(new GUIFacade(), AntLoader.getImplementations());
+		final Map<String, Integer> results = executor.run(match.getPlayer(0).getName(), match.getPlayer(1).getName());
+
+		match.getPlayerStatus(0).addScore(results.get(match.getPlayer(0).getName()).intValue());
 		if (!singlePlayer) {
-			match.getPlayerStatus(1).addScore(secondHill.getFood());
+			match.getPlayerStatus(1).addScore(results.get(match.getPlayer(1).getName()).intValue());
 		}
 		
 		match.endMatch();

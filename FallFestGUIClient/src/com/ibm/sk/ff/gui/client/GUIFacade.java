@@ -71,7 +71,7 @@ public class GUIFacade {
 			final GUIObjectCrate crate = new GUIObjectCrate();
 			crate.sortOut(objects);
 			this.CLIENT.postMessage(SET.toString(), Mapper.INSTANCE.pojoToJson(crate));
-//			steps.add(new Step(SET, crate));
+			//			steps.add(new Step(SET, crate));
 		}
 
 		sendNotYetRenderedData(o);
@@ -185,7 +185,7 @@ public class GUIFacade {
 		final GUIObject[] mapped = map(objects);
 		crate.sortOut(mapped);
 		this.CLIENT.postMessage(REMOVE.toString() + "/", Mapper.INSTANCE.pojoToJson(crate));
-		steps.add(new Step(REMOVE, crate));
+		// steps.add(new Step(REMOVE, crate));
 	}
 
 	public void showScore(final ScoreData data) {

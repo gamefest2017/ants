@@ -6,6 +6,7 @@ import com.ibm.sk.ant.facade.AntFactory;
 import com.ibm.sk.dto.AbstractAnt;
 import com.ibm.sk.dto.AbstractWarrior;
 import com.ibm.sk.dto.Hill;
+import com.ibm.sk.dto.Warrior;
 
 public class StripedFactory extends AntFactory {
 
@@ -15,13 +16,13 @@ public class StripedFactory extends AntFactory {
 	}
 
 	@Override
-	public AbstractAnt createWorker(long id, Point position, Hill hill) {
+	public AbstractAnt createWorker(final long id, final Point position, final Hill hill) {
 		return new StripedAnt(id, position, hill);
 	}
 
 	@Override
-	public AbstractWarrior createWarrior(long id, Point position, Hill hill) {
-		return null;
+	public AbstractWarrior createWarrior(final long id, final Point position, final Hill hill) {
+		return new Warrior(id, position, hill);
 	}
 
 }

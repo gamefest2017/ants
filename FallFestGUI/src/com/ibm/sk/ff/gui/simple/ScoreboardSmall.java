@@ -12,7 +12,7 @@ import javax.swing.JLabel;
 import javax.swing.JPanel;
 import javax.swing.JTextField;
 
-import com.ibm.sk.WorldConstans;
+import com.ibm.sk.WorldConstants;
 import com.ibm.sk.ff.gui.common.objects.operations.CreateGameData;
 import com.ibm.sk.ff.gui.common.objects.operations.ScoreData;
 
@@ -53,7 +53,7 @@ public class ScoreboardSmall extends JPanel {
 	}
 
 	public void setScore(final ScoreData sd) {
-		this.turnsText.setText(sd.getCurrentTurn() + " / " + WorldConstans.TURNS);
+		this.turnsText.setText(sd.getCurrentTurn() + " / " + WorldConstants.TURNS);
 		for (int i = 0; i < this.labels.length; i++) {
 			if (this.labels[i].getText().equals(sd.getMessage())) {
 				this.texts[i].setText(sd.getScore() + "");

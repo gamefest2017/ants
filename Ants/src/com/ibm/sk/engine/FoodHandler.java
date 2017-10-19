@@ -1,8 +1,8 @@
 package com.ibm.sk.engine;
 
-import static com.ibm.sk.WorldConstans.FOOD_REFILL_FREQUENCY;
-import static com.ibm.sk.WorldConstans.X_BOUNDRY;
-import static com.ibm.sk.WorldConstans.Y_BOUNDRY;
+import static com.ibm.sk.WorldConstants.FOOD_REFILL_FREQUENCY;
+import static com.ibm.sk.WorldConstants.X_BOUNDRY;
+import static com.ibm.sk.WorldConstants.Y_BOUNDRY;
 
 import java.awt.Point;
 import java.util.Random;
@@ -24,12 +24,12 @@ public final class FoodHandler {
 	public void dropFood(final int turn) {
 		if (turn % FOOD_REFILL_FREQUENCY == 0) {
 			int row;
-			int coll;
+			int column;
 			final Point position = new Point(0, 0);
 			do {
 				row = RANDOMIZER.nextInt(X_BOUNDRY - 1);
-				coll = RANDOMIZER.nextInt(Y_BOUNDRY - 1);
-				position.setLocation(row, coll);
+				column = RANDOMIZER.nextInt(Y_BOUNDRY - 1);
+				position.setLocation(row, column);
 			} while (this.world.isPositionOccupied(position) || this.world.isHillPosition(position));
 
 			final Food newFood = new Food(this.world.idSequence++, 1, position);
@@ -39,13 +39,6 @@ public final class FoodHandler {
 			} catch (final InvalidWorldPositionException e) {
 				System.out.println("Position had not space, food was not dropped. Position was: " + newFood.getPosition());
 			}
-		}
-	}
-
-	public void pickUpFood(final AbstractAnt ant, final Food food) {
-		if (!ant.hasFood()) {
-			ant.pickUpFood(food);
-			this.world.removeObject(food);
 		}
 	}
 }

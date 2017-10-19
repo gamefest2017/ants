@@ -7,7 +7,7 @@ import java.util.Random;
 import java.util.function.Function;
 import java.util.stream.Collectors;
 
-import com.ibm.sk.WorldConstans;
+import com.ibm.sk.WorldConstants;
 import com.ibm.sk.ant.facade.AntFactory;
 import com.ibm.sk.dto.AbstractAnt;
 import com.ibm.sk.dto.AbstractWarrior;
@@ -92,7 +92,7 @@ public class PopulationHandler {
 
 	public IAnt breedAntOrWarrior(final Hill hill) {
 		IAnt result;
-		if (this.RANDOMIZER.nextDouble() < WorldConstans.POPULATION_WAR_FACTOR) {
+		if (this.RANDOMIZER.nextDouble() < WorldConstants.POPULATION_WAR_FACTOR) {
 			result = breedWarrior(hill);
 		} else {
 			result = breedAnt(hill);
@@ -100,20 +100,11 @@ public class PopulationHandler {
 		return result;
 	}
 
-	public void initHill(final Hill hill, final int population, final double populationWarFactor) {
-		for (int i = 0; i < Math.ceil(population * (1.0 - populationWarFactor)); i++) {
-			hill.getAnts().add(breedAnt(hill));
-		}
-		for (int i = 0; i < Math.floor(population * populationWarFactor); i++) {
-			hill.getAnts().add(breedWarrior(hill));
-		}
-	}
-
 	public void incrementFood(final Hill hill, final int count) {
 		hill.setFood(hill.getFood() + count);
 		System.out.println(
 				"The food in hill '" + hill.getName() + "' increased by " + count + ". Food amount is now " + hill.getFood());
-		if (hill.getFood() % WorldConstans.NEW_ANT_FOOD_COST == 0) {
+		if (hill.getFood() % WorldConstants.NEW_ANT_FOOD_COST == 0) {
 			hill.getAnts().add(breedAntOrWarrior(hill));
 		}
 	}
@@ -122,5 +113,14 @@ public class PopulationHandler {
 		hill.setFood(Math.max(hill.getFood() - count, 0));
 		System.out.println(
 				"The food in hill '" + hill.getName() + "' descreased by " + count + ". Food amount is now " + hill.getFood());
+	}
+
+	void init(final Hill hill, final int population, final double warFactor) {
+		for (int i = 0; i < Math.ceil(population * (1.0 - warFactor)); i++) {
+			hill.getAnts().add(breedAnt(hill));
+		}
+		for (int i = 0; i < Math.floor(population * warFactor); i++) {
+			hill.getAnts().add(breedWarrior(hill));
+		}
 	}
 }

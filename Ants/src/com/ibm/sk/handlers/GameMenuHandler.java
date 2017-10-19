@@ -1,24 +1,13 @@
 package com.ibm.sk.handlers;
 
-import static com.ibm.sk.WorldConstans.TURNS;
-import static com.ibm.sk.engine.World.createHill;
-
 import java.util.Arrays;
 import java.util.List;
 import java.util.concurrent.atomic.AtomicInteger;
 import java.util.stream.Collectors;
-import java.util.stream.Stream;
 
-import com.ibm.sk.WorldConstans;
-import com.ibm.sk.dto.Hill;
-import com.ibm.sk.dto.IAnt;
-import com.ibm.sk.dto.enums.HillOrder;
+import com.ibm.sk.ant.facade.AntFactory;
 import com.ibm.sk.dto.matchmaking.Player;
-import com.ibm.sk.dto.qualification.QualificationCandidate;
-import com.ibm.sk.dto.qualification.QualificationTable;
-import com.ibm.sk.engine.FoodHandler;
 import com.ibm.sk.engine.ProcessExecutor;
-import com.ibm.sk.engine.World;
 import com.ibm.sk.engine.matchmaking.NoMoreMatchesException;
 import com.ibm.sk.engine.matchmaking.Qualification;
 import com.ibm.sk.engine.matchmaking.SingleElimination;
@@ -29,114 +18,70 @@ import com.ibm.sk.ff.gui.common.objects.operations.InitMenuData;
 
 public class GameMenuHandler implements GuiEventListener {
 
-	private static int turn;
-	private final ProcessExecutor executor;
 	private final InitMenuData menuData;
-	private final GUIFacade facade;
-	
+
 	private Qualification qualification = null;
 	private SingleElimination tournament = null;
-	
+	private final GUIFacade facade;
+	private final AntFactory[] implementations;
 
-	public GameMenuHandler(final GUIFacade facade, InitMenuData menuData) {
-		this.executor = new ProcessExecutor(facade);
-		this.facade = facade;
+
+	public GameMenuHandler(final GUIFacade facade, final InitMenuData menuData, final AntFactory[] implementations) {
 		this.menuData = menuData;
+		this.facade = facade;
+		this.implementations = implementations;
 	}
 
 	@Override
 	public void actionPerformed(final GuiEvent event) {
+		ProcessExecutor executor;
 		if (GuiEvent.EventTypes.SINGLE_PLAY_START.name().equals(event.getType().name())) {
-			startSinglePlayer(event.getData());
+			executor = new ProcessExecutor(this.facade, this.implementations);
+			executor.run(event.getData(), null);
 		} else if (GuiEvent.EventTypes.DOUBLE_PLAY_START.name().equals(event.getType().name())) {
 			final String hillNames = event.getData();
 			final int separatorPos = hillNames.indexOf(GuiEvent.HLL_NAMES_SEPARATOR);
-			startDoublePlayer(hillNames.substring(0, separatorPos) + "1", hillNames.substring(separatorPos + 1) + "2");
+			executor = new ProcessExecutor(this.facade, this.implementations);
+			executor.run(hillNames.substring(0, separatorPos), hillNames.substring(separatorPos + 1));
 		} else if (GuiEvent.EventTypes.QUALIFICATION_START.name().equals(event.getType().name()) ) {
 
 			//lazy initialize qualification on first run
-			if (qualification == null) {
-				AtomicInteger index = new AtomicInteger();
-				List<Player> players = Arrays.asList(event.getData().split(",")).stream().map(s -> new Player(index.incrementAndGet(), s)).collect(Collectors.toList());
-				qualification = new Qualification(players, executor);
+			if (this.qualification == null) {
+				final AtomicInteger index = new AtomicInteger();
+				final List<Player> players = Arrays.asList(event.getData().split(",")).stream().map(s -> new Player(index.incrementAndGet(), s)).collect(Collectors.toList());
+				this.qualification = new Qualification(players);
 			}
-			
+
 			try {
-				qualification.resolveNextMatch();
-			} catch (NoMoreMatchesException e) {
+				this.qualification.resolveNextMatch();
+			} catch (final NoMoreMatchesException e) {
 				e.printStackTrace();
 			}
-			
+
 			//TODO - repeated matches do not reset game state, leftover objects cause exceptions after a while
-			
-			menuData.setQualification(qualification.getQualificationTable());
-			
-			facade.showInitMenu(menuData);
-			
+
+			this.menuData.setQualification(this.qualification.getQualificationTable());
+
+			this.facade.showInitMenu(this.menuData);
+
 		} else if (GuiEvent.EventTypes.TOURNAMENT_PLAY_START.name().equals(event.getType().name()) ) {
 			//take results from qualification, start tournament
-			if (tournament == null) {
-				tournament = new SingleElimination(
-						qualification.getQualificationTable().getCandidates().stream().filter(qc -> qc.isQualified()).collect(Collectors.toList()), 
-						executor);
+			if (this.tournament == null) {
+				this.tournament = new SingleElimination(
+						this.qualification.getQualificationTable().getCandidates().stream()
+						.filter(qc -> qc.isQualified()).collect(Collectors.toList()));
 			}
-			
+
 			try {
-				tournament.resolveNextMatch();
-			} catch (NoMoreMatchesException e) {
+				this.tournament.resolveNextMatch();
+			} catch (final NoMoreMatchesException e) {
 				e.printStackTrace();
 			}
-			
-			menuData.setTournament(this.tournament.getTournamentTable());
-			
-			facade.showInitMenu(menuData);
+
+			this.menuData.setTournament(this.tournament.getTournamentTable());
+
+			this.facade.showInitMenu(this.menuData);
 		}
-	}
-
-	public void startSinglePlayer(final String hillName) {
-		System.out.println("Single player game starting...");
-		System.out.println("World size: " + WorldConstans.X_BOUNDRY + " x " + WorldConstans.Y_BOUNDRY);
-		System.out.println("Turns: " + TURNS);
-
-		World.createWorldBorder();
-		final Hill hill = createHill(HillOrder.FIRST, hillName);
-		this.executor.initGame(hill, null);
-		final long startTime = System.currentTimeMillis();
-		for (turn = 0; turn < TURNS; turn++) {
-			ProcessExecutor.execute(hill, null, turn);
-			FoodHandler.dropFood(turn);
-		}
-		final long endTime = System.currentTimeMillis();
-		System.out.println(hill.getName() + " earned score: " + hill.getFood());
-		for (final IAnt ant : hill.getAnts()) {
-			System.out.println(ant);
-		}
-		System.out.println("Game duration: " + turn + " turns, in " + (endTime - startTime) + " ms");
-	}
-
-	public void startDoublePlayer(final String firstHillName, final String secondHillName) {
-		System.out.println("Duel starting...");
-		System.out.println("World size: " + WorldConstans.X_BOUNDRY + " x " + WorldConstans.Y_BOUNDRY);
-		System.out.println("Turns: " + TURNS);
-
-		World.createWorldBorder();
-		final Hill firstHill = createHill(HillOrder.FIRST, firstHillName);
-		final Hill secondHill = createHill(HillOrder.SECOND, secondHillName);
-		this.executor.initGame(firstHill, secondHill);
-
-		final long startTime = System.currentTimeMillis();
-		for (turn = 0; turn < TURNS; turn++) {
-			ProcessExecutor.execute(firstHill, secondHill, turn);
-			FoodHandler.dropFood(turn);
-		}
-		final long endTime = System.currentTimeMillis();
-		printScore(firstHill);
-		printScore(secondHill);
-		System.out.println("Game duration: " + turn + " turns, in " + (endTime - startTime) + " ms");
-	}
-
-	private static void printScore(final Hill hill) {
-		System.out.println(hill.getName() + " earned score: " + hill.getFood());
 	}
 
 }

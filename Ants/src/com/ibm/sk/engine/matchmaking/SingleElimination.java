@@ -14,38 +14,37 @@ import com.ibm.sk.dto.matchmaking.comparator.PlayerScoreComparator;
  * @see <a href="http://denegames.ca/tournaments/index.html">http://denegames.ca/tournaments/index.html</a>
  */
 import com.ibm.sk.dto.tournament.TournamentTable;
-import com.ibm.sk.engine.ProcessExecutor;
 public class SingleElimination extends Tournament {
-	
-	
+
+
 	private static final int PLAYERS_PER_MATCH = 2;
-	private List<Player> eliminatedPlayers = new ArrayList<>();
-	private TournamentTable tournamentTable = new TournamentTable();
+	private final List<Player> eliminatedPlayers = new ArrayList<>();
+	private final TournamentTable tournamentTable = new TournamentTable();
 	private int tournamentRound = 0;
-	
+
 	/**
 	 * List of players, ideally sorted by their ranking ascending.
 	 * @param players Sorted list of players. Pairs will be made starting from first element.
 	 */
-	public SingleElimination(List<Player> players, ProcessExecutor executor) {
-		super(players, executor);
-		
+	public SingleElimination(final List<Player> players) {
+		super(players);
+
 		/*
 		 * Limit first round matches to get power of PLAYERS_PER_MATCH
 		 */
-		int nextPowerOfTwo = (int) Math.ceil((Math.log(players.size()) / Math.log(PLAYERS_PER_MATCH)));
-		int targetPlayers = (int) Math.pow(PLAYERS_PER_MATCH, nextPowerOfTwo - 1 );
-		int firstRoundPlayers = (players.size() - targetPlayers) * PLAYERS_PER_MATCH;
-		
+		final int nextPowerOfTwo = (int) Math.ceil(Math.log(players.size()) / Math.log(PLAYERS_PER_MATCH));
+		final int targetPlayers = (int) Math.pow(PLAYERS_PER_MATCH, nextPowerOfTwo - 1 );
+		final int firstRoundPlayers = (players.size() - targetPlayers) * PLAYERS_PER_MATCH;
+
 		getMatches().addAll(createMatches(players.stream().limit(firstRoundPlayers).collect(Collectors.toList())));
 	}
-	
+
 	@Override
 	public Match resolveNextMatch() throws NoMoreMatchesException {
-		Match match = super.resolveNextMatch();
-		List<Player> losers = new ArrayList<>(match.getPlayers());
+		final Match match = super.resolveNextMatch();
+		final List<Player> losers = new ArrayList<>(match.getPlayers());
 		losers.removeAll(match.getWinners());
-		eliminatedPlayers.addAll(losers);
+		this.eliminatedPlayers.addAll(losers);
 		return match;
 	}
 
@@ -54,8 +53,8 @@ public class SingleElimination extends Tournament {
 		Optional<Match> nextMatch = getMatches().stream().filter(m -> !m.isFinished()).findFirst();
 		if (!nextMatch.isPresent() && !getWinner().isPresent()) {
 			//round finished, generate next batch
-			List<Player> actualPlayers = new ArrayList<>(getPlayers());
-			actualPlayers.removeAll(eliminatedPlayers);
+			final List<Player> actualPlayers = new ArrayList<>(getPlayers());
+			actualPlayers.removeAll(this.eliminatedPlayers);
 			getMatches().addAll(createMatches(actualPlayers));
 			nextMatch = getMatches().stream().filter(m -> !m.isFinished()).findFirst();
 		}
@@ -64,24 +63,24 @@ public class SingleElimination extends Tournament {
 
 	@Override
 	public Optional<Player> getWinner() {
-		if (getPlayers().size() - eliminatedPlayers.size() == 1) {
-			return getPlayers().stream().filter(p -> !eliminatedPlayers.contains(p)).findFirst(); 
-		} 
+		if (getPlayers().size() - this.eliminatedPlayers.size() == 1) {
+			return getPlayers().stream().filter(p -> !this.eliminatedPlayers.contains(p)).findFirst();
+		}
 		return Optional.empty();
 	}
 
 	@Override
 	public List<PlayerStatus> getRanking() {
-		List<PlayerStatus> ranking = getPlayers().stream().map(PlayerStatus::new).collect(Collectors.toList());
-		
+		final List<PlayerStatus> ranking = getPlayers().stream().map(PlayerStatus::new).collect(Collectors.toList());
+
 		getMatches().stream().forEach(m -> {
 			ranking.stream().filter(ps -> m.getWinners().contains(ps.getPlayer())).findFirst().get().addScore(1);
 		});
-		
+
 		if (getWinner().isPresent()) {
 			ranking.stream().filter(ps -> getWinner().get().equals(ps.getPlayer())).findFirst().get().addScore(1);
 		}
-		
+
 		ranking.sort(new PlayerScoreComparator().reversed());
 		return ranking;
 	}
@@ -90,13 +89,13 @@ public class SingleElimination extends Tournament {
 	public List<Match> getMatchStatus() {
 		return getMatches();
 	}
-	
-	private List<Match> createMatches(List<Player> players) {
+
+	private List<Match> createMatches(final List<Player> players) {
 		int counter = 0;
-		List<Player> matchPlayers = new ArrayList<>();
-		List<Match> matches = new ArrayList<>();
-		
-		for (Player player : players) {
+		final List<Player> matchPlayers = new ArrayList<>();
+		final List<Match> matches = new ArrayList<>();
+
+		for (final Player player : players) {
 			matchPlayers.add(player);
 			if (++counter == PLAYERS_PER_MATCH) {
 				//flush
@@ -105,17 +104,17 @@ public class SingleElimination extends Tournament {
 				matchPlayers.clear();
 			}
 		}
-		
-		
-		for (Match m : matches) {
-			this.tournamentTable.addMatch(tournamentRound, m);
+
+
+		for (final Match m : matches) {
+			this.tournamentTable.addMatch(this.tournamentRound, m);
 		}
-		
+
 		this.tournamentRound++;
-		
+
 		return matches;
 	}
-	
+
 	public TournamentTable getTournamentTable() {
 		return this.tournamentTable;
 	}
