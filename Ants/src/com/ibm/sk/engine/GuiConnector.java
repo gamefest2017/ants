@@ -194,9 +194,9 @@ public class GuiConnector {
 		this.FACADE.showScore(data);
 	}
 	
-	public void showResult(final Hill hill) {
+	public void showResult(final String winner) {
 		ResultData rd = new ResultData();
-		rd.setWinner(hill.getName());
+		rd.setWinner(winner);
 		FACADE.showResult(rd);
 	}
 
