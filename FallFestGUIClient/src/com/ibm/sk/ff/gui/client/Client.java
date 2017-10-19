@@ -37,6 +37,7 @@ public class Client {
 		} catch (Exception e) {
 			e.printStackTrace();
 			ret = false;
+			System.exit(-1);
 		}
 		
 		return ret;
@@ -60,6 +61,7 @@ public class Client {
 		    client.close();
 		} catch (Exception e) {
 			e.printStackTrace();
+			System.exit(-1);
 		}
 	    
 		return responseString;
