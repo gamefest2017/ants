@@ -5,6 +5,7 @@ import java.util.List;
 import java.util.concurrent.atomic.AtomicInteger;
 import java.util.stream.Collectors;
 
+import com.ibm.sk.MenuMain;
 import com.ibm.sk.ant.facade.AntFactory;
 import com.ibm.sk.dto.matchmaking.Player;
 import com.ibm.sk.engine.ProcessExecutor;
@@ -48,7 +49,7 @@ public class GameMenuHandler implements GuiEventListener {
 			//lazy initialize qualification on first run
 			if (this.qualification == null) {
 				final AtomicInteger index = new AtomicInteger();
-				final List<Player> players = Arrays.asList(event.getData().split(",")).stream().map(s -> new Player(index.incrementAndGet(), s)).collect(Collectors.toList());
+				final List<Player> players = Arrays.asList(event.getData().split(",")).stream().map(s -> new Player(Integer.valueOf(index.incrementAndGet()), s)).collect(Collectors.toList());
 				this.qualification = new Qualification(players);
 			}
 
@@ -78,9 +79,13 @@ public class GameMenuHandler implements GuiEventListener {
 				e.printStackTrace();
 			}
 
+
 			this.menuData.setTournament(this.tournament.getTournamentTable());
 
 			this.facade.showInitMenu(this.menuData);
+		} else if (GuiEvent.EventTypes.RESULT_CLOSE.equals(event.getType())) {
+			//TODO - show init menu
+			MenuMain.showMainWindow();
 		}
 	}
 

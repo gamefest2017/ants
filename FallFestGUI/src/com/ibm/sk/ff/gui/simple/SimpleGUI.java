@@ -4,19 +4,25 @@ import java.awt.BorderLayout;
 import java.awt.Dimension;
 import java.awt.FlowLayout;
 import java.awt.Frame;
+import java.awt.Graphics;
 import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
+import java.awt.event.WindowEvent;
+import java.awt.event.WindowListener;
 import java.awt.image.BufferedImage;
 import java.io.File;
 
 import javax.imageio.ImageIO;
 import javax.swing.ImageIcon;
 import javax.swing.JCheckBox;
+import javax.swing.JDialog;
 import javax.swing.JFrame;
 import javax.swing.JLabel;
 import javax.swing.JPanel;
 
 import com.ibm.sk.ff.gui.GUI;
+import com.ibm.sk.ff.gui.common.events.GuiEvent;
+import com.ibm.sk.ff.gui.common.events.GuiEvent.EventTypes;
 import com.ibm.sk.ff.gui.common.events.GuiEventListener;
 import com.ibm.sk.ff.gui.common.objects.gui.GAntFoodObject;
 import com.ibm.sk.ff.gui.common.objects.gui.GAntObject;
@@ -108,9 +114,17 @@ public class SimpleGUI implements GUI {
 	}
 
 	private BufferedImage loadBackgroundImage() {
+		return loadImage("res/grass2.jpg");
+	}
+	
+	private BufferedImage loadGameOverImage() {
+		return loadImage("res/game-over.jpg");
+	}
+	
+	private BufferedImage loadImage(String resource) {
 		BufferedImage ret = null;
 		try {
-			ret = ImageIO.read(new File("res/grass2.jpg"));
+			ret = ImageIO.read(new File(resource));
 		} catch (final Exception e) {
 			e.printStackTrace();
 		}
@@ -144,7 +158,64 @@ public class SimpleGUI implements GUI {
 
 	@Override
 	public void showResult(final ResultData data) {
-		// TODO Auto-generated method stub
+		if (this.frame  != null) {
+			ImageIcon img = new ImageIcon(loadGameOverImage());
+			
+			JPanel panel_center = new JPanel() {
+				private static final long serialVersionUID = 2005550217855285811L;
+
+				@Override
+	            protected void paintComponent(Graphics g) {
+	                super.paintComponent(g);
+	                g.drawImage(img.getImage(), 0, 0, getWidth(), getHeight(), this);
+	            }
+
+	            @Override
+	            public Dimension getPreferredSize() {
+	                Dimension size = super.getPreferredSize();
+	                size.width = Math.max(img.getIconWidth(), size.width);
+	                size.height = Math.max(img.getIconHeight(), size.height);
+
+	                return size;
+	            }
+			};
+			
+			JDialog dialog = new JDialog(this.frame, "Game over", true);
+			
+			dialog.addWindowListener(new WindowListener() {
+				@Override
+				public void windowOpened(WindowEvent e) {
+				}
+				@Override
+				public void windowClosing(WindowEvent e) {
+					listener.actionPerformed(new GuiEvent(EventTypes.RESULT_CLOSE, ""));
+				}
+				@Override
+				public void windowClosed(WindowEvent e) {
+				}
+				@Override
+				public void windowIconified(WindowEvent e) {
+				}
+				@Override
+				public void windowDeiconified(WindowEvent e) {
+				}
+				@Override
+				public void windowActivated(WindowEvent e) {
+				}
+				@Override
+				public void windowDeactivated(WindowEvent e) {
+				}
+			});
+			
+			dialog.setDefaultCloseOperation(JDialog.HIDE_ON_CLOSE);
+			dialog.setLayout(new BorderLayout());
+			dialog.add(panel_center, BorderLayout.CENTER);
+			dialog.pack();
+			int w = (frame.getWidth() / 2) - (dialog.getWidth() / 2);
+			int h = (frame.getHeight() / 2) - (dialog.getHeight() / 2);
+			dialog.setLocation(frame.getLocation().x + w, frame.getLocation().y + h);
+			dialog.setVisible(true);
+		}
 	}
 
 	@Override

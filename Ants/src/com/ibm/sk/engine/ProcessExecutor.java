@@ -79,7 +79,7 @@ public final class ProcessExecutor {
 			guiConnector.placeGuiObjects(new ArrayList<>(team2.getAnts()));
 		}
 	}
-
+	
 	private void singleStep(final IAnt ant) {
 		System.out.println("Ant " + ant.getId() + " said:");
 		final Vision vision = this.movementHandler.createVisionGrid(ant);

@@ -9,7 +9,7 @@ public class InitMenuData {
 	
 	public String[] competitors = {};
 	
-	public Replay[] replays = {};
+	public String[] replays = {};
 	
 	public QualificationTable qualification;
 	
@@ -44,16 +44,16 @@ public class InitMenuData {
 		return competitors;
 	}
 	
-	public void addReplay(Replay replay) {
+	public void addReplay(String replay) {
 		replays = Arrays.copyOf(replays, replays.length + 1);
 		replays[replays.length -1] = replay;
 	}
 	
-	public void setReplay(Replay[] replays) {
+	public void setReplay(String[] replays) {
 		this.replays = replays;
 	}
 	
-	public Replay[] getReplays() {
+	public String[] getReplays() {
 		return replays;
 	}
 

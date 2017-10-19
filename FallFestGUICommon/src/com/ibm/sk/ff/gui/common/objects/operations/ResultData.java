@@ -2,14 +2,14 @@ package com.ibm.sk.ff.gui.common.objects.operations;
 
 public class ResultData {
 	
-	private String data = null;
+	private String winner = null;
 	
-	public void setData(String data) {
-		this.data = data;
+	public void setWinner(String data) {
+		this.winner = data;
 	}
 	
-	public String getData() {
-		return data;
+	public String getWinner() {
+		return winner;
 	}
 
 }

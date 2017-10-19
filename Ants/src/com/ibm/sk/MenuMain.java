@@ -15,6 +15,10 @@ public class MenuMain extends AbstractMain {
 	}
 
 	public static void main(final String args[]) {
+		showMainWindow();
+	}
+	
+	public static void showMainWindow() {
 		final AntFactory[] implementations = AntLoader.getImplementations();
 		final InitMenuData initData = new InitMenuData();
 

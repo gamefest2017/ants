@@ -3,6 +3,7 @@ package com.ibm.sk.ant.implementation;
 import java.awt.Point;
 import java.util.Random;
 
+import com.ibm.sk.WorldConstants;
 import com.ibm.sk.dto.AbstractAnt;
 import com.ibm.sk.dto.Hill;
 import com.ibm.sk.dto.Vision;
@@ -10,15 +11,19 @@ import com.ibm.sk.dto.enums.Direction;
 import com.ibm.sk.dto.enums.ObjectType;
 
 public class LongDistanceAnt extends AbstractAnt {
-	private int minDistance = 5 + new Random().nextInt(7);
+	/**
+	 *
+	 */
+	private static final long serialVersionUID = 1L;
+	private final int minDistance = WorldConstants.X_BOUNDRY / 2 + new Random().nextInt(WorldConstants.X_BOUNDRY / 2);
 	private static final Random RANDOM = new Random();
-	public LongDistanceAnt(long id, Point position, Hill myHill) {
+
+	public LongDistanceAnt(final long id, final Point position, final Hill myHill) {
 		super(id, position, myHill);
-		// TODO Auto-generated constructor stub
 	}
 
 	@Override
-	public Direction move(Vision vision) {
+	public Direction move(final Vision vision) {
 		Direction returnValue = Direction.NO_MOVE;
 		if (!this.hasFood()) {
 			for (final Direction direction : Direction.values()) {
@@ -30,14 +35,19 @@ public class LongDistanceAnt extends AbstractAnt {
 			}
 
 			if (Direction.NO_MOVE.equals(returnValue)) {
-				int distance = Math.max(Math.abs(this.position.x - this.getMyHill().getPosition().x), 
+				final int distance = Math.max(Math.abs(this.position.x - this.getMyHill().getPosition().x),
 						Math.abs(this.position.y - this.getMyHill().getPosition().y));
-				if ((distance < this.minDistance) && (distance > 2)) {
+				if (distance < this.minDistance && distance > 0) {
 					if (Direction.getEastDirections().contains(findWayHome())) {
 						returnValue = Direction.getNonEastDirections().get(RANDOM.nextInt(Direction.getNonEastDirections().size()-1));
 					} else {
 						returnValue = Direction.getNonWestDirections().get(RANDOM.nextInt(Direction.getNonWestDirections().size()-1));
-					}				
+					}
+
+					final ObjectType objectType = vision.look(returnValue);
+					if (ObjectType.BORDER.equals(objectType)) {
+						returnValue = Direction.opposite(returnValue);
+					}
 				} else {
 					do {
 						System.out.println("Where to go?");
@@ -54,7 +64,7 @@ public class LongDistanceAnt extends AbstractAnt {
 
 		return returnValue;
 	}
-	
+
 	/**
 	 * Finds the Direction towards home based on current coordinates and
 	 * coordinates of the Anthill.
