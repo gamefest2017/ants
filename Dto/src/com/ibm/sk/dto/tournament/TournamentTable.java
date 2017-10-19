@@ -10,10 +10,10 @@ import com.ibm.sk.dto.matchmaking.Match;
 
 public class TournamentTable {
 
-	public Map<Integer, List<Match>> matches = new HashMap<>();
+	public Map<Integer, List<TournamentMatch>> matches = new HashMap<>();
 
 	@JsonIgnore
-	public void addMatch(int round, Match match) {
+	public void addMatch(int round, TournamentMatch match) {
 		if (!matches.containsKey(round)) {
 			matches.put(round, new ArrayList<>());
 		}
@@ -21,7 +21,7 @@ public class TournamentTable {
 	}
 	
 	@JsonIgnore
-	public List<Match> getMatches(int round) {
+	public List<TournamentMatch> getMatches(int round) {
 		return round >= matches.size() ? null : matches.get(round);
 	}
 	

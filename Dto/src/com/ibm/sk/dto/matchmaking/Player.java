@@ -1,11 +1,15 @@
 package com.ibm.sk.dto.matchmaking;
 
+import lombok.AllArgsConstructor;
 import lombok.Data;
+import lombok.NoArgsConstructor;
 import lombok.ToString;
 
 @Data
 @ToString(exclude="id")
+@AllArgsConstructor
+@NoArgsConstructor
 public class Player {
-	private final Integer id;
-	private final String name;
+	private Integer id;
+	private String name;
 }

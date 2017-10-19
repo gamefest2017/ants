@@ -9,11 +9,13 @@ import com.ibm.sk.dto.matchmaking.Match;
 import com.ibm.sk.dto.matchmaking.Player;
 import com.ibm.sk.dto.matchmaking.PlayerStatus;
 import com.ibm.sk.dto.matchmaking.comparator.PlayerScoreComparator;
+import com.ibm.sk.dto.tournament.TournamentMatch;
 /**
  * @author Vladimir Martinka (vladimir.martinka@gmail.com)
  * @see <a href="http://denegames.ca/tournaments/index.html">http://denegames.ca/tournaments/index.html</a>
  */
 import com.ibm.sk.dto.tournament.TournamentTable;
+import com.ibm.sk.ff.gui.client.GUIFacade;
 public class SingleElimination extends Tournament {
 
 
@@ -40,8 +42,8 @@ public class SingleElimination extends Tournament {
 	}
 
 	@Override
-	public Match resolveNextMatch() throws NoMoreMatchesException {
-		final Match match = super.resolveNextMatch();
+	public Match resolveNextMatch(GUIFacade facade) throws NoMoreMatchesException {
+		final Match match = super.resolveNextMatch(facade);
 		final List<Player> losers = new ArrayList<>(match.getPlayers());
 		losers.removeAll(match.getWinners());
 		this.eliminatedPlayers.addAll(losers);
@@ -107,7 +109,15 @@ public class SingleElimination extends Tournament {
 
 
 		for (final Match m : matches) {
-			this.tournamentTable.addMatch(this.tournamentRound, m);
+			
+			TournamentMatch tm = new TournamentMatch();
+			tm.setFinished(m.isFinished());
+			tm.setPlayers(m.getPlayers());
+			tm.setPlayerStatus(m.getPlayerStatus());
+			tm.setWinner(m.getWinners().isEmpty() ? null : m.getWinners().get(0));
+			//TODO will need to update on the fly, resolved matches will not be updated like this...
+			
+			this.tournamentTable.addMatch(this.tournamentRound, tm);
 		}
 
 		this.tournamentRound++;

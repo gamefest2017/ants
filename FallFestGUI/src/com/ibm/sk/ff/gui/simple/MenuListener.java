@@ -2,9 +2,12 @@ package com.ibm.sk.ff.gui.simple;
 
 import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
+import java.util.ArrayList;
+import java.util.List;
 import java.util.StringJoiner;
 
 import javax.swing.JButton;
+import javax.swing.JCheckBox;
 import javax.swing.JFrame;
 import javax.swing.JList;
 import javax.swing.JOptionPane;
@@ -17,8 +20,10 @@ import javax.swing.event.ChangeListener;
 import javax.swing.event.ListSelectionEvent;
 import javax.swing.event.ListSelectionListener;
 
+import com.ibm.sk.dto.matchmaking.StartGameData;
 import com.ibm.sk.ff.gui.common.events.GuiEvent;
 import com.ibm.sk.ff.gui.common.events.GuiEventListener;
+import com.ibm.sk.ff.gui.common.mapper.Mapper;
 
 /**
  * <h2>Listener for the {@link Menu}</h2>
@@ -37,11 +42,12 @@ public class MenuListener implements ChangeListener, ActionListener, ListSelecti
 	private JList<String> secondListOfAnthills = null;
 	private JList<String> thirdListOfAnthills = null;
 	private JList<String> replays = null;
+	private JCheckBox runInBackgroundCheckbox = null;
 
 	public MenuListener(JFrame mainContainer, GuiEventListener listener, JTabbedPane tabbedPane,
 			JList<String> firstListOfAnthills, JList<String> secondListOfAnthills, JList<String> thirdListOfAnthills,
 			JList<String> replays, JButton buttonStart, JRadioButton radioQualification, JRadioButton radioTournamentSemiFinals,
-			JScrollPane scrollPaneQualification, JScrollPane scrollPaneTournament) {
+			JScrollPane scrollPaneQualification, JScrollPane scrollPaneTournament, JCheckBox runInBackgroundCheckbox) {
 		this.tabbedPane = tabbedPane;
 		this.buttonStart = buttonStart;
 		this.firstListOfAnthills = firstListOfAnthills;
@@ -53,6 +59,7 @@ public class MenuListener implements ChangeListener, ActionListener, ListSelecti
 		this.scrollPaneQualification = scrollPaneQualification;
 		this.scrollPaneTournament = scrollPaneTournament;
 		this.listener = listener;
+		this.runInBackgroundCheckbox = runInBackgroundCheckbox;
 
 		tabbedPane.addChangeListener(this);
 		firstListOfAnthills.addListSelectionListener(this);
@@ -118,15 +125,19 @@ public class MenuListener implements ChangeListener, ActionListener, ListSelecti
 				}
 				break;
 			case 2:
+				
+				StartGameData data = new StartGameData();
+				data.setRunInBackground(runInBackgroundCheckbox.isSelected());
 				if (radioTournamentSemiFinals.isSelected()) {
-					sendGuiEvent(new GuiEvent(GuiEvent.EventTypes.TOURNAMENT_PLAY_START, ""));
+					sendGuiEvent(new GuiEvent(GuiEvent.EventTypes.TOURNAMENT_PLAY_START, Mapper.INSTANCE.pojoToJson(data)));
 				} else {
-					StringJoiner sj = new StringJoiner(",");
+					List<String> players = new ArrayList<>();
 					ListModel<String> m = firstListOfAnthills.getModel();
 					for (int i = 0 ; i < m.getSize(); i++) {
-						sj.add(m.getElementAt(i));
+						players.add(m.getElementAt(i));
 					}
-					sendGuiEvent(new GuiEvent(GuiEvent.EventTypes.QUALIFICATION_START, sj.toString()));
+					data.setPlayers(players);
+					sendGuiEvent(new GuiEvent(GuiEvent.EventTypes.QUALIFICATION_START, Mapper.INSTANCE.pojoToJson(data)));
 				}
 				
 				break;

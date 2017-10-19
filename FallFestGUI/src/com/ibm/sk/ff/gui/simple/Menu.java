@@ -42,6 +42,7 @@ import com.ibm.sk.dto.matchmaking.Player;
 import com.ibm.sk.dto.matchmaking.PlayerStatus;
 import com.ibm.sk.dto.qualification.QualificationCandidate;
 import com.ibm.sk.dto.qualification.QualificationTable;
+import com.ibm.sk.dto.tournament.TournamentMatch;
 import com.ibm.sk.dto.tournament.TournamentTable;
 import com.ibm.sk.ff.gui.common.events.GuiEventListener;
 import com.ibm.sk.ff.gui.common.objects.operations.InitMenuData;
@@ -221,10 +222,10 @@ public class Menu extends JPanel {
 				int y = 20;
 				for (int round = 0; round < initMenuData.getTournament().getRounds(); round++) {
 					int index = 0;
-					for (Match match : initMenuData.getTournament().getMatches(round)) {
-						lastWinner = match.isFinished() ? match.getWinners().get(0) : null;
-						Player player1 = match.getPlayer(0);
-						Player player2 = match.getPlayer(1);
+					for (TournamentMatch match : initMenuData.getTournament().getMatches(round)) {
+						lastWinner = match.isFinished() ? match.getWinner() : null;
+						Player player1 = match.getPlayers().get(0);
+						Player player2 = match.getPlayers().get(1);
 
 						Object player1Icon = graph.insertVertex(parent, null, player1 == null ? "" : player1.getName(),
 								x, y, 80, 30, getStyle(player1, lastWinner));
@@ -252,11 +253,11 @@ public class Menu extends JPanel {
 				int rounds = initMenuData.getTournament().getRounds();
 				x += 50;
 				y = 20 + (2 * (rounds - 1) - 1) * 50 + 20;
-				List<Match> lastRound = initMenuData.getTournament().getMatches(2);
+				List<TournamentMatch> lastRound = initMenuData.getTournament().getMatches(2);
 				if (lastRound != null && !lastRound.isEmpty()) {
-					Match lastMatch = lastRound.size() == 1 && lastRound.get(0).isFinished() ? lastRound.get(0) : null;
+					TournamentMatch lastMatch = lastRound.size() == 1 && lastRound.get(0).isFinished() ? lastRound.get(0) : null;
 					if (lastMatch != null && matchIcons.containsKey("2_0")) {
-						Object winner = graph.insertVertex(parent, null, lastMatch.getWinners().get(0).getName(), x, y,
+						Object winner = graph.insertVertex(parent, null, lastMatch.getWinner().getName(), x, y,
 								80, 30, getStyle("rectangle", true));
 						graph.insertEdge(parent, null, null, matchIcons.get("2_0"), winner);
 					}
@@ -376,7 +377,7 @@ public class Menu extends JPanel {
 		// Setup Events
 		new MenuListener(mainFrame, sharedGuiListener, tabbedPane, firstListOfAnthills, secondListOfAnthills,
 				thirdListOfAnthills, replays, buttonStart, radioQualification, radioTournamentSemiFinals,
-				scrollPaneQualification, scrollPaneTournament);
+				scrollPaneQualification, scrollPaneTournament, runInBackgroundCheckbox);
 	}
 
 	/** Returns an ImageIcon, or null if the path was invalid. */
@@ -470,20 +471,20 @@ public class Menu extends JPanel {
 		
 		// Dummy tournament results
 		TournamentTable tournamentTable = new TournamentTable();
-		tournamentTable.addMatch(0, new Match(new PlayerStatus(new Player(1, "aPlayer 1"), 15),
-				new PlayerStatus(new Player(2, "aPlayer 2"), 30), true));
-		tournamentTable.addMatch(0, new Match(new PlayerStatus(new Player(3, "aPlayer 3"), 11),
-				new PlayerStatus(new Player(4, "aPlayer 4"), 27), true));
-		tournamentTable.addMatch(0, new Match(new PlayerStatus(new Player(5, "aPlayer 5"), 42),
-				new PlayerStatus(new Player(6, "aPlayer 6"), 12), true));
-		tournamentTable.addMatch(0, new Match(new PlayerStatus(new Player(7, "aPlayer 7"), 25),
-				new PlayerStatus(new Player(8, "aPlayer 8"), 32), true));
-		tournamentTable.addMatch(1, new Match(new PlayerStatus(new Player(2, "bPlayer 2"), 55),
-				new PlayerStatus(new Player(5, "bPlayer 4"), 20), true));
-		tournamentTable.addMatch(1, new Match(new PlayerStatus(new Player(5, "bPlayer 5"), 11),
-				new PlayerStatus(new Player(8, "bPlayer 8"), 60), true));
-		tournamentTable.addMatch(2, new Match(new PlayerStatus(new Player(2, "cPlayer 2"), 32),
-				new PlayerStatus(new Player(8, "cPlayer 8"), 23), true));
+//		tournamentTable.addMatch(0, new Match(new PlayerStatus(new Player(1, "aPlayer 1"), 15),
+//				new PlayerStatus(new Player(2, "aPlayer 2"), 30), true));
+//		tournamentTable.addMatch(0, new Match(new PlayerStatus(new Player(3, "aPlayer 3"), 11),
+//				new PlayerStatus(new Player(4, "aPlayer 4"), 27), true));
+//		tournamentTable.addMatch(0, new Match(new PlayerStatus(new Player(5, "aPlayer 5"), 42),
+//				new PlayerStatus(new Player(6, "aPlayer 6"), 12), true));
+//		tournamentTable.addMatch(0, new Match(new PlayerStatus(new Player(7, "aPlayer 7"), 25),
+//				new PlayerStatus(new Player(8, "aPlayer 8"), 32), true));
+//		tournamentTable.addMatch(1, new Match(new PlayerStatus(new Player(2, "bPlayer 2"), 55),
+//				new PlayerStatus(new Player(5, "bPlayer 4"), 20), true));
+//		tournamentTable.addMatch(1, new Match(new PlayerStatus(new Player(5, "bPlayer 5"), 11),
+//				new PlayerStatus(new Player(8, "bPlayer 8"), 60), true));
+//		tournamentTable.addMatch(2, new Match(new PlayerStatus(new Player(2, "cPlayer 2"), 32),
+//				new PlayerStatus(new Player(8, "cPlayer 8"), 23), true));
 		initMenuData.setTournament(tournamentTable);
 	}
 

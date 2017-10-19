@@ -25,14 +25,14 @@ public abstract class Tournament implements ITournament {
 	private final List<Match> matches = new ArrayList<>();
 	
 	@Override
-	public Match resolveNextMatch() throws NoMoreMatchesException {
+	public Match resolveNextMatch(GUIFacade facade) throws NoMoreMatchesException {
 		final Match match = getNextMatch().orElseThrow(NoMoreMatchesException::new);
 
 		final boolean singlePlayer = match.getPlayers().contains(AI);
 		
 		match.startMatch();
 
-		final ProcessExecutor executor = new ProcessExecutor(new GUIFacade(), AntLoader.getImplementations());
+		final ProcessExecutor executor = new ProcessExecutor(facade, AntLoader.getImplementations());
 		final Map<String, Integer> results = executor.run(match.getPlayer(0).getName(), singlePlayer ? null : match.getPlayer(1).getName());
 
 		match.getPlayerStatus(0).addScore(results.get(match.getPlayer(0).getName()).intValue());
@@ -51,7 +51,9 @@ public abstract class Tournament implements ITournament {
 	public ITournament fastForward() {
 		while (getNextMatch().isPresent()) {
 			try {
-				resolveNextMatch();
+				GUIFacade f = new GUIFacade();
+				f.setRender(false);
+				resolveNextMatch(f);
 			} catch (final NoMoreMatchesException e) {
 				e.printStackTrace();//cannot happen
 			}
