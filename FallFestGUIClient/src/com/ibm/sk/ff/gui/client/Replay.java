@@ -1,4 +1,4 @@
-package com.ibm.sk.ff.gui.common.objects.operations;
+package com.ibm.sk.ff.gui.client;
 
 import java.util.List;
 
@@ -18,7 +18,7 @@ public class Replay {
     public void setSteps(List<Step> steps) {
         this.steps = steps;
     }
-
+    
     public String getReplayName() {
         return replayName;
     }

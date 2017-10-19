@@ -17,7 +17,6 @@ import com.ibm.sk.ff.gui.common.events.GuiEventListener;
 import com.ibm.sk.ff.gui.common.objects.operations.CloseData;
 import com.ibm.sk.ff.gui.common.objects.operations.CreateGameData;
 import com.ibm.sk.ff.gui.common.objects.operations.InitMenuData;
-import com.ibm.sk.ff.gui.common.objects.operations.Replay;
 
 public class CreationPanel extends JPanel implements GuiEventListener {
 
@@ -86,8 +85,8 @@ public class CreationPanel extends JPanel implements GuiEventListener {
 				InitMenuData imd = new InitMenuData();
 
 				imd.setCompetitors(new String[] { "Competitor1", "Competitor2", "Competitor3", "Competitor4" });
-				Replay replay = new Replay(FileHelper.read(), "replayName");
-				imd.setReplay(new Replay[] {replay});
+//				Replay replay = new Replay(FileHelper.readSteps(), "replayName");
+//				imd.setReplay(new Replay[] {replay});
 
 				facade.showInitMenu(imd);
 			}

@@ -9,6 +9,7 @@ public enum Config {
 	HOSTNAME("gui.server.hostname", "localhost"),
 	PORT("gui.server.port", "60065"),
 	SERVER_POLL_INTERVAL("server.poll.interval", "250"),
+	REPLAY_FOLDER("replay.folder", "./replays"),
 	;
 	
 	private static final Properties PROPS = new Properties();

@@ -9,7 +9,9 @@ import static com.ibm.sk.ff.gui.common.GUIOperations.SET;
 import static com.ibm.sk.ff.gui.common.GUIOperations.SHOW_INIT_MENU;
 import static com.ibm.sk.ff.gui.common.GUIOperations.SHOW_RESULT;
 
+import java.text.SimpleDateFormat;
 import java.util.ArrayList;
+import java.util.Date;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
@@ -28,9 +30,10 @@ import com.ibm.sk.ff.gui.common.objects.operations.CreateGameData;
 import com.ibm.sk.ff.gui.common.objects.operations.InitMenuData;
 import com.ibm.sk.ff.gui.common.objects.operations.ResultData;
 import com.ibm.sk.ff.gui.common.objects.operations.ScoreData;
-import com.ibm.sk.ff.gui.common.objects.operations.Step;
 
 public class GUIFacade {
+	
+	private final SimpleDateFormat DATE_FORMAT = new SimpleDateFormat("yyyyMMdd-HHmm");
 
 	private final Client CLIENT;
 
@@ -40,7 +43,12 @@ public class GUIFacade {
 
 	private final Map<GAntObject, GAntFoodObject> notRenderedYet = new HashMap<>();
 
-	private List<Step> steps = new ArrayList<>();;
+	private final List<Step> steps = new ArrayList<>();
+	
+	private boolean render = true;
+	private boolean record = true;
+	
+	private long recordStartTime;
 
 	public GUIFacade() {
 		this.CLIENT = new Client();
@@ -70,8 +78,12 @@ public class GUIFacade {
 
 			final GUIObjectCrate crate = new GUIObjectCrate();
 			crate.sortOut(objects);
-			this.CLIENT.postMessage(SET.toString(), Mapper.INSTANCE.pojoToJson(crate));
-//			steps.add(new Step(SET, crate));
+			if (render) {
+				this.CLIENT.postMessage(SET.toString(), Mapper.INSTANCE.pojoToJson(crate));
+			}
+			if (record) {
+				steps.add(new Step(SET, o));
+			}
 		}
 
 		sendNotYetRenderedData(o);
@@ -91,10 +103,16 @@ public class GUIFacade {
 			remove(antsToRemove.stream().toArray(GAntObject[]::new));
 			remove(foodsToRemove.stream().toArray(GFoodObject[]::new));
 
-			this.CLIENT.postMessage(
+			GUIObject[] toBeRendered = mapNotYetRendered(o);
+			if (render) {
+				this.CLIENT.postMessage(
 					SET.toString() + "/" + GUIObjectTypes.ANT_FOOD.toString(),
-					Mapper.INSTANCE.pojoToJson(mapNotYetRendered(o))
+					Mapper.INSTANCE.pojoToJson(toBeRendered)
 					);
+			}
+			if (record) {
+				steps.add(new Step(SET, toBeRendered));
+			}
 		}
 	}
 
@@ -184,12 +202,21 @@ public class GUIFacade {
 		final GUIObjectCrate crate = new GUIObjectCrate();
 		final GUIObject[] mapped = map(objects);
 		crate.sortOut(mapped);
-		this.CLIENT.postMessage(REMOVE.toString() + "/", Mapper.INSTANCE.pojoToJson(crate));
-		steps.add(new Step(REMOVE, crate));
+		if (render) {
+			this.CLIENT.postMessage(REMOVE.toString() + "/", Mapper.INSTANCE.pojoToJson(crate));
+		}
+		if (record) {
+			steps.add(new Step(REMOVE, objects));
+		}
 	}
 
 	public void showScore(final ScoreData data) {
-		this.CLIENT.postMessage(SCORE.toString(), Mapper.INSTANCE.pojoToJson(data));
+		if (render) {
+			this.CLIENT.postMessage(SCORE.toString(), Mapper.INSTANCE.pojoToJson(data));
+		}
+		if (record) {
+			steps.add(new Step(SCORE, data));
+		}
 	}
 
 	//
@@ -200,11 +227,41 @@ public class GUIFacade {
 	}
 
 	public void createGame(final CreateGameData data) {
-		this.CLIENT.postMessage(CREATE_GAME.toString(), Mapper.INSTANCE.pojoToJson(data));
+		steps.clear();
+		notRenderedYet.clear();
+		antFoodObjects.clear();
+		
+		if (render) {
+			this.CLIENT.postMessage(CREATE_GAME.toString(), Mapper.INSTANCE.pojoToJson(data));
+		}
+		if (record) {
+			recordStartTime = System.currentTimeMillis();
+			steps.add(new Step(CREATE_GAME, data));
+		}
 	}
 
 	public void showResult(final ResultData data) {
-		this.CLIENT.postMessage(SHOW_RESULT.toString(), Mapper.INSTANCE.pojoToJson(data));
+		if (render) {
+			this.CLIENT.postMessage(SHOW_RESULT.toString(), Mapper.INSTANCE.pojoToJson(data));
+		}
+		if (record) {
+			steps.add(new Step(SHOW_RESULT, data));
+			CreateGameData cgd = steps.get(0).getCreateGame();
+			String [] teams = cgd.getTeams();
+			StringBuilder recordName = new StringBuilder();
+			for (String it : teams) {
+				if (recordName.length() > 0) {
+					recordName.append("_");
+				}
+				recordName.append(it);
+			}
+			recordName
+				.append("_")
+				.append(DATE_FORMAT.format(new Date(recordStartTime)))
+				.append(".replay");
+			Replay replay = new Replay(steps, recordName.toString());
+			ReplayFileHelper.write(replay);
+		}
 	}
 
 	public void close(final CloseData data) {
@@ -235,6 +292,17 @@ public class GUIFacade {
 		for (final GuiEvent it : event) {
 			this.guiEventListeners.stream().forEach(l -> l.actionPerformed(it));
 		}
+	}
+	
+	//
+	// setters
+	//
+	public void setRender(boolean render) {
+		this.render = render;
+	}
+	
+	public void setRecord(boolean record) {
+		this.record = record;
 	}
 
 }
