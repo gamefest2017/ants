@@ -1,45 +1,46 @@
 package com.ibm.sk.engine;
 
-import static com.ibm.sk.WorldConstans.INITIAL_ANT_COUNT;
-import static com.ibm.sk.WorldConstans.POPULATION_WAR_FACTOR;
-import static com.ibm.sk.engine.World.getDeadObjects;
+import static com.ibm.sk.WorldConstants.TURNS;
 
-import java.awt.Point;
 import java.util.ArrayList;
 import java.util.Collections;
-import java.util.EnumMap;
+import java.util.HashMap;
 import java.util.Iterator;
 import java.util.Map;
 
-import com.ibm.sk.WorldConstans;
-import com.ibm.sk.dto.AbstractAnt;
-import com.ibm.sk.dto.AbstractWarrior;
-import com.ibm.sk.dto.Food;
+import com.ibm.sk.WorldConstants;
+import com.ibm.sk.ant.facade.AntFactory;
 import com.ibm.sk.dto.Hill;
 import com.ibm.sk.dto.IAnt;
-import com.ibm.sk.dto.IWorldObject;
 import com.ibm.sk.dto.Vision;
 import com.ibm.sk.dto.enums.Direction;
-import com.ibm.sk.dto.enums.ObjectType;
+import com.ibm.sk.dto.enums.HillOrder;
 import com.ibm.sk.engine.exceptions.MoveException;
 import com.ibm.sk.ff.gui.client.GUIFacade;
 import com.ibm.sk.ff.gui.common.objects.operations.CreateGameData;
-import com.ibm.sk.models.WorldBorder;
 
 public final class ProcessExecutor {
 
 	public static GuiConnector guiConnector;
+	final World world;
+	private final MovementHandler movementHandler;
+	private final PopulationHandler populationHandler;
+	private final FoodHandler foodHandler;
 
-	public ProcessExecutor(final GUIFacade FACADE) {
+	public ProcessExecutor(final GUIFacade FACADE, final AntFactory[] implementations) {
 		guiConnector = new GuiConnector(FACADE);
+		this.world = new World();
+		this.populationHandler = new PopulationHandler(this.world, implementations);
+		this.movementHandler = new MovementHandler(this.world, this.populationHandler);
+		this.foodHandler = new FoodHandler(this.world);
 	}
 
-	public static void execute(final Hill firstHill, final Hill secondHill, final int turn) {
+	private void singleTurn(final Hill firstHill, final Hill secondHill, final int turn) {
 		System.out.println("Turn: " + turn);
 		final Iterator<IAnt> first = firstHill.getAnts().iterator();
 		final Iterator<IAnt> second = secondHill == null ? Collections.emptyIterator()
 				: secondHill.getAnts().iterator();
-		guiConnector.placeGuiObjects(World.getAllFoods());
+		guiConnector.placeGuiObjects(this.world.getAllFoods());
 
 		while (first.hasNext() || second.hasNext()) {
 			IAnt ant = null;
@@ -52,119 +53,76 @@ public final class ProcessExecutor {
 				singleStep(ant);
 			}
 		}
-		guiConnector.placeGuiObjects(World.getWorldObjectsToMove());
-		guiConnector.removeGuiObjects(getDeadObjects());
-		getDeadObjects().clear();
-		guiConnector.showScore(firstHill.getName(), firstHill.getFood(), turn + 1, WorldConstans.TURNS);
+		guiConnector.placeGuiObjects(this.world.getWorldObjectsToMove());
+		guiConnector.removeGuiObjects(this.world.getDeadObjects());
+		this.world.getDeadObjects().clear();
+		guiConnector.showScore(firstHill.getName(), firstHill.getFood(), turn + 1, WorldConstants.TURNS);
 		if (secondHill != null) {
-			guiConnector.showScore(secondHill.getName(), secondHill.getFood(), turn + 1, WorldConstans.TURNS);
+			guiConnector.showScore(secondHill.getName(), secondHill.getFood(), turn + 1, WorldConstants.TURNS);
 		}
 	}
 
-	public void initGame(final Hill team1, final Hill team2) {
+	private void initGame(final Hill team1, final Hill team2) {
 		final CreateGameData gameData = new CreateGameData();
-		gameData.setWidth(WorldConstans.X_BOUNDRY);
-		gameData.setHeight(WorldConstans.Y_BOUNDRY);
+		gameData.setWidth(WorldConstants.X_BOUNDRY);
+		gameData.setHeight(WorldConstants.Y_BOUNDRY);
 		gameData.setTeams(new String[] { team1.getName(), team2 != null ? team2.getName() : "" });
 		guiConnector.initGame(gameData);
-		guiConnector.placeGuiObjects(World.getWorldObjects());
-		initAnts(team1);
+		guiConnector.placeGuiObjects(this.world.getWorldObjects());
+		this.populationHandler.init(team1, WorldConstants.INITIAL_ANT_COUNT, WorldConstants.POPULATION_WAR_FACTOR);
 		guiConnector.placeGuiObject(team1);
 		guiConnector.placeGuiObjects(new ArrayList<>(team1.getAnts()));
 		if (team2 != null) {
-			initAnts(team2);
+			this.populationHandler.init(team2, WorldConstants.INITIAL_ANT_COUNT,
+					WorldConstants.POPULATION_WAR_FACTOR);
 			guiConnector.placeGuiObject(team2);
 			guiConnector.placeGuiObjects(new ArrayList<>(team2.getAnts()));
 		}
 	}
 	
-	public void finishGame(final Hill team1) {
-		guiConnector.showResult(team1);
-	}
-
-	private static void initAnts(final Hill hill) {
-		for (int i = 0; i < Math.ceil(INITIAL_ANT_COUNT * (1.0 - POPULATION_WAR_FACTOR)); i++) {
-			hill.getAnts().add(PopulationHandler.breedAnt(hill));
-		}
-		for (int i = 0; i < Math.floor(INITIAL_ANT_COUNT * POPULATION_WAR_FACTOR); i++) {
-			hill.getAnts().add(PopulationHandler.breedWarrior(hill));
-		}
-	}
-
-	private static void singleStep(final IAnt ant) {
+	private void singleStep(final IAnt ant) {
 		System.out.println("Ant " + ant.getId() + " said:");
-		final Vision vision = new Vision(createVisionGrid(ant));
+		final Vision vision = this.movementHandler.createVisionGrid(ant);
 		final Direction direction = ant.move(vision);
-		final MovementHandler movementHandler = MovementHandler.getInstance();
 
 		if (Direction.NO_MOVE.equals(direction)) {
 			System.out.println("I'm not moving. I like this place!");
 		} else {
 			try {
-				// boolean hadFood = false;
-
-				// if (ant instanceof AbstractAnt) {
-				// hadFood = ant.hasFood();
-				// }
-
-				movementHandler.makeMove(ant, direction);
-
-				// if (ant instanceof AbstractAnt) {
-				// if (!hadFood && ant.hasFood()) {
-				// guiConnector.removeGuiObject(ant.getFood());
-				// }
-				// }
+				this.movementHandler.move(ant, direction);
 			} catch (final MoveException e) {
 				System.out.println("I cannot move to " + direction.name() + "! That would hurt me!");
 			}
 		}
 	}
 
-	private static Map<Direction, ObjectType> createVisionGrid(final IAnt ant) {
-		final Map<Direction, ObjectType> visionGrid = new EnumMap<>(Direction.class);
+	public Map<String, Integer> run(final String firstHillName, final String secondHillName) {
+		System.out.println("Duel starting...");
+		System.out.println("World size: " + WorldConstants.X_BOUNDRY + " x " + WorldConstants.Y_BOUNDRY);
+		System.out.println("Turns: " + TURNS);
 
-		for (final Direction visionDirection : Direction.values()) {
-			visionGrid.put(visionDirection, checkField(visionDirection, ant));
+		this.world.createWorldBorder();
+		final Hill firstHill = this.world.createHill(HillOrder.FIRST, firstHillName);
+		Hill secondHill = null;
+		if (secondHillName != null) {
+			secondHill = this.world.createHill(HillOrder.SECOND, secondHillName);
 		}
+		initGame(firstHill, secondHill);
 
-		return visionGrid;
-	}
-
-	private static ObjectType checkField(final Direction direction, final IAnt ant) {
-		ObjectType result = ObjectType.EMPTY_SQUARE;
-		final Point point = new Point(ant.getPosition());
-		point.translate(direction.getPositionChange().x, direction.getPositionChange().y);
-		final IWorldObject foundObject = World.getWorldObject(point);
-		if (foundObject instanceof AbstractAnt) {
-			final AbstractAnt otherAnt = (AbstractAnt) foundObject;
-			if (ant.isEnemy(otherAnt) && otherAnt.hasFood()) {
-				result = ObjectType.ENEMY_ANT_WITH_FOOD;
-			} else if (ant.isEnemy(otherAnt)) {
-				result = ObjectType.ENEMY_ANT;
-			} else if (otherAnt.hasFood()) {
-				result = ObjectType.ANT_WITH_FOOD;
-			} else {
-				result = ObjectType.ANT;
-			}
-		} else if (foundObject instanceof AbstractWarrior) {
-			final AbstractWarrior warrior = (AbstractWarrior) foundObject;
-			if (ant.isEnemy(warrior)) {
-				result = ObjectType.ENEMY_WARRIOR;
-			} else {
-				result = ObjectType.WARRIOR;
-			}
-		} else if (foundObject instanceof Hill) {
-			final Hill hill = (Hill) foundObject;
-			if (hill.equals(ant)) {
-				result = ObjectType.HILL;
-			} else {
-				result = ObjectType.ENEMY_HILL;
-			}
-		} else if (foundObject instanceof Food) {
-			result = ObjectType.FOOD;
-		} else if (foundObject instanceof WorldBorder) {
-			result = ObjectType.BORDER;
+		final long startTime = System.currentTimeMillis();
+		for (int turn = 0; turn < TURNS; turn++) {
+			singleTurn(firstHill, secondHill, turn);
+			this.foodHandler.dropFood(turn);
 		}
+		final long endTime = System.currentTimeMillis();
+		final HashMap<String, Integer> result = new HashMap<>();
+		System.out.println(firstHill.getName() + " earned score: " + firstHill.getFood());
+		result.put(firstHill.getName(), Integer.valueOf(firstHill.getFood()));
+		if (secondHillName != null) {
+			System.out.println(secondHill.getName() + " earned score: " + secondHill.getFood());
+			result.put(secondHill.getName(), Integer.valueOf(secondHill.getFood()));
+		}
+		System.out.println("Game duration: " + TURNS + " turns, in " + (endTime - startTime) + " ms");
 		return result;
 	}
 }

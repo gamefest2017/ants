@@ -1,6 +1,6 @@
 package com.ibm.sk;
 
-public class WorldConstans {
+public class WorldConstants {
 
 	public static final int X_BOUNDRY = 40;
 	public static final int Y_BOUNDRY = 20;

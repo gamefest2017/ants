@@ -16,11 +16,10 @@ import com.ibm.sk.dto.matchmaking.PlayerStatus;
 import com.ibm.sk.dto.matchmaking.comparator.PlayerScoreComparator;
 import com.ibm.sk.dto.qualification.QualificationCandidate;
 import com.ibm.sk.dto.qualification.QualificationTable;
-import com.ibm.sk.engine.ProcessExecutor;
 
 /**
  * Each player has 3 rounds with AI and gets ranking based on his score.
- * 
+ *
  * Victories are not taken into account, as it is assumed AI is passive (cannot win).
  * @author Vladimir Martinka (vladimir.martinka@gmail.com)
  *
@@ -28,17 +27,17 @@ import com.ibm.sk.engine.ProcessExecutor;
 public class Qualification extends Tournament {
 
 	private static final Integer MATCHES_PER_PLAYER = 3;
-	
-	
-	public Qualification(List<Player> players, ProcessExecutor executor) {
-		super(players, executor);
+
+
+	public Qualification(final List<Player> players) {
+		super(players);
 		getPlayers().stream().forEach(player -> {
 			IntStream.range(0, MATCHES_PER_PLAYER).forEach(i -> {
 				getMatches().add(new Match(Arrays.asList(player, AI)));
 			});
 		});
 	}
-	
+
 	@Override
 	public Optional<Match> getNextMatch() {
 		return getMatches().stream().filter(m -> !m.isFinished()).findFirst();
@@ -54,20 +53,20 @@ public class Qualification extends Tournament {
 
 	@Override
 	public List<PlayerStatus> getRanking() {
-		Map<Player, Integer> playerScore = getMatches().stream()
-			.flatMap(m -> m.getPlayerStatus().stream())
-			.collect(groupingBy(PlayerStatus::getPlayer, 
-					summingInt(PlayerStatus::getScore)));
-		
+		final Map<Player, Integer> playerScore = getMatches().stream()
+				.flatMap(m -> m.getPlayerStatus().stream())
+				.collect(groupingBy(PlayerStatus::getPlayer,
+						summingInt(PlayerStatus::getScore)));
+
 		playerScore.remove(AI);
-				
-		List<PlayerStatus> ranking = playerScore.keySet().stream().map(p -> {
-				PlayerStatus status = new PlayerStatus(p); 
-				status.addScore(playerScore.get(p));
-				return status;
-			}).sorted(new PlayerScoreComparator().reversed())
-			.collect(Collectors.toList());
-		
+
+		final List<PlayerStatus> ranking = playerScore.keySet().stream().map(p -> {
+			final PlayerStatus status = new PlayerStatus(p);
+			status.addScore(playerScore.get(p));
+			return status;
+		}).sorted(new PlayerScoreComparator().reversed())
+				.collect(Collectors.toList());
+
 		return ranking;
 	}
 
@@ -76,32 +75,32 @@ public class Qualification extends Tournament {
 		// TODO return copy / snapshot of current state
 		return getMatches();
 	}
-	
+
 	public QualificationTable getQualificationTable() {
-		QualificationTable table = new QualificationTable();
+		final QualificationTable table = new QualificationTable();
 		int index = 0;
-		
-		int nextPowerOfTwo = (int) Math.ceil((Math.log(getPlayers().size()) / Math.log(2)));
-		int maxQualifiedPlayers = (int) Math.pow(2, nextPowerOfTwo - 1 );
-		
-		for (PlayerStatus ps : getRanking()) {
+
+		final int nextPowerOfTwo = (int) Math.ceil(Math.log(getPlayers().size()) / Math.log(2));
+		final int maxQualifiedPlayers = (int) Math.pow(2, nextPowerOfTwo - 1 );
+
+		for (final PlayerStatus ps : getRanking()) {
 			table.addCandidate(new QualificationCandidate(
-					ps.getPlayer().getId(), 
-					ps.getPlayer().getName(), 
-					++index > maxQualifiedPlayers ? false : true, 
-//					ps.getScore().longValue())
-					getScoresForPlayer(ps.getPlayer())));
-					
+					ps.getPlayer().getId(),
+					ps.getPlayer().getName(),
+					++index > maxQualifiedPlayers ? false : true,
+							//					ps.getScore().longValue())
+							getScoresForPlayer(ps.getPlayer())));
+
 		}
 		return table;
 	}
-	
-	private List<Long> getScoresForPlayer(Player player) {
+
+	private List<Long> getScoresForPlayer(final Player player) {
 		return getMatches().stream()
-		.flatMap(m -> m.getPlayerStatus().stream())
-		.filter(ps -> player.equals(ps.getPlayer()))
-		.map(ps -> ps.getScore().longValue())
-		.collect(Collectors.toList());
+				.flatMap(m -> m.getPlayerStatus().stream())
+				.filter(ps -> player.equals(ps.getPlayer()))
+				.map(ps -> ps.getScore().longValue())
+				.collect(Collectors.toList());
 	}
 
 }
