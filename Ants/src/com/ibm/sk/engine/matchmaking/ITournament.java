@@ -6,6 +6,7 @@ import java.util.Optional;
 import com.ibm.sk.dto.matchmaking.Match;
 import com.ibm.sk.dto.matchmaking.Player;
 import com.ibm.sk.dto.matchmaking.PlayerStatus;
+import com.ibm.sk.ff.gui.client.GUIFacade;
 
 public interface ITournament {
 	/**
@@ -19,7 +20,7 @@ public interface ITournament {
 	 * @return Resulting match after execution.
 	 * @throws NoMoreMatchesException In case all matches are resolved and no more matches can be executed.
 	 */
-	public Match resolveNextMatch() throws NoMoreMatchesException; 
+	public Match resolveNextMatch(GUIFacade facade) throws NoMoreMatchesException; 
 	
 	/**
 	 * Returns the tournament winner if there is one.

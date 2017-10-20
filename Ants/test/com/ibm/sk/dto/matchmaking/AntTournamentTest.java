@@ -23,8 +23,9 @@ public class AntTournamentTest extends TournamentTest {
 		//				.map(ps -> ps.getPlayer()).collect(Collectors.toList());
 		printTournament(qualification);
 		final QualificationTable qt = ((Qualification)qualification).getQualificationTable();
-		return new SingleElimination(
-				qt.getCandidates().stream().filter(c -> c.isQualified()).collect(Collectors.toList()));
+//		return new SingleElimination(
+//				qt.getCandidates().stream().filter(c -> c.isQualified()).collect(Collectors.toList()));
+		return null;
 	}
 
 	@Test

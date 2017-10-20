@@ -1,8 +1,12 @@
 package com.ibm.sk.dto.matchmaking;
 
 public class PlayerStatus {
-	private final Player player;
+	private Player player;
 	private Integer score = 0;
+	
+	public PlayerStatus() {
+		//dummy
+	}
 	
 	public PlayerStatus(Player player) {
 		this(player, 0);
@@ -23,6 +27,10 @@ public class PlayerStatus {
 
 	public Player getPlayer() {
 		return player;
+	}
+	
+	public void setPlayer(Player player) {
+		this.player = player;
 	}
 	
 	@Override

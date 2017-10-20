@@ -23,6 +23,11 @@ public class Match {
 	@Setter(AccessLevel.NONE) private Optional<Calendar> startTime = Optional.empty();
 	@Setter(AccessLevel.NONE) private Optional<Calendar> endTime = Optional.empty();
 	
+	public Match() {//dummy
+		this.players = null;
+		this.playerStatus = null;
+	}
+	
 	public Match(List<Player> players) {
 		this.players = players;
 		this.playerStatus = players.stream().map(PlayerStatus::new).collect(Collectors.toList());

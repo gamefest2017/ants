@@ -7,6 +7,7 @@ import java.util.stream.Collectors;
 
 import com.ibm.sk.MenuMain;
 import com.ibm.sk.dto.matchmaking.Player;
+import com.ibm.sk.dto.matchmaking.StartGameData;
 import com.ibm.sk.engine.ProcessExecutor;
 import com.ibm.sk.engine.matchmaking.NoMoreMatchesException;
 import com.ibm.sk.engine.matchmaking.Qualification;
@@ -14,6 +15,7 @@ import com.ibm.sk.engine.matchmaking.SingleElimination;
 import com.ibm.sk.ff.gui.client.GUIFacade;
 import com.ibm.sk.ff.gui.common.events.GuiEvent;
 import com.ibm.sk.ff.gui.common.events.GuiEventListener;
+import com.ibm.sk.ff.gui.common.mapper.Mapper;
 import com.ibm.sk.ff.gui.common.objects.operations.InitMenuData;
 
 public class GameMenuHandler implements GuiEventListener {
@@ -42,16 +44,19 @@ public class GameMenuHandler implements GuiEventListener {
 			executor = new ProcessExecutor(this.facade);
 			executor.run(hillNames.substring(0, separatorPos), hillNames.substring(separatorPos + 1));
 		} else if (GuiEvent.EventTypes.QUALIFICATION_START.name().equals(event.getType().name()) ) {
-
+			StartGameData data = Mapper.INSTANCE.jsonToPojo(event.getData(), StartGameData.class);
+			facade.setRender(!data.isRunInBackground());
 			//lazy initialize qualification on first run
 			if (this.qualification == null) {
 				final AtomicInteger index = new AtomicInteger();
-				final List<Player> players = Arrays.asList(event.getData().split(",")).stream().map(s -> new Player(Integer.valueOf(index.incrementAndGet()), s)).collect(Collectors.toList());
+				final List<Player> players = data.getPlayers().stream()
+						.map(s -> new Player(Integer.valueOf(index.incrementAndGet()), s))
+						.collect(Collectors.toList());
 				this.qualification = new Qualification(players);
 			}
 
 			try {
-				this.qualification.resolveNextMatch();
+				this.qualification.resolveNextMatch(facade);
 			} catch (final NoMoreMatchesException e) {
 				e.printStackTrace();
 			}
@@ -67,11 +72,13 @@ public class GameMenuHandler implements GuiEventListener {
 			if (this.tournament == null) {
 				this.tournament = new SingleElimination(
 						this.qualification.getQualificationTable().getCandidates().stream()
-						.filter(qc -> qc.isQualified()).collect(Collectors.toList()));
+						.filter(qc -> qc.isQualified())
+						.map(qc -> new Player(qc.getId(), qc.getName()))
+						.collect(Collectors.toList()));
 			}
 
 			try {
-				this.tournament.resolveNextMatch();
+				this.tournament.resolveNextMatch(facade);
 			} catch (final NoMoreMatchesException e) {
 				e.printStackTrace();
 			}

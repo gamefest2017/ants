@@ -193,7 +193,7 @@ public class GuiConnector {
 		data.setTurns(turns);
 		this.FACADE.showScore(data);
 	}
-
+	
 	public void showResult(final String winner) {
 		final ResultData rd = new ResultData();
 		rd.setWinner(winner);

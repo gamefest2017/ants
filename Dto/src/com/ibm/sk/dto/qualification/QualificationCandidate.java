@@ -8,24 +8,26 @@ import com.fasterxml.jackson.annotation.JsonIgnore;
 import com.ibm.sk.dto.matchmaking.Player;
 
 import lombok.Data;
+import lombok.NoArgsConstructor;
 
-public class QualificationCandidate extends Player {
-
+@Data
+@NoArgsConstructor
+public class QualificationCandidate {
+	private Integer id;
+	private String name;
 	private List<Long> score = new ArrayList<>();
 	private boolean qualified = false;
 	
-	public QualificationCandidate() {
-		super(null,null);
-	}
-	
 	public QualificationCandidate(Integer id, String name, boolean qualified, Long... scoreInQualificationRounds) {
-		super(id, name);
+		this.id = id;
+		this.name = name;
 		this.qualified = qualified;
 		this.score = Arrays.asList(scoreInQualificationRounds);
 	}
 	
 	public QualificationCandidate(Integer id, String name, boolean qualified, List<Long> scoreInQualificationRounds) {
-		super(id, name);
+		this.id = id;
+		this.name = name;
 		this.qualified = qualified;
 		this.score = scoreInQualificationRounds;
 	}
