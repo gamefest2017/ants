@@ -16,6 +16,7 @@ import com.ibm.sk.dto.matchmaking.PlayerStatus;
 import com.ibm.sk.dto.matchmaking.comparator.PlayerScoreComparator;
 import com.ibm.sk.dto.qualification.QualificationCandidate;
 import com.ibm.sk.dto.qualification.QualificationTable;
+import com.ibm.sk.ff.gui.client.GUIFacade;
 
 /**
  * Each player has 3 rounds with AI and gets ranking based on his score.
@@ -29,8 +30,8 @@ public class Qualification extends Tournament {
 	private static final Integer MATCHES_PER_PLAYER = 3;
 
 
-	public Qualification(final List<Player> players) {
-		super(players);
+	public Qualification(final GUIFacade facade, final List<Player> players) {
+		super(facade, players);
 		getPlayers().stream().forEach(player -> {
 			IntStream.range(0, MATCHES_PER_PLAYER).forEach(i -> {
 				getMatches().add(new Match(Arrays.asList(player, AI)));

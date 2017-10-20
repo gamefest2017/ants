@@ -4,7 +4,6 @@ import java.util.ArrayList;
 import java.util.List;
 import java.util.Map;
 
-import com.ibm.sk.ant.AntLoader;
 import com.ibm.sk.dto.matchmaking.Match;
 import com.ibm.sk.dto.matchmaking.Player;
 import com.ibm.sk.engine.ProcessExecutor;
@@ -17,6 +16,7 @@ import lombok.Setter;
 
 @Data
 public abstract class Tournament implements ITournament {
+	private final GUIFacade facade;
 	private final List<Player> players;
 	protected static final Player AI = new Player(null, "AI");
 	
@@ -25,25 +25,22 @@ public abstract class Tournament implements ITournament {
 	private final List<Match> matches = new ArrayList<>();
 	
 	@Override
-	public Match resolveNextMatch(GUIFacade facade) throws NoMoreMatchesException {
+	public Match resolveNextMatch() throws NoMoreMatchesException {
 		final Match match = getNextMatch().orElseThrow(NoMoreMatchesException::new);
 
 		final boolean singlePlayer = match.getPlayers().contains(AI);
 		
 		match.startMatch();
 
-		final ProcessExecutor executor = new ProcessExecutor(facade);
+		final ProcessExecutor executor = new ProcessExecutor(this.facade);
 		final Map<String, Integer> results = executor.run(match.getPlayer(0).getName(), singlePlayer ? null : match.getPlayer(1).getName());
 		
 		match.getPlayerStatus(0).addScore(results.get(match.getPlayer(0).getName()).intValue());
 		if (!singlePlayer) {
 			match.getPlayerStatus(1).addScore(results.get(match.getPlayer(1).getName()).intValue());
 		}
-		
 		match.endMatch();
-		
-		ProcessExecutor.guiConnector.showResult(match.getWinners().get(0).getName());
-		
+		this.facade.showResult(match.getWinners().get(0).getName());
 		return match;
 	}
 	
@@ -51,9 +48,8 @@ public abstract class Tournament implements ITournament {
 	public ITournament fastForward() {
 		while (getNextMatch().isPresent()) {
 			try {
-				GUIFacade f = new GUIFacade();
-				f.setRender(false);
-				resolveNextMatch(f);
+				this.facade.setRender(false);
+				resolveNextMatch();
 			} catch (final NoMoreMatchesException e) {
 				e.printStackTrace();//cannot happen
 			}

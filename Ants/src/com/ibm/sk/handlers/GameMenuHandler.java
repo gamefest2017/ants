@@ -1,13 +1,13 @@
 package com.ibm.sk.handlers;
 
-import java.util.Arrays;
 import java.util.List;
+import java.util.Map;
 import java.util.concurrent.atomic.AtomicInteger;
 import java.util.stream.Collectors;
 
-import com.ibm.sk.MenuMain;
 import com.ibm.sk.dto.matchmaking.Player;
 import com.ibm.sk.dto.matchmaking.StartGameData;
+import com.ibm.sk.dto.qualification.QualificationCandidate;
 import com.ibm.sk.engine.ProcessExecutor;
 import com.ibm.sk.engine.matchmaking.NoMoreMatchesException;
 import com.ibm.sk.engine.matchmaking.Qualification;
@@ -26,7 +26,6 @@ public class GameMenuHandler implements GuiEventListener {
 	private SingleElimination tournament = null;
 	private final GUIFacade facade;
 
-
 	public GameMenuHandler(final GUIFacade facade, final InitMenuData menuData) {
 		this.menuData = menuData;
 		this.facade = facade;
@@ -37,59 +36,56 @@ public class GameMenuHandler implements GuiEventListener {
 		ProcessExecutor executor;
 		if (GuiEvent.EventTypes.SINGLE_PLAY_START.name().equals(event.getType().name())) {
 			executor = new ProcessExecutor(this.facade);
-			executor.run(event.getData(), null);
+			final Map<String, Integer> results = executor.run(event.getData(), null);
+			final String winner = results.entrySet().stream()
+					.max((one, other) -> one.getValue().compareTo(other.getValue()))
+					.orElseGet(() -> results.entrySet().iterator().next()).getKey();
+			this.facade.showResult(winner);
 		} else if (GuiEvent.EventTypes.DOUBLE_PLAY_START.name().equals(event.getType().name())) {
 			final String hillNames = event.getData();
 			final int separatorPos = hillNames.indexOf(GuiEvent.HLL_NAMES_SEPARATOR);
 			executor = new ProcessExecutor(this.facade);
-			executor.run(hillNames.substring(0, separatorPos), hillNames.substring(separatorPos + 1));
-		} else if (GuiEvent.EventTypes.QUALIFICATION_START.name().equals(event.getType().name()) ) {
-			StartGameData data = Mapper.INSTANCE.jsonToPojo(event.getData(), StartGameData.class);
-			facade.setRender(!data.isRunInBackground());
-			//lazy initialize qualification on first run
+			final Map<String, Integer> results = executor.run(hillNames.substring(0, separatorPos),
+					hillNames.substring(separatorPos + 1));
+			final String winner = results.entrySet().stream()
+					.max((one, other) -> one.getValue().compareTo(other.getValue()))
+					.orElseGet(() -> results.entrySet().iterator().next()).getKey();
+			this.facade.showResult(winner);
+		} else if (GuiEvent.EventTypes.QUALIFICATION_START.name().equals(event.getType().name())) {
+			final StartGameData data = Mapper.INSTANCE.jsonToPojo(event.getData(), StartGameData.class);
+			this.facade.setRender(!data.isRunInBackground());
 			if (this.qualification == null) {
 				final AtomicInteger index = new AtomicInteger();
 				final List<Player> players = data.getPlayers().stream()
-						.map(s -> new Player(Integer.valueOf(index.incrementAndGet()), s))
-						.collect(Collectors.toList());
-				this.qualification = new Qualification(players);
+						.map(s -> new Player(Integer.valueOf(index.incrementAndGet()), s)).collect(Collectors.toList());
+				this.qualification = new Qualification(this.facade, players);
 			}
 
 			try {
-				this.qualification.resolveNextMatch(facade);
+				this.qualification.resolveNextMatch();
 			} catch (final NoMoreMatchesException e) {
 				e.printStackTrace();
 			}
 
-			//TODO - repeated matches do not reset game state, leftover objects cause exceptions after a while
-
 			this.menuData.setQualification(this.qualification.getQualificationTable());
-
-			this.facade.showInitMenu(this.menuData);
-
-		} else if (GuiEvent.EventTypes.TOURNAMENT_PLAY_START.name().equals(event.getType().name()) ) {
-			//take results from qualification, start tournament
+		} else if (GuiEvent.EventTypes.TOURNAMENT_PLAY_START.name().equals(event.getType().name())) {
 			if (this.tournament == null) {
-				this.tournament = new SingleElimination(
+				this.tournament = new SingleElimination(this.facade,
 						this.qualification.getQualificationTable().getCandidates().stream()
-						.filter(qc -> qc.isQualified())
-						.map(qc -> new Player(qc.getId(), qc.getName()))
+								.filter(QualificationCandidate::isQualified)
+								.map(qc -> new Player(qc.getId(), qc.getName()))
 						.collect(Collectors.toList()));
 			}
 
 			try {
-				this.tournament.resolveNextMatch(facade);
+				this.tournament.resolveNextMatch();
 			} catch (final NoMoreMatchesException e) {
 				e.printStackTrace();
 			}
 
-
 			this.menuData.setTournament(this.tournament.getTournamentTable());
-
-			this.facade.showInitMenu(this.menuData);
 		} else if (GuiEvent.EventTypes.RESULT_CLOSE.equals(event.getType())) {
-			//TODO - show init menu
-			MenuMain.showMainWindow(this.menuData);
+			this.facade.showInitMenu(this.menuData);
 		}
 	}
 

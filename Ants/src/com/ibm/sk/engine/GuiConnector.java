@@ -18,13 +18,12 @@ import com.ibm.sk.ff.gui.common.objects.gui.GHillObject;
 import com.ibm.sk.ff.gui.common.objects.gui.GUIObject;
 import com.ibm.sk.ff.gui.common.objects.gui.GWarriorObject;
 import com.ibm.sk.ff.gui.common.objects.operations.CreateGameData;
-import com.ibm.sk.ff.gui.common.objects.operations.ResultData;
 import com.ibm.sk.ff.gui.common.objects.operations.ScoreData;
 import com.ibm.sk.models.WorldBorder;
 
 public class GuiConnector {
 
-	private final GUIFacade FACADE;
+	public final GUIFacade FACADE;
 
 	public GuiConnector(final GUIFacade FACADE) {
 		this.FACADE = FACADE;
@@ -192,12 +191,6 @@ public class GuiConnector {
 		data.setCurrentTurn(currentTurn);
 		data.setTurns(turns);
 		this.FACADE.showScore(data);
-	}
-	
-	public void showResult(final String winner) {
-		final ResultData rd = new ResultData();
-		rd.setWinner(winner);
-		this.FACADE.showResult(rd);
 	}
 
 }

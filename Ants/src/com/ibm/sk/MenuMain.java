@@ -1,7 +1,6 @@
 package com.ibm.sk;
 
-import java.util.Arrays;
-import java.util.stream.Collectors;
+import java.util.stream.Stream;
 
 import com.ibm.sk.ant.AntLoader;
 import com.ibm.sk.ant.facade.AntFactory;
@@ -18,14 +17,13 @@ public class MenuMain extends AbstractMain {
 		final AntFactory[] implementations = AntLoader.getImplementations();
 		final InitMenuData initData = new InitMenuData();
 
-		initData.setCompetitors(Arrays.asList(implementations).stream().map(AntFactory::getTeamName)
-				.collect(Collectors.toList()).stream().toArray(String[]::new));
+		initData.setCompetitors(Stream.of(implementations).map(AntFactory::getTeamName).toArray(String[]::new));
 		showMainWindow(initData);
 	}
 
 	public static void showMainWindow(final InitMenuData initData) {
-		FACADE.showInitMenu(initData);
 		FACADE.addGuiEventListener(new GameMenuHandler(FACADE, initData));
+		FACADE.showInitMenu(initData);
 	}
 
 }
