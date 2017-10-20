@@ -194,10 +194,10 @@ public class GuiConnector {
 		this.FACADE.showScore(data);
 	}
 	
-	public void showResult(final Hill hill) {
-		ResultData rd = new ResultData();
-		rd.setWinner(hill.getName());
-		FACADE.showResult(rd);
+	public void showResult(final String winner) {
+		final ResultData rd = new ResultData();
+		rd.setWinner(winner);
+		this.FACADE.showResult(rd);
 	}
 
 }

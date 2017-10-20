@@ -25,28 +25,24 @@ public abstract class Tournament implements ITournament {
 	private final List<Match> matches = new ArrayList<>();
 	
 	@Override
-	public Match resolveNextMatch() throws NoMoreMatchesException {
+	public Match resolveNextMatch(GUIFacade facade) throws NoMoreMatchesException {
 		final Match match = getNextMatch().orElseThrow(NoMoreMatchesException::new);
 
 		final boolean singlePlayer = match.getPlayers().contains(AI);
 		
 		match.startMatch();
 
-		final ProcessExecutor executor = new ProcessExecutor(new GUIFacade(), AntLoader.getImplementations());
-		final Map<String, Integer> results = executor.run(match.getPlayer(0).getName(), match.getPlayer(1).getName());
-
+		final ProcessExecutor executor = new ProcessExecutor(facade);
+		final Map<String, Integer> results = executor.run(match.getPlayer(0).getName(), singlePlayer ? null : match.getPlayer(1).getName());
+		
 		match.getPlayerStatus(0).addScore(results.get(match.getPlayer(0).getName()).intValue());
 		if (!singlePlayer) {
 			match.getPlayerStatus(1).addScore(results.get(match.getPlayer(1).getName()).intValue());
 		}
 		
-		if (singlePlayer) {
-			ProcessExecutor.guiConnector.showResult(null);
-		} else {
-			ProcessExecutor.guiConnector.showResult(null);
-		}
-		
 		match.endMatch();
+		
+		ProcessExecutor.guiConnector.showResult(match.getWinners().get(0).getName());
 		
 		return match;
 	}
@@ -55,7 +51,9 @@ public abstract class Tournament implements ITournament {
 	public ITournament fastForward() {
 		while (getNextMatch().isPresent()) {
 			try {
-				resolveNextMatch();
+				GUIFacade f = new GUIFacade();
+				f.setRender(false);
+				resolveNextMatch(f);
 			} catch (final NoMoreMatchesException e) {
 				e.printStackTrace();//cannot happen
 			}
