@@ -46,6 +46,7 @@ public class GameMenuHandler implements GuiEventListener {
 		} else if (GuiEvent.EventTypes.QUALIFICATION_START.name().equals(event.getType().name()) ) {
 			StartGameData data = Mapper.INSTANCE.jsonToPojo(event.getData(), StartGameData.class);
 			facade.setRender(!data.isRunInBackground());
+			menuData.setRunInBackground(data.isRunInBackground());
 			//lazy initialize qualification on first run
 			if (this.qualification == null) {
 				final AtomicInteger index = new AtomicInteger();
@@ -54,39 +55,50 @@ public class GameMenuHandler implements GuiEventListener {
 						.collect(Collectors.toList());
 				this.qualification = new Qualification(players);
 			}
-
-			try {
-				this.qualification.resolveNextMatch(facade);
-			} catch (final NoMoreMatchesException e) {
-				e.printStackTrace();
+			
+			if (!this.qualification.getWinner().isPresent()) {
+				try {
+					this.qualification.resolveNextMatch(facade);
+				} catch (final NoMoreMatchesException e) {
+					e.printStackTrace();
+				}
+	
+				this.menuData.setQualification(this.qualification.getQualificationTable());
+	
+				this.facade.showInitMenu(this.menuData);
 			}
-
-			//TODO - repeated matches do not reset game state, leftover objects cause exceptions after a while
-
-			this.menuData.setQualification(this.qualification.getQualificationTable());
-
-			this.facade.showInitMenu(this.menuData);
 
 		} else if (GuiEvent.EventTypes.TOURNAMENT_PLAY_START.name().equals(event.getType().name()) ) {
-			//take results from qualification, start tournament
-			if (this.tournament == null) {
-				this.tournament = new SingleElimination(
-						this.qualification.getQualificationTable().getCandidates().stream()
-						.filter(qc -> qc.isQualified())
-						.map(qc -> new Player(qc.getId(), qc.getName()))
-						.collect(Collectors.toList()));
+			StartGameData data = Mapper.INSTANCE.jsonToPojo(event.getData(), StartGameData.class);
+			facade.setRender(!data.isRunInBackground());
+			menuData.setRunInBackground(data.isRunInBackground());
+			
+			//if qualification is not done, do nothing
+			if (this.qualification.getWinner().isPresent()) {
+			
+				//take results from qualification, start tournament
+				if (this.tournament == null) {
+					this.tournament = new SingleElimination(
+							this.qualification.getQualificationTable().getCandidates().stream()
+							.filter(qc -> qc.isQualified())
+							.map(qc -> new Player(qc.getId(), qc.getName()))
+							.collect(Collectors.toList()));
+				}
+				
+				if (!tournament.getWinner().isPresent()) {
+					try {
+						this.tournament.resolveNextMatch(facade);
+					} catch (final NoMoreMatchesException e) {
+						e.printStackTrace();
+					}
+		
+					this.menuData.setTournament(this.tournament.getTournamentTable());
+					
+					this.facade.showInitMenu(this.menuData);
+				}
 			}
 
-			try {
-				this.tournament.resolveNextMatch(facade);
-			} catch (final NoMoreMatchesException e) {
-				e.printStackTrace();
-			}
-
-
-			this.menuData.setTournament(this.tournament.getTournamentTable());
-
-			this.facade.showInitMenu(this.menuData);
+			
 		} else if (GuiEvent.EventTypes.RESULT_CLOSE.equals(event.getType())) {
 			//TODO - show init menu
 			MenuMain.showMainWindow(this.menuData);

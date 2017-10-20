@@ -14,6 +14,8 @@ public class InitMenuData {
 	public QualificationTable qualification;
 	
 	public TournamentTable tournament;
+	
+	public boolean runInBackground;
 
 	public QualificationTable getQualification() {
 		return qualification;
@@ -55,6 +57,14 @@ public class InitMenuData {
 	
 	public String[] getReplays() {
 		return replays;
+	}
+	
+	public boolean isRunInBackground() {
+		return runInBackground;
+	}
+	
+	public void setRunInBackground(boolean runInBackground) {
+		this.runInBackground = runInBackground;
 	}
 
 }
