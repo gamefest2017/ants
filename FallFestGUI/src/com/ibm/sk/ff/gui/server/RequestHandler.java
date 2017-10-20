@@ -57,7 +57,7 @@ public class RequestHandler implements HttpHandler {
 		}
 	}
 
-	private void handle(final GUIOperations operation, final String leftoverURL, final String json) {
+	protected void handle(final GUIOperations operation, final String leftoverURL, final String json) {
 		switch (operation) {
 		case SHOW_INIT_MENU:	showInitMenu(leftoverURL, json);	break;
 		case CREATE_GAME: 		callCreateGame(leftoverURL, json);	break;
@@ -153,7 +153,7 @@ public class RequestHandler implements HttpHandler {
 		this.FACADE.close(Mapper.INSTANCE.jsonToPojo(json, CloseData.class));
 	}
 
-	private GUIOperations createGUIOperation(final String [] path) {
+	protected GUIOperations createGUIOperation(final String [] path) {
 		GUIOperations ret = null;
 
 		if (path.length >= 1) {

@@ -35,7 +35,7 @@ public class GUIFacade {
 
 	private final SimpleDateFormat DATE_FORMAT = new SimpleDateFormat("yyyyMMdd-HHmm");
 
-	private final Client CLIENT;
+	private final IClient CLIENT;
 
 	private final List<GuiEventListener> guiEventListeners = new ArrayList<>();
 
@@ -51,7 +51,11 @@ public class GUIFacade {
 	private long recordStartTime;
 
 	public GUIFacade() {
-		this.CLIENT = new Client();
+		this(new Client());
+	}
+	
+	public GUIFacade(IClient client) {
+		this.CLIENT = client;
 		new Thread(new Runnable() {
 			@Override
 			public void run() {
