@@ -6,7 +6,6 @@ import java.util.concurrent.atomic.AtomicInteger;
 import java.util.stream.Collectors;
 
 import com.ibm.sk.MenuMain;
-import com.ibm.sk.ant.facade.AntFactory;
 import com.ibm.sk.dto.matchmaking.Player;
 import com.ibm.sk.dto.matchmaking.StartGameData;
 import com.ibm.sk.engine.ProcessExecutor;
@@ -26,25 +25,23 @@ public class GameMenuHandler implements GuiEventListener {
 	private Qualification qualification = null;
 	private SingleElimination tournament = null;
 	private final GUIFacade facade;
-	private final AntFactory[] implementations;
 
 
-	public GameMenuHandler(final GUIFacade facade, final InitMenuData menuData, final AntFactory[] implementations) {
+	public GameMenuHandler(final GUIFacade facade, final InitMenuData menuData) {
 		this.menuData = menuData;
 		this.facade = facade;
-		this.implementations = implementations;
 	}
 
 	@Override
 	public void actionPerformed(final GuiEvent event) {
 		ProcessExecutor executor;
 		if (GuiEvent.EventTypes.SINGLE_PLAY_START.name().equals(event.getType().name())) {
-			executor = new ProcessExecutor(this.facade, this.implementations);
+			executor = new ProcessExecutor(this.facade);
 			executor.run(event.getData(), null);
 		} else if (GuiEvent.EventTypes.DOUBLE_PLAY_START.name().equals(event.getType().name())) {
 			final String hillNames = event.getData();
 			final int separatorPos = hillNames.indexOf(GuiEvent.HLL_NAMES_SEPARATOR);
-			executor = new ProcessExecutor(this.facade, this.implementations);
+			executor = new ProcessExecutor(this.facade);
 			executor.run(hillNames.substring(0, separatorPos), hillNames.substring(separatorPos + 1));
 		} else if (GuiEvent.EventTypes.QUALIFICATION_START.name().equals(event.getType().name()) ) {
 			StartGameData data = Mapper.INSTANCE.jsonToPojo(event.getData(), StartGameData.class);
@@ -92,7 +89,7 @@ public class GameMenuHandler implements GuiEventListener {
 			this.facade.showInitMenu(this.menuData);
 		} else if (GuiEvent.EventTypes.RESULT_CLOSE.equals(event.getType())) {
 			//TODO - show init menu
-			MenuMain.showMainWindow();
+			MenuMain.showMainWindow(this.menuData);
 		}
 	}
 

@@ -195,9 +195,9 @@ public class GuiConnector {
 	}
 	
 	public void showResult(final String winner) {
-		ResultData rd = new ResultData();
+		final ResultData rd = new ResultData();
 		rd.setWinner(winner);
-		FACADE.showResult(rd);
+		this.FACADE.showResult(rd);
 	}
 
 }
