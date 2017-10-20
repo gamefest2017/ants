@@ -5,6 +5,7 @@ import java.util.stream.Collectors;
 
 import com.ibm.sk.ant.AntLoader;
 import com.ibm.sk.ant.facade.AntFactory;
+import com.ibm.sk.ff.gui.client.ReplayFileHelper;
 import com.ibm.sk.ff.gui.common.objects.operations.InitMenuData;
 import com.ibm.sk.handlers.GameMenuHandler;
 
@@ -18,8 +19,9 @@ public class MenuMain extends AbstractMain {
 		final AntFactory[] implementations = AntLoader.getImplementations();
 		final InitMenuData initData = new InitMenuData();
 
-		initData.setCompetitors(Arrays.asList(implementations).stream().map(AntFactory::getTeamName)
-				.collect(Collectors.toList()).stream().toArray(String[]::new));
+		initData.setCompetitors(Arrays.asList(implementations).stream().map(AntFactory::getTeamName).collect(Collectors.toList()).stream().toArray(String[]::new));
+		initData.setReplay(ReplayFileHelper.getAvailableReplays());
+		
 		showMainWindow(initData);
 	}
 
