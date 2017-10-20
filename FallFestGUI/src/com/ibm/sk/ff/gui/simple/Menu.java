@@ -9,6 +9,7 @@ import java.awt.GridBagLayout;
 import java.awt.GridLayout;
 import java.awt.Insets;
 import java.util.ArrayList;
+import java.util.Arrays;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
@@ -296,7 +297,15 @@ public class Menu extends JPanel {
 		doc.setParagraphAttributes(0, doc.getLength(), center, false);
 		textPane.setText("\n" + "Gabriel Scerbak\n" + "Gabriel Szabo\n" + "Lenka Hudecova\n"
 				+ "Omar Josue Hernandez Valdes\n" + "Peter Prazenica\n" + "Robert Hahn\n" + "Robert Sevcik\n"
-				+ "Tibor Schvartz\n" + "\n" + "© Copyright IBM Slovakia 2017\n");
+				+ "Tibor Schvartz\n" + "\n"
+				+ "The logic game Anthill has been designed and developed for this year's IBM Fall Festival. "
+				+ "The festival creates a unique platform, connecting the theme of technological development "
+				+ "with experiencing real working environment of an international company. "
+				+ "It combines the opportunity to participate in workshops with progressive content "
+				+ "in real offices, with the possibility to discover the core of IBM business in Slovakia "
+				+ "– all this in a warm atmosphere of a starting autumn accompanied by local music bands. "
+				+ "We really encourage you to take part.\n\n"
+				+ "© Copyright IBM Slovakia 2017");
 		textPane.setEditable(false);
 		textPane.setFont(new Font("Serif", Font.ITALIC, 16));
 		textPane.setOpaque(false);
@@ -321,6 +330,10 @@ public class Menu extends JPanel {
 		c.insets = new Insets(0, 0, 0, 0);
 		c.anchor = GridBagConstraints.CENTER;
 		panelAbout.add(textPane, c);
+		JScrollPane scrollPanelAbout = new JScrollPane(panelAbout, JScrollPane.VERTICAL_SCROLLBAR_AS_NEEDED, JScrollPane.HORIZONTAL_SCROLLBAR_NEVER);
+		panelAbout.setBorder(BorderFactory.createEmptyBorder());
+		panelAbout.setAutoscrolls(true);
+		scrollPanelAbout.setBorder(BorderFactory.createEmptyBorder());
 		tabbedPane.addTab("About", panelAbout);
 
 		// Title
@@ -362,7 +375,7 @@ public class Menu extends JPanel {
 		buttonStart.setRolloverEnabled(true);
 		buttonStart.setRolloverIcon(menuStartButton2);
 		buttonStart.setPressedIcon(menuStartButton3);
-		runInBackgroundCheckbox = new JCheckBox("Run in background");
+		runInBackgroundCheckbox = new JCheckBox("Invisible game");
 		runInBackgroundCheckbox.setSelected(false);
 		JPanel panelStartGame = new JPanel(false);
 		panelStartGame.setLayout(new GridLayout(1, 2));
@@ -471,20 +484,21 @@ public class Menu extends JPanel {
 		
 		// Dummy tournament results
 		TournamentTable tournamentTable = new TournamentTable();
-//		tournamentTable.addMatch(0, new Match(new PlayerStatus(new Player(1, "aPlayer 1"), 15),
-//				new PlayerStatus(new Player(2, "aPlayer 2"), 30), true));
-//		tournamentTable.addMatch(0, new Match(new PlayerStatus(new Player(3, "aPlayer 3"), 11),
-//				new PlayerStatus(new Player(4, "aPlayer 4"), 27), true));
-//		tournamentTable.addMatch(0, new Match(new PlayerStatus(new Player(5, "aPlayer 5"), 42),
-//				new PlayerStatus(new Player(6, "aPlayer 6"), 12), true));
-//		tournamentTable.addMatch(0, new Match(new PlayerStatus(new Player(7, "aPlayer 7"), 25),
-//				new PlayerStatus(new Player(8, "aPlayer 8"), 32), true));
-//		tournamentTable.addMatch(1, new Match(new PlayerStatus(new Player(2, "bPlayer 2"), 55),
-//				new PlayerStatus(new Player(5, "bPlayer 4"), 20), true));
-//		tournamentTable.addMatch(1, new Match(new PlayerStatus(new Player(5, "bPlayer 5"), 11),
-//				new PlayerStatus(new Player(8, "bPlayer 8"), 60), true));
-//		tournamentTable.addMatch(2, new Match(new PlayerStatus(new Player(2, "cPlayer 2"), 32),
-//				new PlayerStatus(new Player(8, "cPlayer 8"), 23), true));
+		Player player1 = new Player(1, "Player 1");
+		Player player2 = new Player(2, "Player 2");
+		Player player3 = new Player(3, "Player 3");
+		Player player4 = new Player(4, "Player 4");
+		Player player5 = new Player(5, "Player 5");
+		Player player6 = new Player(6, "Player 6");
+		Player player7 = new Player(7, "Player 7");
+		Player player8 = new Player(8, "Player 8");
+		tournamentTable.addMatch(0, player1, 15, player2, 32);
+		tournamentTable.addMatch(0, player3, 22, player4, 72);
+		tournamentTable.addMatch(0, player5, 33, player6, 12);
+		tournamentTable.addMatch(0, player7, 15, player8, 44);
+		tournamentTable.addMatch(1, player2, 37, player4, 33);
+		tournamentTable.addMatch(1, player5, 23, player8, 32);
+		tournamentTable.addMatch(2, player2, 27, player8, 42);
 		initMenuData.setTournament(tournamentTable);
 	}
 
