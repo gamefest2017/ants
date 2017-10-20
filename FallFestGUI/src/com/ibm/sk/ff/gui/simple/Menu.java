@@ -375,8 +375,13 @@ public class Menu extends JPanel {
 		buttonStart.setRolloverEnabled(true);
 		buttonStart.setRolloverIcon(menuStartButton2);
 		buttonStart.setPressedIcon(menuStartButton3);
+<<<<<<< HEAD
 		runInBackgroundCheckbox = new JCheckBox("Invisible game");
 		runInBackgroundCheckbox.setSelected(false);
+=======
+		runInBackgroundCheckbox = new JCheckBox("Run in background");
+		runInBackgroundCheckbox.setSelected(initMenuData.isRunInBackground());
+>>>>>>> af5f6d880474bec0a75aa2059b826bc3b5987859
 		JPanel panelStartGame = new JPanel(false);
 		panelStartGame.setLayout(new GridLayout(1, 2));
 		panelStartGame.add(buttonStart);
