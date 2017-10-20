@@ -9,7 +9,6 @@ import java.awt.GridBagLayout;
 import java.awt.GridLayout;
 import java.awt.Insets;
 import java.util.ArrayList;
-import java.util.Arrays;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
@@ -38,9 +37,7 @@ import javax.swing.text.SimpleAttributeSet;
 import javax.swing.text.StyleConstants;
 import javax.swing.text.StyledDocument;
 
-import com.ibm.sk.dto.matchmaking.Match;
 import com.ibm.sk.dto.matchmaking.Player;
-import com.ibm.sk.dto.matchmaking.PlayerStatus;
 import com.ibm.sk.dto.qualification.QualificationCandidate;
 import com.ibm.sk.dto.qualification.QualificationTable;
 import com.ibm.sk.dto.tournament.TournamentMatch;
@@ -375,13 +372,8 @@ public class Menu extends JPanel {
 		buttonStart.setRolloverEnabled(true);
 		buttonStart.setRolloverIcon(menuStartButton2);
 		buttonStart.setPressedIcon(menuStartButton3);
-<<<<<<< HEAD
 		runInBackgroundCheckbox = new JCheckBox("Invisible game");
-		runInBackgroundCheckbox.setSelected(false);
-=======
-		runInBackgroundCheckbox = new JCheckBox("Run in background");
 		runInBackgroundCheckbox.setSelected(initMenuData.isRunInBackground());
->>>>>>> af5f6d880474bec0a75aa2059b826bc3b5987859
 		JPanel panelStartGame = new JPanel(false);
 		panelStartGame.setLayout(new GridLayout(1, 2));
 		panelStartGame.add(buttonStart);
