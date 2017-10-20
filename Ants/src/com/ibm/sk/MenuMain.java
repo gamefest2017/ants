@@ -15,17 +15,17 @@ public class MenuMain extends AbstractMain {
 	}
 
 	public static void main(final String args[]) {
-		showMainWindow();
-	}
-	
-	public static void showMainWindow() {
 		final AntFactory[] implementations = AntLoader.getImplementations();
 		final InitMenuData initData = new InitMenuData();
 
 		initData.setCompetitors(Arrays.asList(implementations).stream().map(AntFactory::getTeamName)
 				.collect(Collectors.toList()).stream().toArray(String[]::new));
+		showMainWindow(initData);
+	}
+
+	public static void showMainWindow(final InitMenuData initData) {
 		FACADE.showInitMenu(initData);
-		FACADE.addGuiEventListener(new GameMenuHandler(FACADE, initData, implementations));
+		FACADE.addGuiEventListener(new GameMenuHandler(FACADE, initData));
 	}
 
 }

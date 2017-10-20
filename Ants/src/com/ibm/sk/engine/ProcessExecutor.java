@@ -9,7 +9,7 @@ import java.util.Iterator;
 import java.util.Map;
 
 import com.ibm.sk.WorldConstants;
-import com.ibm.sk.ant.facade.AntFactory;
+import com.ibm.sk.ant.AntLoader;
 import com.ibm.sk.dto.Hill;
 import com.ibm.sk.dto.IAnt;
 import com.ibm.sk.dto.Vision;
@@ -27,10 +27,10 @@ public final class ProcessExecutor {
 	private final PopulationHandler populationHandler;
 	private final FoodHandler foodHandler;
 
-	public ProcessExecutor(final GUIFacade FACADE, final AntFactory[] implementations) {
+	public ProcessExecutor(final GUIFacade FACADE) {
 		guiConnector = new GuiConnector(FACADE);
 		this.world = new World();
-		this.populationHandler = new PopulationHandler(this.world, implementations);
+		this.populationHandler = new PopulationHandler(this.world, AntLoader.getImplementations());
 		this.movementHandler = new MovementHandler(this.world, this.populationHandler);
 		this.foodHandler = new FoodHandler(this.world);
 	}
@@ -79,7 +79,7 @@ public final class ProcessExecutor {
 			guiConnector.placeGuiObjects(new ArrayList<>(team2.getAnts()));
 		}
 	}
-	
+
 	private void singleStep(final IAnt ant) {
 		System.out.println("Ant " + ant.getId() + " said:");
 		final Vision vision = this.movementHandler.createVisionGrid(ant);

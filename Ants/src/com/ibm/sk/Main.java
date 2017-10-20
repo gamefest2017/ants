@@ -15,7 +15,7 @@ public class Main extends AbstractMain {
 		final InitMenuData imd = new InitMenuData();
 		imd.setCompetitors(Arrays.asList(implementations).stream().map(AntFactory::getTeamName).toArray(String[]::new));
 		final GameMenuHandler menuHandler = new GameMenuHandler(
-				FACADE, imd, implementations);
+				FACADE, imd);
 		// if (args.length == 0) {
 		// menuHandler.startSinglePlayer(menuHandler, "Homesick");
 		// } else if (args.length == 1) {
