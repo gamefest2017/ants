@@ -7,9 +7,7 @@ import com.ibm.sk.ff.gui.simple.SimpleGUI;
 
 public class GameSimulator implements Runnable {
 	
-	private Facade facade_gui = new Facade(new SimpleGUI());
-	private DirectClient client = new DirectClient(facade_gui);
-	private GUIFacade facade = new GUIFacade(client);
+	private GUIFacade facade = new GUIFacade(new DirectClient(new Facade(new SimpleGUI())));
 	
 	
 	@Override
