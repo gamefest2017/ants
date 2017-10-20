@@ -296,7 +296,7 @@ public class Menu extends JPanel {
 		doc.setParagraphAttributes(0, doc.getLength(), center, false);
 		textPane.setText("\n" + "Gabriel Scerbak\n" + "Gabriel Szabo\n" + "Lenka Hudecova\n"
 				+ "Omar Josue Hernandez Valdes\n" + "Peter Prazenica\n" + "Robert Hahn\n" + "Robert Sevcik\n"
-				+ "Tibor Schvartz\n" + "\n" + "© Copyright IBM Slovakia 2017\n");
+				+ "Tibor Schvartz\n" + "\n" + "ï¿½ Copyright IBM Slovakia 2017\n");
 		textPane.setEditable(false);
 		textPane.setFont(new Font("Serif", Font.ITALIC, 16));
 		textPane.setOpaque(false);
@@ -363,7 +363,7 @@ public class Menu extends JPanel {
 		buttonStart.setRolloverIcon(menuStartButton2);
 		buttonStart.setPressedIcon(menuStartButton3);
 		runInBackgroundCheckbox = new JCheckBox("Run in background");
-		runInBackgroundCheckbox.setSelected(false);
+		runInBackgroundCheckbox.setSelected(initMenuData.isRunInBackground());
 		JPanel panelStartGame = new JPanel(false);
 		panelStartGame.setLayout(new GridLayout(1, 2));
 		panelStartGame.add(buttonStart);
