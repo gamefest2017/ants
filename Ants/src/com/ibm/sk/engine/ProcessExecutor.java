@@ -122,7 +122,6 @@ public final class ProcessExecutor {
 			result.put(secondHill.getName(), Integer.valueOf(secondHill.getFood()));
 		}
 		System.out.println("Game duration: " + TURNS + " turns, in " + (endTime - startTime) + " ms");
-		guiConnector.showResult("test");
 		return result;
 	}
 }
