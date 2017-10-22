@@ -8,12 +8,13 @@ import org.junit.Test;
 import com.ibm.sk.engine.matchmaking.ITournament;
 import com.ibm.sk.engine.matchmaking.Qualification;
 import com.ibm.sk.engine.matchmaking.TournamentTest;
+import com.ibm.sk.ff.gui.client.GUIFacade;
 
 public class QualificationTest extends TournamentTest {
 
 	@Override
 	public ITournament createTournament() {
-		return new Qualification(PLAYERS);
+		return new Qualification(new GUIFacade(), PLAYERS);
 	}
 
 	@Test

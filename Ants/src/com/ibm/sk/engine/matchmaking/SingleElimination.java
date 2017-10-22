@@ -28,8 +28,8 @@ public class SingleElimination extends Tournament {
 	 * List of players, ideally sorted by their ranking ascending.
 	 * @param players Sorted list of players. Pairs will be made starting from first element.
 	 */
-	public SingleElimination(final List<Player> players) {
-		super(players);
+	public SingleElimination(final GUIFacade facade, final List<Player> players) {
+		super(facade, players);
 
 		/*
 		 * Limit first round matches to get power of PLAYERS_PER_MATCH
@@ -42,8 +42,8 @@ public class SingleElimination extends Tournament {
 	}
 
 	@Override
-	public Match resolveNextMatch(GUIFacade facade) throws NoMoreMatchesException {
-		final Match match = super.resolveNextMatch(facade);
+	public Match resolveNextMatch() throws NoMoreMatchesException {
+		final Match match = super.resolveNextMatch();
 		final List<Player> losers = new ArrayList<>(match.getPlayers());
 		losers.removeAll(match.getWinners());
 		this.eliminatedPlayers.addAll(losers);
@@ -120,14 +120,14 @@ public class SingleElimination extends Tournament {
 
 
 		for (final Match m : matches) {
-			
-			TournamentMatch tm = new TournamentMatch();
+
+			final TournamentMatch tm = new TournamentMatch();
 			tm.setFinished(m.isFinished());
 			tm.setPlayers(m.getPlayers());
 			tm.setPlayerStatus(m.getPlayerStatus());
 			tm.setWinner(m.getWinners().isEmpty() ? null : m.getWinners().get(0));
 			//TODO will need to update on the fly, resolved matches will not be updated like this...
-			
+
 			this.tournamentTable.addMatch(this.tournamentRound, tm);
 		}
 

@@ -6,64 +6,63 @@ import com.ibm.sk.dto.qualification.QualificationTable;
 import com.ibm.sk.dto.tournament.TournamentTable;
 
 public class InitMenuData {
-	
-	public String[] competitors = {};
-	
-	public String[] replays = {};
-	
-	public QualificationTable qualification;
-	
-	public TournamentTable tournament;
-	
-	public boolean runInBackground;
+	private boolean runInBackground;
+
+	private String[] competitors = {};
+
+	private String[] replays = {};
+
+	private QualificationTable qualification;
+
+	private TournamentTable tournament;
 
 	public QualificationTable getQualification() {
-		return qualification;
+		return this.qualification;
 	}
 
-	public void setQualification(QualificationTable qualification) {
+	public void setQualification(final QualificationTable qualification) {
 		this.qualification = qualification;
 	}
 
 	public TournamentTable getTournament() {
-		return tournament;
+		return this.tournament;
 	}
 
-	public void setTournament(TournamentTable tournament) {
+	public void setTournament(final TournamentTable tournament) {
 		this.tournament = tournament;
 	}
 
-	public void addCompetitor(String competitor) {
-		competitors = Arrays.copyOf(competitors, competitors.length + 1);
-		competitors[competitors.length - 1] = competitor;
+	public void addCompetitor(final String competitor) {
+		this.competitors = Arrays.copyOf(this.competitors, this.competitors.length + 1);
+		this.competitors[this.competitors.length - 1] = competitor;
 	}
-	
-	public void setCompetitors(String [] competitors) {
+
+	public void setCompetitors(final String [] competitors) {
 		this.competitors = competitors;
 	}
-	
+
 	public String[] getCompetitors() {
-		return competitors;
+		return this.competitors;
 	}
-	
-	public void addReplay(String replay) {
-		replays = Arrays.copyOf(replays, replays.length + 1);
-		replays[replays.length -1] = replay;
+
+	public void addReplay(final String replay) {
+		this.replays = Arrays.copyOf(this.replays, this.replays.length + 1);
+		this.replays[this.replays.length -1] = replay;
 	}
-	
-	public void setReplay(String[] replays) {
+
+	public void setReplays(final String[] replays) {
 		this.replays = replays;
 	}
-	
+
 	public String[] getReplays() {
-		return replays;
+		return this.replays;
 	}
-	
+
 	public boolean isRunInBackground() {
-		return runInBackground;
+		return this.runInBackground;
 	}
-	
-	public void setRunInBackground(boolean runInBackground) {
+
+	public void setRunInBackground(final boolean runInBackground) {
 		this.runInBackground = runInBackground;
 	}
 

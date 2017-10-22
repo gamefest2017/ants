@@ -19,6 +19,7 @@ import javax.swing.JDialog;
 import javax.swing.JFrame;
 import javax.swing.JLabel;
 import javax.swing.JPanel;
+import javax.swing.WindowConstants;
 
 import com.ibm.sk.ff.gui.GUI;
 import com.ibm.sk.ff.gui.common.events.GuiEvent;
@@ -82,15 +83,15 @@ public class SimpleGUI implements GUI {
 
 		this.canvas = new SimpleCanvas(data.getWidth(), data.getHeight(), data.getTeams(), this.frame);
 
-		JPanel panelNorth = new JPanel();
+		final JPanel panelNorth = new JPanel();
 		panelNorth.setLayout(new FlowLayout());
 		this.scoreboard = new ScoreboardSmall(data);
 		this.scoreboard.setPreferredSize(new Dimension(600, 25));
 		this.fastForward = new JCheckBox("Fast forward");
 		this.fastForward.addActionListener(new ActionListener() {
 			@Override
-			public void actionPerformed(ActionEvent e) {
-				canvas.setFastForward(fastForward.isSelected());
+			public void actionPerformed(final ActionEvent e) {
+				SimpleGUI.this.canvas.setFastForward(SimpleGUI.this.fastForward.isSelected());
 			}
 		});
 		panelNorth.add(this.scoreboard);
@@ -108,7 +109,7 @@ public class SimpleGUI implements GUI {
 
 		try {
 			Thread.sleep(1000);
-		} catch (Exception e) {
+		} catch (final Exception e) {
 			e.printStackTrace();
 		}
 	}
@@ -116,12 +117,12 @@ public class SimpleGUI implements GUI {
 	private BufferedImage loadBackgroundImage() {
 		return loadImage("res/grass2.jpg");
 	}
-	
+
 	private BufferedImage loadGameOverImage() {
 		return loadImage("res/game-over.jpg");
 	}
-	
-	private BufferedImage loadImage(String resource) {
+
+	private BufferedImage loadImage(final String resource) {
 		BufferedImage ret = null;
 		try {
 			ret = ImageIO.read(new File(resource));
@@ -159,61 +160,61 @@ public class SimpleGUI implements GUI {
 	@Override
 	public void showResult(final ResultData data) {
 		if (this.frame  != null) {
-			ImageIcon img = new ImageIcon(loadGameOverImage());
-			
-			JPanel panel_center = new JPanel() {
+			final ImageIcon img = new ImageIcon(loadGameOverImage());
+
+			final JPanel panel_center = new JPanel() {
 				private static final long serialVersionUID = 2005550217855285811L;
 
 				@Override
-	            protected void paintComponent(Graphics g) {
-	                super.paintComponent(g);
-	                g.drawImage(img.getImage(), 0, 0, getWidth(), getHeight(), this);
-	            }
+				protected void paintComponent(final Graphics g) {
+					super.paintComponent(g);
+					g.drawImage(img.getImage(), 0, 0, getWidth(), getHeight(), this);
+				}
 
-	            @Override
-	            public Dimension getPreferredSize() {
-	                Dimension size = super.getPreferredSize();
-	                size.width = Math.max(img.getIconWidth(), size.width);
-	                size.height = Math.max(img.getIconHeight(), size.height);
+				@Override
+				public Dimension getPreferredSize() {
+					final Dimension size = super.getPreferredSize();
+					size.width = Math.max(img.getIconWidth(), size.width);
+					size.height = Math.max(img.getIconHeight(), size.height);
 
-	                return size;
-	            }
+					return size;
+				}
 			};
-			
-			JDialog dialog = new JDialog(this.frame, "Game over", true);
-			
+
+			final JDialog dialog = new JDialog(this.frame, data.getWinner() + " is the winner!", true);
+
 			dialog.addWindowListener(new WindowListener() {
 				@Override
-				public void windowOpened(WindowEvent e) {
+				public void windowOpened(final WindowEvent e) {
 				}
 				@Override
-				public void windowClosing(WindowEvent e) {
-					listener.actionPerformed(new GuiEvent(EventTypes.RESULT_CLOSE, ""));
+				public void windowClosing(final WindowEvent e) {
+					SimpleGUI.this.listener.actionPerformed(new GuiEvent(EventTypes.RESULT_CLOSE, ""));
 				}
 				@Override
-				public void windowClosed(WindowEvent e) {
+				public void windowClosed(final WindowEvent e) {
 				}
 				@Override
-				public void windowIconified(WindowEvent e) {
+				public void windowIconified(final WindowEvent e) {
 				}
 				@Override
-				public void windowDeiconified(WindowEvent e) {
+				public void windowDeiconified(final WindowEvent e) {
 				}
 				@Override
-				public void windowActivated(WindowEvent e) {
+				public void windowActivated(final WindowEvent e) {
 				}
 				@Override
-				public void windowDeactivated(WindowEvent e) {
+				public void windowDeactivated(final WindowEvent e) {
 				}
 			});
-			
-			dialog.setDefaultCloseOperation(JDialog.HIDE_ON_CLOSE);
+
+			dialog.setDefaultCloseOperation(WindowConstants.HIDE_ON_CLOSE);
 			dialog.setLayout(new BorderLayout());
 			dialog.add(panel_center, BorderLayout.CENTER);
 			dialog.pack();
-			int w = (frame.getWidth() / 2) - (dialog.getWidth() / 2);
-			int h = (frame.getHeight() / 2) - (dialog.getHeight() / 2);
-			dialog.setLocation(frame.getLocation().x + w, frame.getLocation().y + h);
+			final int w = this.frame.getWidth() / 2 - dialog.getWidth() / 2;
+			final int h = this.frame.getHeight() / 2 - dialog.getHeight() / 2;
+			dialog.setLocation(this.frame.getLocation().x + w, this.frame.getLocation().y + h);
 			dialog.setVisible(true);
 		}
 	}
