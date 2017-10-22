@@ -6,6 +6,7 @@ import com.ibm.sk.dto.qualification.QualificationTable;
 import com.ibm.sk.dto.tournament.TournamentTable;
 
 public class InitMenuData {
+	private boolean runInBackground;
 
 	private String[] competitors = {};
 
@@ -55,6 +56,14 @@ public class InitMenuData {
 
 	public String[] getReplays() {
 		return this.replays;
+	}
+
+	public boolean isRunInBackground() {
+		return this.runInBackground;
+	}
+
+	public void setRunInBackground(final boolean runInBackground) {
+		this.runInBackground = runInBackground;
 	}
 
 }

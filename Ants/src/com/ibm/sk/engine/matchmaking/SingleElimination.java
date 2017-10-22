@@ -47,6 +47,17 @@ public class SingleElimination extends Tournament {
 		final List<Player> losers = new ArrayList<>(match.getPlayers());
 		losers.removeAll(match.getWinners());
 		this.eliminatedPlayers.addAll(losers);
+		
+		for (TournamentMatch tm : this.tournamentTable.getMatches(tournamentRound - 1)) {
+			if (tm.getPlayers().containsAll(match.getPlayers())) {
+				//update tournament data with result
+				tm.setFinished(match.isFinished());
+				tm.setPlayerStatus(match.getPlayerStatus());
+				tm.setWinner(match.getWinners().isEmpty() ? null : match.getWinners().get(0));
+			}
+		}
+		
+		
 		return match;
 	}
 

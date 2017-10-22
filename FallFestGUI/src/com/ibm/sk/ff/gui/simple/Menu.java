@@ -32,6 +32,7 @@ import javax.swing.JTabbedPane;
 import javax.swing.JTable;
 import javax.swing.JTextPane;
 import javax.swing.ListSelectionModel;
+import javax.swing.ScrollPaneConstants;
 import javax.swing.SwingConstants;
 import javax.swing.border.LineBorder;
 import javax.swing.table.TableColumn;
@@ -296,7 +297,15 @@ public class Menu extends JPanel {
 		doc.setParagraphAttributes(0, doc.getLength(), center, false);
 		textPane.setText("\n" + "Gabriel Scerbak\n" + "Gabriel Szabo\n" + "Lenka Hudecova\n"
 				+ "Omar Josue Hernandez Valdes\n" + "Peter Prazenica\n" + "Robert Hahn\n" + "Robert Sevcik\n"
-				+ "Tibor Schvartz\n" + "\n" + "ï¿½ Copyright IBM Slovakia 2017\n");
+				+ "Tibor Schvartz\n" + "\n"
+				+ "The logic game Anthill has been designed and developed for this year's IBM Fall Festival. "
+				+ "The festival creates a unique platform, connecting the theme of technological development "
+				+ "with experiencing real working environment of an international company. "
+				+ "It combines the opportunity to participate in workshops with progressive content "
+				+ "in real offices, with the possibility to discover the core of IBM business in Slovakia "
+				+ "– all this in a warm atmosphere of a starting autumn accompanied by local music bands. "
+				+ "We really encourage you to take part.\n\n"
+				+ "© Copyright IBM Slovakia 2017");
 		textPane.setEditable(false);
 		textPane.setFont(new Font("Serif", Font.ITALIC, 16));
 		textPane.setOpaque(false);
@@ -321,6 +330,11 @@ public class Menu extends JPanel {
 		c.insets = new Insets(0, 0, 0, 0);
 		c.anchor = GridBagConstraints.CENTER;
 		panelAbout.add(textPane, c);
+		final JScrollPane scrollPanelAbout = new JScrollPane(panelAbout,
+				ScrollPaneConstants.VERTICAL_SCROLLBAR_AS_NEEDED, ScrollPaneConstants.HORIZONTAL_SCROLLBAR_NEVER);
+		panelAbout.setBorder(BorderFactory.createEmptyBorder());
+		panelAbout.setAutoscrolls(true);
+		scrollPanelAbout.setBorder(BorderFactory.createEmptyBorder());
 		tabbedPane.addTab("About", panelAbout);
 
 		// Title
@@ -362,13 +376,13 @@ public class Menu extends JPanel {
 		buttonStart.setRolloverEnabled(true);
 		buttonStart.setRolloverIcon(menuStartButton2);
 		buttonStart.setPressedIcon(menuStartButton3);
-		panelCenter.add(buttonStart, c);
-
-		runInBackgroundCheckbox = new JCheckBox("Run in background");
-		runInBackgroundCheckbox.setSelected(false);
-		panelCenter.add(runInBackgroundCheckbox);
-
-
+		runInBackgroundCheckbox = new JCheckBox("Invisible game");
+		runInBackgroundCheckbox.setSelected(this.initMenuData.isRunInBackground());
+		final JPanel panelStartGame = new JPanel(false);
+		panelStartGame.setLayout(new GridLayout(1, 2));
+		panelStartGame.add(buttonStart);
+		panelStartGame.add(runInBackgroundCheckbox);
+		panelCenter.add(panelStartGame, c);
 
 		add(panelCenter, BorderLayout.CENTER);
 		add(menuAntLabel2, BorderLayout.LINE_END);

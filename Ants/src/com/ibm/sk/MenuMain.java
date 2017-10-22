@@ -22,8 +22,8 @@ public class MenuMain extends AbstractMain {
 	}
 
 	public static void showMainWindow(final InitMenuData initData) {
-		FACADE.addGuiEventListener(new GameMenuHandler(FACADE, initData));
 		FACADE.showInitMenu(initData);
+		FACADE.addGuiEventListener(new GameMenuHandler(FACADE, initData));
 	}
 
 }

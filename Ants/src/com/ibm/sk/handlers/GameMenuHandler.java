@@ -61,10 +61,14 @@ public class GameMenuHandler implements GuiEventListener {
 				this.qualification = new Qualification(this.facade, players);
 			}
 
-			try {
-				this.qualification.resolveNextMatch();
-			} catch (final NoMoreMatchesException e) {
-				e.printStackTrace();
+			if (!this.qualification.getWinner().isPresent()) {
+				try {
+					this.qualification.resolveNextMatch();
+				} catch (final NoMoreMatchesException e) {
+					e.printStackTrace();
+				}
+
+				this.menuData.setQualification(this.qualification.getQualificationTable());
 			}
 
 			this.menuData.setQualification(this.qualification.getQualificationTable());
@@ -72,8 +76,8 @@ public class GameMenuHandler implements GuiEventListener {
 			if (this.tournament == null) {
 				this.tournament = new SingleElimination(this.facade,
 						this.qualification.getQualificationTable().getCandidates().stream()
-								.filter(QualificationCandidate::isQualified)
-								.map(qc -> new Player(qc.getId(), qc.getName()))
+						.filter(QualificationCandidate::isQualified)
+						.map(qc -> new Player(qc.getId(), qc.getName()))
 						.collect(Collectors.toList()));
 			}
 

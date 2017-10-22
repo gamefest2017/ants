@@ -4,7 +4,6 @@ import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
 import java.util.ArrayList;
 import java.util.List;
-import java.util.StringJoiner;
 
 import javax.swing.JButton;
 import javax.swing.JCheckBox;
@@ -82,9 +81,15 @@ public class MenuListener implements ChangeListener, ActionListener, ListSelecti
 				if (buttonStart != null) {
 					buttonStart.setEnabled(false);
 				}
+				if (runInBackgroundCheckbox != null) {
+					runInBackgroundCheckbox.setEnabled(false);
+				}
 			} else {
 				if (buttonStart != null) {
 					buttonStart.setEnabled(true);
+				}
+				if (runInBackgroundCheckbox != null) {
+					runInBackgroundCheckbox.setEnabled(true);
 				}
 			}
 		}

@@ -98,6 +98,7 @@ public class Qualification extends Tournament {
 
 	private List<Long> getScoresForPlayer(final Player player) {
 		return getMatches().stream()
+				.filter(m -> m.isFinished())
 				.flatMap(m -> m.getPlayerStatus().stream())
 				.filter(ps -> player.equals(ps.getPlayer()))
 				.map(ps -> ps.getScore().longValue())
