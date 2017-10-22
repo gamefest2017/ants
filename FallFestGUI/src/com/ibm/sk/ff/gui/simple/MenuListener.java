@@ -45,8 +45,9 @@ public class MenuListener implements ChangeListener, ActionListener, ListSelecti
 
 	public MenuListener(JFrame mainContainer, GuiEventListener listener, JTabbedPane tabbedPane,
 			JList<String> firstListOfAnthills, JList<String> secondListOfAnthills, JList<String> thirdListOfAnthills,
-			JList<String> replays, JButton buttonStart, JRadioButton radioQualification, JRadioButton radioTournamentSemiFinals,
-			JScrollPane scrollPaneQualification, JScrollPane scrollPaneTournament, JCheckBox runInBackgroundCheckbox) {
+			JList<String> replays, JButton buttonStart, JRadioButton radioQualification,
+			JRadioButton radioTournamentSemiFinals, JScrollPane scrollPaneQualification,
+			JScrollPane scrollPaneTournament, JCheckBox runInBackgroundCheckbox) {
 		this.tabbedPane = tabbedPane;
 		this.buttonStart = buttonStart;
 		this.firstListOfAnthills = firstListOfAnthills;
@@ -130,29 +131,30 @@ public class MenuListener implements ChangeListener, ActionListener, ListSelecti
 				}
 				break;
 			case 2:
-				
+
 				StartGameData data = new StartGameData();
 				data.setRunInBackground(runInBackgroundCheckbox.isSelected());
 				if (radioTournamentSemiFinals.isSelected()) {
-					sendGuiEvent(new GuiEvent(GuiEvent.EventTypes.TOURNAMENT_PLAY_START, Mapper.INSTANCE.pojoToJson(data)));
+					sendGuiEvent(
+							new GuiEvent(GuiEvent.EventTypes.TOURNAMENT_PLAY_START, Mapper.INSTANCE.pojoToJson(data)));
 				} else {
 					List<String> players = new ArrayList<>();
 					ListModel<String> m = firstListOfAnthills.getModel();
-					for (int i = 0 ; i < m.getSize(); i++) {
+					for (int i = 0; i < m.getSize(); i++) {
 						players.add(m.getElementAt(i));
 					}
 					data.setPlayers(players);
-					sendGuiEvent(new GuiEvent(GuiEvent.EventTypes.QUALIFICATION_START, Mapper.INSTANCE.pojoToJson(data)));
+					sendGuiEvent(
+							new GuiEvent(GuiEvent.EventTypes.QUALIFICATION_START, Mapper.INSTANCE.pojoToJson(data)));
 				}
-				
+
 				break;
 			case 3:
 				if (replays.getSelectedIndex() == -1) {
 					JOptionPane.showMessageDialog(mainContainer, "Please, select 1 saved game.",
 							"Can't start a replay!", JOptionPane.WARNING_MESSAGE);
 				} else {
-					sendGuiEvent(new GuiEvent(GuiEvent.EventTypes.REPLAY_SELECTED,
-							replays.getSelectedValue()));
+					sendGuiEvent(new GuiEvent(GuiEvent.EventTypes.START_REPLAY, replays.getSelectedValue()));
 				}
 				break;
 			case 4:
@@ -175,7 +177,8 @@ public class MenuListener implements ChangeListener, ActionListener, ListSelecti
 			scrollPaneQualification.getParent().validate();
 		} else if (e.getSource().equals(radioTournamentSemiFinals)) {
 			scrollPaneQualification.setVisible(false);
-			if (scrollPaneTournament != null) {//for initial tournament run, pane is not initialized
+			if (scrollPaneTournament != null) {// for initial tournament run,
+												// pane is not initialized
 				scrollPaneTournament.setVisible(true);
 			}
 			scrollPaneQualification.getParent().validate();
@@ -206,8 +209,7 @@ public class MenuListener implements ChangeListener, ActionListener, ListSelecti
 			}
 		} else if (e.getSource().equals(replays)) {
 			if (!e.getValueIsAdjusting()) {
-				sendGuiEvent(
-						new GuiEvent(GuiEvent.EventTypes.REPLAY_SELECTED, replays.getSelectedValue()));
+				sendGuiEvent(new GuiEvent(GuiEvent.EventTypes.REPLAY_SELECTED, replays.getSelectedValue()));
 			}
 		}
 	}
