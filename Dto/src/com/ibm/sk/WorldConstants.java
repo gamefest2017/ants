@@ -2,12 +2,12 @@ package com.ibm.sk;
 
 public class WorldConstants {
 
-	public static final int X_BOUNDRY = 40;
-	public static final int Y_BOUNDRY = 20;
+	public static final int X_BOUNDRY = Integer.parseInt(GameConfig.WIDTH.toString());
+	public static final int Y_BOUNDRY = Integer.parseInt(GameConfig.HEIGHT.toString());
 	/**
 	 * number of TURNS to evaluate game.
 	 */
-	public static final int TURNS = 100;
+	public static final int TURNS = Integer.parseInt(GameConfig.TURNS.toString());
 	/**
 	 * the amount of ants in one anthill at the beginning of the world.
 	 */
