@@ -73,8 +73,7 @@ public final class ProcessExecutor {
 		guiConnector.placeGuiObject(team1);
 		guiConnector.placeGuiObjects(new ArrayList<>(team1.getAnts()));
 		if (team2 != null) {
-			this.populationHandler.init(team2, WorldConstants.INITIAL_ANT_COUNT,
-					WorldConstants.POPULATION_WAR_FACTOR);
+			this.populationHandler.init(team2, WorldConstants.INITIAL_ANT_COUNT, WorldConstants.POPULATION_WAR_FACTOR);
 			guiConnector.placeGuiObject(team2);
 			guiConnector.placeGuiObjects(new ArrayList<>(team2.getAnts()));
 		}
