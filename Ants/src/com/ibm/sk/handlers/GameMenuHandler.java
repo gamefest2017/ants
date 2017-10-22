@@ -36,9 +36,11 @@ public class GameMenuHandler implements GuiEventListener {
 	public void actionPerformed(final GuiEvent event) {
 		ProcessExecutor executor;
 		if (GuiEvent.EventTypes.SINGLE_PLAY_START.name().equals(event.getType().name())) {
+			facade.setRender(true);
 			executor = new ProcessExecutor(this.facade);
 			executor.run(event.getData(), null);
 		} else if (GuiEvent.EventTypes.DOUBLE_PLAY_START.name().equals(event.getType().name())) {
+			facade.setRender(true);
 			final String hillNames = event.getData();
 			final int separatorPos = hillNames.indexOf(GuiEvent.HLL_NAMES_SEPARATOR);
 			executor = new ProcessExecutor(this.facade);
