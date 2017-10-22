@@ -4,7 +4,6 @@ import java.util.List;
 import java.util.concurrent.atomic.AtomicInteger;
 import java.util.stream.Collectors;
 
-import com.ibm.sk.MenuMain;
 import com.ibm.sk.dto.matchmaking.Player;
 import com.ibm.sk.dto.matchmaking.StartGameData;
 import com.ibm.sk.engine.ProcessExecutor;
@@ -100,7 +99,7 @@ public class GameMenuHandler implements GuiEventListener {
 			ReplayFileHelper.read(event.getData()).play(facade);
 		} else if (GuiEvent.EventTypes.RESULT_CLOSE.equals(event.getType())) {
 			// TODO - show init menu
-			MenuMain.showMainWindow(this.menuData);
+			this.facade.showInitMenu(this.menuData);
 		}
 	}
 
