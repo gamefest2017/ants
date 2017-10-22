@@ -8,6 +8,7 @@ import java.io.File;
 import java.io.FileReader;
 import java.io.FileWriter;
 import java.io.IOException;
+import java.util.Arrays;
 import java.util.List;
 
 public final class ReplayFileHelper {
@@ -27,7 +28,7 @@ public final class ReplayFileHelper {
 			System.out.println("Failed to write to the file!" + e);
 		}
 	}
-	
+
 	public static Replay read(String fileName) {
 		File targetFile = new File(Config.REPLAY_FOLDER.toString() + "/" + fileName);
 		return read(targetFile);
@@ -45,16 +46,16 @@ public final class ReplayFileHelper {
 		} catch (IOException e) {
 			System.out.println("Failed to read from the file!" + e);
 		}
-		List<Step> toRet = INSTANCE.jsonToPojo(fileContent, List.class);
-		return new Replay(toRet, fileName.getName());
+		Step[] toRet = INSTANCE.jsonToPojo(fileContent, Step[].class);
+		return new Replay(Arrays.asList(toRet), fileName.getName());
 	}
-	
-	public static String [] getAvailableReplays() {
+
+	public static String[] getAvailableReplays() {
 		final File replays = new File(Config.REPLAY_FOLDER.toString());
 		if (replays.exists() && replays.isDirectory()) {
 			return replays.list();
 		}
 		return null;
 	}
-	
+
 }

@@ -13,6 +13,7 @@ import com.ibm.sk.engine.matchmaking.NoMoreMatchesException;
 import com.ibm.sk.engine.matchmaking.Qualification;
 import com.ibm.sk.engine.matchmaking.SingleElimination;
 import com.ibm.sk.ff.gui.client.GUIFacade;
+import com.ibm.sk.ff.gui.client.ReplayFileHelper;
 import com.ibm.sk.ff.gui.common.events.GuiEvent;
 import com.ibm.sk.ff.gui.common.events.GuiEventListener;
 import com.ibm.sk.ff.gui.common.mapper.Mapper;
@@ -35,6 +36,7 @@ public class GameMenuHandler implements GuiEventListener {
 	public void actionPerformed(final GuiEvent event) {
 		ProcessExecutor executor;
 		if (GuiEvent.EventTypes.SINGLE_PLAY_START.name().equals(event.getType().name())) {
+			this.facade.setRender(true);
 			executor = new ProcessExecutor(this.facade);
 			final Map<String, Integer> results = executor.run(event.getData(), null);
 			final String winner = results.entrySet().stream()
@@ -42,6 +44,7 @@ public class GameMenuHandler implements GuiEventListener {
 					.orElseGet(() -> results.entrySet().iterator().next()).getKey();
 			this.facade.showResult(winner);
 		} else if (GuiEvent.EventTypes.DOUBLE_PLAY_START.name().equals(event.getType().name())) {
+			this.facade.setRender(true);
 			final String hillNames = event.getData();
 			final int separatorPos = hillNames.indexOf(GuiEvent.HLL_NAMES_SEPARATOR);
 			executor = new ProcessExecutor(this.facade);
@@ -67,28 +70,39 @@ public class GameMenuHandler implements GuiEventListener {
 				} catch (final NoMoreMatchesException e) {
 					e.printStackTrace();
 				}
-
-				this.menuData.setQualification(this.qualification.getQualificationTable());
 			}
 
 			this.menuData.setQualification(this.qualification.getQualificationTable());
 		} else if (GuiEvent.EventTypes.TOURNAMENT_PLAY_START.name().equals(event.getType().name())) {
-			if (this.tournament == null) {
-				this.tournament = new SingleElimination(this.facade,
-						this.qualification.getQualificationTable().getCandidates().stream()
-						.filter(QualificationCandidate::isQualified)
-						.map(qc -> new Player(qc.getId(), qc.getName()))
-						.collect(Collectors.toList()));
-			}
+			final StartGameData data = Mapper.INSTANCE.jsonToPojo(event.getData(), StartGameData.class);
+			this.facade.setRender(!data.isRunInBackground());
+			this.menuData.setRunInBackground(data.isRunInBackground());
 
-			try {
-				this.tournament.resolveNextMatch();
-			} catch (final NoMoreMatchesException e) {
-				e.printStackTrace();
-			}
+			// if qualification is not done, do nothing
+			if (this.qualification.getWinner().isPresent()) {
 
-			this.menuData.setTournament(this.tournament.getTournamentTable());
+				// take results from qualification, start tournament
+				if (this.tournament == null) {
+					this.tournament = new SingleElimination(this.facade,
+							this.qualification.getQualificationTable().getCandidates().stream()
+							.filter(QualificationCandidate::isQualified)
+							.map(qc -> new Player(qc.getId(), qc.getName()))
+							.collect(Collectors.toList()));
+				}
+
+				try {
+					this.tournament.resolveNextMatch();
+				} catch (final NoMoreMatchesException e) {
+					e.printStackTrace();
+				}
+
+				this.menuData.setTournament(this.tournament.getTournamentTable());
+			}
+		} else if (GuiEvent.EventTypes.START_REPLAY.equals(event.getType())) {
+			System.out.println("Replay starts : " + event.getData());
+			ReplayFileHelper.read(event.getData()).play(this.facade);
 		} else if (GuiEvent.EventTypes.RESULT_CLOSE.equals(event.getType())) {
+			this.menuData.setReplays(ReplayFileHelper.getAvailableReplays());
 			this.facade.showInitMenu(this.menuData);
 		}
 	}
