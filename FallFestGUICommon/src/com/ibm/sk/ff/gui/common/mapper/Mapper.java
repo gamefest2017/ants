@@ -27,5 +27,4 @@ public enum Mapper {
 		}
 		return ret;
 	}
-
 }
