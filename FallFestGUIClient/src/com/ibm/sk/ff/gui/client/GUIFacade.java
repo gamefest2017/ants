@@ -17,6 +17,7 @@ import java.util.List;
 import java.util.Map;
 
 import com.ibm.sk.ff.gui.common.events.GuiEvent;
+import com.ibm.sk.ff.gui.common.events.GuiEvent.EventTypes;
 import com.ibm.sk.ff.gui.common.events.GuiEventListener;
 import com.ibm.sk.ff.gui.common.mapper.Mapper;
 import com.ibm.sk.ff.gui.common.objects.gui.GAntFoodObject;
@@ -245,6 +246,8 @@ public class GUIFacade {
 	public void showResult(final ResultData data) {
 		if (this.render) {
 			this.CLIENT.postMessage(SHOW_RESULT.toString(), Mapper.INSTANCE.pojoToJson(data));
+		} else {
+			castEvent(new GuiEvent[] { new GuiEvent(EventTypes.RESULT_CLOSE, "")});
 		}
 		if (this.record) {
 			this.steps.add(new Step(SHOW_RESULT, data));
