@@ -39,5 +39,7 @@ public interface GUI {
 	public void close(CloseData data);
 
 	public void addGuiEventListener(GuiEventListener listener);
+	
+	public boolean isWindowShowing();
 
 }

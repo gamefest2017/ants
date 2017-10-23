@@ -280,5 +280,9 @@ public class SimpleGUI implements GUI {
 	public void remove(final GUIObject[] objects) {
 		this.canvas.remove(objects);
 	}
+	
+	public boolean isWindowShowing() {
+		return frame != null && frame.isVisible();
+	}
 
 }

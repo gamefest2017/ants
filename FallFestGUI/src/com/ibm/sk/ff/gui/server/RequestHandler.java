@@ -76,12 +76,16 @@ public class RequestHandler implements HttpHandler {
 
 	private void showInitMenu(final String url, final String json) {
 		log("Showing init menu.");
-		this.FACADE.initMenu(Mapper.INSTANCE.jsonToPojo(json, InitMenuData.class));
+		do {
+			this.FACADE.initMenu(Mapper.INSTANCE.jsonToPojo(json, InitMenuData.class));
+		} while (!FACADE.isWindowShowing());
 	}
 
 	private void callCreateGame(final String url, final String json) {
 		log("Creating window.");
-		this.FACADE.createGame(Mapper.INSTANCE.jsonToPojo(json, CreateGameData.class));
+		do {
+			this.FACADE.createGame(Mapper.INSTANCE.jsonToPojo(json, CreateGameData.class));
+		} while (!FACADE.isWindowShowing());
 	}
 
 	private void callSet(final String url, final String json) {

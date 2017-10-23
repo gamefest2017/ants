@@ -108,4 +108,8 @@ public class Facade implements GuiEventListener {
 	public void remove(final GUIObjectCrate crate) {
 		this.gui.remove(crate.dump());
 	}
+	
+	public boolean isWindowShowing() {
+		return gui.isWindowShowing();
+	}
 }
