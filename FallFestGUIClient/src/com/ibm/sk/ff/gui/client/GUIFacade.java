@@ -225,8 +225,8 @@ public class GUIFacade {
 	//
 	// Operations
 	//
-	public void showInitMenu(final InitMenuData data) {
-		this.CLIENT.postMessage(SHOW_INIT_MENU.toString(), Mapper.INSTANCE.pojoToJson(data));
+	public boolean showInitMenu(final InitMenuData data) {
+		return this.CLIENT.postMessage(SHOW_INIT_MENU.toString(), Mapper.INSTANCE.pojoToJson(data));
 	}
 
 	public void createGame(final CreateGameData data) {

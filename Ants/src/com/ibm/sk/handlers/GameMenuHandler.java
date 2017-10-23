@@ -115,8 +115,16 @@ public class GameMenuHandler implements GuiEventListener {
 			ReplayFileHelper.read(event.getData()).play(this.facade);
 		} else if (GuiEvent.EventTypes.RESULT_CLOSE.equals(event.getType())) {
 			this.menuData.setReplays(ReplayFileHelper.getAvailableReplays());
-			this.facade.showInitMenu(this.menuData);
+			showInitMenu();
 		}
+	}
+	
+	private void showInitMenu() {
+		boolean initMenuDisplayed = false;
+		
+		do {
+			initMenuDisplayed = this.facade.showInitMenu(this.menuData);
+		} while (!initMenuDisplayed);
 	}
 
 }

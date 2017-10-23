@@ -8,7 +8,7 @@ public enum GameConfig {
 	
 	WIDTH("game.width", "40"),
 	HEIGHT("game.height", "20"),
-	TURNS("turns", "500"),
+	TURNS("turns", "1000"),
 	;
 	
 	private static final Properties PROPS = new Properties();
