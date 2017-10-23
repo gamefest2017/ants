@@ -7,7 +7,6 @@ import static com.ibm.sk.WorldConstants.Y_BOUNDRY;
 import java.awt.Point;
 import java.util.Random;
 
-import com.ibm.sk.dto.AbstractAnt;
 import com.ibm.sk.dto.Food;
 import com.ibm.sk.engine.exceptions.InvalidWorldPositionException;
 
@@ -27,7 +26,10 @@ public final class FoodHandler {
 			int column;
 			final Point position = new Point(0, 0);
 			do {
-				row = RANDOMIZER.nextInt(X_BOUNDRY - 1);
+				row = RANDOMIZER.nextInt(X_BOUNDRY / 2);
+				if (turn % (FOOD_REFILL_FREQUENCY * 2) == 0) {
+					row += X_BOUNDRY / 2;
+				}
 				column = RANDOMIZER.nextInt(Y_BOUNDRY - 1);
 				position.setLocation(row, column);
 			} while (this.world.isPositionOccupied(position) || this.world.isHillPosition(position));
@@ -37,7 +39,8 @@ public final class FoodHandler {
 			try {
 				this.world.placeObject(newFood);
 			} catch (final InvalidWorldPositionException e) {
-				System.out.println("Position had not space, food was not dropped. Position was: " + newFood.getPosition());
+				System.out.println(
+						"Position had not space, food was not dropped. Position was: " + newFood.getPosition());
 			}
 		}
 	}
