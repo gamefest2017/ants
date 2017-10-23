@@ -64,7 +64,7 @@ public class GameMenuHandler implements GuiEventListener {
 
 				this.menuData.setQualification(this.qualification.getQualificationTable());
 
-				this.facade.showInitMenu(this.menuData);
+				showInitMenu();
 			}
 
 		} else if (GuiEvent.EventTypes.TOURNAMENT_PLAY_START.name().equals(event.getType().name())) {
@@ -91,7 +91,7 @@ public class GameMenuHandler implements GuiEventListener {
 
 					this.menuData.setTournament(this.tournament.getTournamentTable());
 
-					this.facade.showInitMenu(this.menuData);
+					showInitMenu();
 				}
 			}
 		} else if (GuiEvent.EventTypes.START_REPLAY.equals(event.getType())) {
@@ -99,8 +99,15 @@ public class GameMenuHandler implements GuiEventListener {
 			ReplayFileHelper.read(event.getData()).play(facade);
 		} else if (GuiEvent.EventTypes.RESULT_CLOSE.equals(event.getType())) {
 			// TODO - show init menu
-			this.facade.showInitMenu(this.menuData);
+			showInitMenu();
 		}
 	}
 
+	private void showInitMenu() {
+		boolean initMenuDisplayed = false;
+		
+		do {
+			initMenuDisplayed = this.facade.showInitMenu(this.menuData);
+		} while (!initMenuDisplayed);
+	}
 }
