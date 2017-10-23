@@ -11,6 +11,7 @@ import java.awt.event.WindowEvent;
 import java.awt.event.WindowListener;
 import java.awt.image.BufferedImage;
 import java.io.File;
+import java.lang.reflect.InvocationTargetException;
 
 import javax.imageio.ImageIO;
 import javax.swing.ImageIcon;
@@ -19,6 +20,7 @@ import javax.swing.JDialog;
 import javax.swing.JFrame;
 import javax.swing.JLabel;
 import javax.swing.JPanel;
+import javax.swing.SwingUtilities;
 import javax.swing.WindowConstants;
 
 import com.ibm.sk.ff.gui.GUI;
@@ -72,7 +74,16 @@ public class SimpleGUI implements GUI {
 	@Override
 	public void createGame(final CreateGameData data) {
 		if (this.frame != null) {
-			this.frame.dispose();
+			try {
+				SwingUtilities.invokeAndWait(new Runnable() {
+					@Override
+					public void run() {
+						frame.dispose();
+					}
+				});
+			} catch (InvocationTargetException | InterruptedException e1) {
+				e1.printStackTrace();
+			}
 			this.frame = null;
 		}
 
@@ -222,7 +233,15 @@ public class SimpleGUI implements GUI {
 	@Override
 	public void createMenu(final InitMenuData data) {
 		if (this.frame != null) {
-			this.frame.dispose();
+			try {
+				SwingUtilities.invokeAndWait(new Runnable() {
+					public void run() {
+						frame.dispose();
+					}
+				});
+			} catch (Exception e) {
+				e.printStackTrace();
+			}
 			this.canvas = null;
 			this.scoreboard = null;
 			this.frame = null;
