@@ -297,15 +297,15 @@ public class Menu extends JPanel {
 		doc.setParagraphAttributes(0, doc.getLength(), center, false);
 		textPane.setText("\n" + "Gabriel Scerbak\n" + "Gabriel Szabo\n" + "Lenka Hudecova\n"
 				+ "Omar Josue Hernandez Valdes\n" + "Peter Prazenica\n" + "Robert Hahn\n" + "Robert Sevcik\n"
-				+ "Tibor Schvartz\n" + "\n"
+				+ "Tibor Schvartz\n" + "Vladimir Martinka\n"+ "\n"
 				+ "The logic game Anthill has been designed and developed for this year's IBM Fall Festival. "
 				+ "The festival creates a unique platform, connecting the theme of technological development "
 				+ "with experiencing real working environment of an international company. "
 				+ "It combines the opportunity to participate in workshops with progressive content "
 				+ "in real offices, with the possibility to discover the core of IBM business in Slovakia "
-				+ "– all this in a warm atmosphere of a starting autumn accompanied by local music bands. "
+				+ "Â© all this in a warm atmosphere of a starting autumn accompanied by local music bands. "
 				+ "We really encourage you to take part.\n\n"
-				+ "© Copyright IBM Slovakia 2017");
+				+ "Â© Copyright IBM Slovakia 2017");
 		textPane.setEditable(false);
 		textPane.setFont(new Font("Serif", Font.ITALIC, 16));
 		textPane.setOpaque(false);

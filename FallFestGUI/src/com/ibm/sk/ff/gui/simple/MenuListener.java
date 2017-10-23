@@ -3,6 +3,7 @@ package com.ibm.sk.ff.gui.simple;
 import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
 import java.util.ArrayList;
+import java.util.Arrays;
 import java.util.List;
 
 import javax.swing.JButton;
@@ -110,8 +111,11 @@ public class MenuListener implements ChangeListener, ActionListener, ListSelecti
 					JOptionPane.showMessageDialog(mainContainer, "Please, select 1 anthill.",
 							"Can't start a single player game!", JOptionPane.WARNING_MESSAGE);
 				} else {
+					StartGameData sgd = new StartGameData();
+					sgd.setRunInBackground(runInBackgroundCheckbox.isSelected());
+					sgd.setPlayers(Arrays.asList(firstListOfAnthills.getSelectedValue()));
 					sendGuiEvent(new GuiEvent(GuiEvent.EventTypes.SINGLE_PLAY_START,
-							firstListOfAnthills.getSelectedValue()));
+							Mapper.INSTANCE.pojoToJson(sgd)));
 				}
 				break;
 			case 1:
@@ -125,9 +129,11 @@ public class MenuListener implements ChangeListener, ActionListener, ListSelecti
 					JOptionPane.showMessageDialog(mainContainer, "The player 2 has not been selected.",
 							"Can't start a duel!", JOptionPane.WARNING_MESSAGE);
 				} else {
-					sendGuiEvent(
-							new GuiEvent(GuiEvent.EventTypes.DOUBLE_PLAY_START, secondListOfAnthills.getSelectedValue()
-									+ GuiEvent.HLL_NAMES_SEPARATOR + thirdListOfAnthills.getSelectedValue()));
+					StartGameData sgd = new StartGameData();
+					sgd.setRunInBackground(runInBackgroundCheckbox.isSelected());
+					sgd.setPlayers(Arrays.asList(secondListOfAnthills.getSelectedValue(), thirdListOfAnthills.getSelectedValue()));
+					
+					sendGuiEvent(new GuiEvent(GuiEvent.EventTypes.DOUBLE_PLAY_START, Mapper.INSTANCE.pojoToJson(sgd)));
 				}
 				break;
 			case 2:
