@@ -5,6 +5,7 @@ import java.util.Map;
 import java.util.concurrent.atomic.AtomicInteger;
 import java.util.stream.Collectors;
 
+import com.ibm.sk.dto.matchmaking.Match;
 import com.ibm.sk.dto.matchmaking.Player;
 import com.ibm.sk.dto.matchmaking.StartGameData;
 import com.ibm.sk.dto.qualification.QualificationCandidate;
@@ -16,6 +17,7 @@ import com.ibm.sk.ff.gui.client.GUIFacade;
 import com.ibm.sk.ff.gui.client.ReplayFileHelper;
 import com.ibm.sk.ff.gui.common.events.GuiEvent;
 import com.ibm.sk.ff.gui.common.events.GuiEventListener;
+import com.ibm.sk.ff.gui.common.events.GuiEvent.EventTypes;
 import com.ibm.sk.ff.gui.common.mapper.Mapper;
 import com.ibm.sk.ff.gui.common.objects.operations.InitMenuData;
 
@@ -56,6 +58,7 @@ public class GameMenuHandler implements GuiEventListener {
 			this.facade.showResult(winner);
 		} else if (GuiEvent.EventTypes.QUALIFICATION_START.name().equals(event.getType().name())) {
 			final StartGameData data = Mapper.INSTANCE.jsonToPojo(event.getData(), StartGameData.class);
+			this.menuData.setRunInBackground(data.isRunInBackground());
 			this.facade.setRender(!data.isRunInBackground());
 			if (this.qualification == null) {
 				final AtomicInteger index = new AtomicInteger();
@@ -65,14 +68,19 @@ public class GameMenuHandler implements GuiEventListener {
 			}
 
 			if (!this.qualification.getWinner().isPresent()) {
+				Match m = null;
 				try {
-					this.qualification.resolveNextMatch();
+					m = this.qualification.resolveNextMatch();
 				} catch (final NoMoreMatchesException e) {
 					e.printStackTrace();
 				}
+				
+				this.menuData.setQualification(this.qualification.getQualificationTable());
+				this.facade.showResult(m == null ? "" : m.getWinners().get(0).getName());
+			} else {
+				actionPerformed(new GuiEvent(EventTypes.TOURNAMENT_PLAY_START, event.getData()));
 			}
-
-			this.menuData.setQualification(this.qualification.getQualificationTable());
+			
 		} else if (GuiEvent.EventTypes.TOURNAMENT_PLAY_START.name().equals(event.getType().name())) {
 			final StartGameData data = Mapper.INSTANCE.jsonToPojo(event.getData(), StartGameData.class);
 			this.facade.setRender(!data.isRunInBackground());
@@ -90,13 +98,17 @@ public class GameMenuHandler implements GuiEventListener {
 							.collect(Collectors.toList()));
 				}
 
-				try {
-					this.tournament.resolveNextMatch();
-				} catch (final NoMoreMatchesException e) {
-					e.printStackTrace();
+				if (!this.tournament.getWinner().isPresent()) {
+					Match m = null;
+					try {
+						m = this.tournament.resolveNextMatch();
+					} catch (final NoMoreMatchesException e) {
+						e.printStackTrace();
+					}
+					
+					this.menuData.setTournament(this.tournament.getTournamentTable());
+					this.facade.showResult(m == null ? "" : m.getWinners().get(0).getName());
 				}
-
-				this.menuData.setTournament(this.tournament.getTournamentTable());
 			}
 		} else if (GuiEvent.EventTypes.START_REPLAY.equals(event.getType())) {
 			System.out.println("Replay starts : " + event.getData());

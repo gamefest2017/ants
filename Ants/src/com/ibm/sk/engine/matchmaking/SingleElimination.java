@@ -35,12 +35,17 @@ public class SingleElimination extends Tournament {
 		 * Limit first round matches to get power of PLAYERS_PER_MATCH
 		 */
 		final int nextPowerOfTwo = (int) Math.ceil(Math.log(players.size()) / Math.log(PLAYERS_PER_MATCH));
-		final int targetPlayers = (int) Math.pow(PLAYERS_PER_MATCH, nextPowerOfTwo - 1 );
-		final int firstRoundPlayers = (players.size() - targetPlayers) * PLAYERS_PER_MATCH;
+		int targetPlayers = (int) Math.pow(PLAYERS_PER_MATCH, nextPowerOfTwo);
+		int firstRoundPlayers = targetPlayers;
+		if (targetPlayers > players.size()) {
+			//need to bye some players
+			targetPlayers = (int) Math.pow(PLAYERS_PER_MATCH, nextPowerOfTwo - 1);
+			firstRoundPlayers = (players.size() - targetPlayers) * PLAYERS_PER_MATCH;
+		}
 
 		getMatches().addAll(createMatches(players.stream().limit(firstRoundPlayers).collect(Collectors.toList())));
 	}
-
+	
 	@Override
 	public Match resolveNextMatch() throws NoMoreMatchesException {
 		final Match match = super.resolveNextMatch();
