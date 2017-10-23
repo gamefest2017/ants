@@ -108,7 +108,7 @@ public class SimpleGUI implements GUI {
 		this.frame.setVisible(true);
 
 		try {
-			Thread.sleep(1000);
+			Thread.sleep(2000);
 		} catch (final Exception e) {
 			e.printStackTrace();
 		}
