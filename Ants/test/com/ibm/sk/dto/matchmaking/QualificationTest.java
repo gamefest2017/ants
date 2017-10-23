@@ -14,7 +14,9 @@ public class QualificationTest extends TournamentTest {
 
 	@Override
 	public ITournament createTournament() {
-		return new Qualification(new GUIFacade(), PLAYERS);
+		GUIFacade f = new GUIFacade();
+		f.setRender(false);
+		return new Qualification(f, PLAYERS);
 	}
 
 	@Test

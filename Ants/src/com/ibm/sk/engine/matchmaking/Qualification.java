@@ -82,7 +82,10 @@ public class Qualification extends Tournament {
 		int index = 0;
 
 		final int nextPowerOfTwo = (int) Math.ceil(Math.log(getPlayers().size()) / Math.log(2));
-		final int maxQualifiedPlayers = (int) Math.pow(2, nextPowerOfTwo - 1 );
+		int maxQualifiedPlayers = (int) Math.pow(2, nextPowerOfTwo);
+		if (maxQualifiedPlayers > getPlayers().size()) {
+			maxQualifiedPlayers = (int) Math.pow(2, nextPowerOfTwo - 1);
+		}
 
 		for (final PlayerStatus ps : getRanking()) {
 			table.addCandidate(new QualificationCandidate(

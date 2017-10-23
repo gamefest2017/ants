@@ -19,9 +19,9 @@ public abstract class TournamentTest {
 			VLADO,
 			new Player(2 , "Robo"),
 			new Player(3 , "Gabo"),
-			new Player(4 , "Lenka"),
-			new Player(5 , "Robo"),// 2 guys with same name
-			new Player(6 , "Peto")
+			new Player(4 , "Lenka")
+//			new Player(5 , "Robo"),// 2 guys with same name
+//			new Player(6 , "Peto")
 			);
 	
 	@Before

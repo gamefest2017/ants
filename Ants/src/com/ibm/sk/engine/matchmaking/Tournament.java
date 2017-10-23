@@ -39,8 +39,14 @@ public abstract class Tournament implements ITournament {
 		if (!singlePlayer) {
 			match.getPlayerStatus(1).addScore(results.get(match.getPlayer(1).getName()).intValue());
 		}
+		
 		match.endMatch();
-		this.facade.showResult(match.getWinners().get(0).getName());
+		
+		//draws not supported, add 1 score to first player
+		if (!singlePlayer && match.isDraw()) { 
+			match.getPlayerStatus(0).addScore(1);
+		}
+
 		return match;
 	}
 	
