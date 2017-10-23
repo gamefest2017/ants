@@ -38,20 +38,22 @@ public class GameMenuHandler implements GuiEventListener {
 	public void actionPerformed(final GuiEvent event) {
 		ProcessExecutor executor;
 		if (GuiEvent.EventTypes.SINGLE_PLAY_START.name().equals(event.getType().name())) {
-			this.facade.setRender(true);
+			final StartGameData data = Mapper.INSTANCE.jsonToPojo(event.getData(), StartGameData.class);
+			this.menuData.setRunInBackground(data.isRunInBackground());
+			this.facade.setRender(!data.isRunInBackground());
 			executor = new ProcessExecutor(this.facade);
-			final Map<String, Integer> results = executor.run(event.getData(), null);
+			final Map<String, Integer> results = executor.run(data.getPlayers().get(0), null);
 			final String winner = results.entrySet().stream()
 					.max((one, other) -> one.getValue().compareTo(other.getValue()))
 					.orElseGet(() -> results.entrySet().iterator().next()).getKey();
 			this.facade.showResult(winner);
 		} else if (GuiEvent.EventTypes.DOUBLE_PLAY_START.name().equals(event.getType().name())) {
-			this.facade.setRender(true);
-			final String hillNames = event.getData();
-			final int separatorPos = hillNames.indexOf(GuiEvent.HLL_NAMES_SEPARATOR);
+			final StartGameData data = Mapper.INSTANCE.jsonToPojo(event.getData(), StartGameData.class);
+			this.menuData.setRunInBackground(data.isRunInBackground());
+			this.facade.setRender(!data.isRunInBackground());
 			executor = new ProcessExecutor(this.facade);
-			final Map<String, Integer> results = executor.run(hillNames.substring(0, separatorPos),
-					hillNames.substring(separatorPos + 1));
+			final Map<String, Integer> results = executor.run(data.getPlayers().get(0),
+					data.getPlayers().get(1));
 			final String winner = results.entrySet().stream()
 					.max((one, other) -> one.getValue().compareTo(other.getValue()))
 					.orElseGet(() -> results.entrySet().iterator().next()).getKey();
