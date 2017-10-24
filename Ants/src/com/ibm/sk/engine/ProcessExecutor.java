@@ -4,12 +4,16 @@ import static com.ibm.sk.WorldConstants.TURNS;
 
 import java.util.ArrayList;
 import java.util.Collections;
+import java.util.Comparator;
 import java.util.HashMap;
 import java.util.Iterator;
 import java.util.Map;
+import java.util.function.Function;
+import java.util.stream.Stream;
 
 import com.ibm.sk.WorldConstants;
 import com.ibm.sk.ant.AntLoader;
+import com.ibm.sk.dto.AbstractWarrior;
 import com.ibm.sk.dto.Hill;
 import com.ibm.sk.dto.IAnt;
 import com.ibm.sk.dto.Vision;
@@ -120,8 +124,24 @@ public final class ProcessExecutor {
 		if (secondHillName != null) {
 			System.out.println(secondHill.getName() + " earned score: " + secondHill.getFood());
 			result.put(secondHill.getName(), Integer.valueOf(secondHill.getFood()));
+			if (firstHill.getFood() == secondHill.getFood()) {
+				final Function<Hill, Stream<IAnt>> itsAnts = hill -> hill.getAnts().stream();
+				final Function<Stream<IAnt>, Stream<AbstractWarrior>> onlyWarriors = ants -> ants.filter(AbstractWarrior.class::isInstance)
+						.map(AbstractWarrior.class::cast);
+				final Function<Stream<AbstractWarrior>, Integer> sumOfKills = warriors -> Integer
+						.valueOf(warriors.mapToInt(AbstractWarrior::getKills).sum());
+				final Function<Hill, Integer> killsBy = hill -> itsAnts.andThen(onlyWarriors).andThen(sumOfKills)
+						.apply(hill);
+				final Comparator<Hill> byKills = (one, other) -> killsBy.apply(one).compareTo(killsBy.apply(other));
+				final String winner = Stream.of(firstHill, secondHill)
+						.max(byKills).orElse(secondHill)
+						.getName();
+				result.put(winner, Integer.valueOf(result.get(winner).intValue() + 1));
+			}
+
 		}
 		System.out.println("Game duration: " + TURNS + " turns, in " + (endTime - startTime) + " ms");
 		return result;
 	}
+
 }

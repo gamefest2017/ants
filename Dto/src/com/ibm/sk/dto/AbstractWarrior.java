@@ -11,6 +11,10 @@ public abstract class AbstractWarrior extends WorldObject implements IAnt {
 	private final Hill myHill;
 	private final Set<Long> kills = new HashSet<>();
 
+	public Integer getKills() {
+		return Integer.valueOf(this.kills.size());
+	}
+
 	public AbstractWarrior(final long id, final Point position, final Hill myHill) {
 		this.id = id;
 		this.position = position;
